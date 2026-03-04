@@ -1,0 +1,1198 @@
+patient_id,age,heart_rate,resp_rate,spo2,temp_f,systolic_bp,pain_scale,chief_complaint,image_path,target_esi,flag_high_risk
+cd5315f3,84,119,25,90,101.7,198,9,Suicidal ideation,None,2,1
+f121a745,52,64,12,98,99.1,115,5,Medication refill,None,5,0
+cd9c54bc,63,84,13,99,99.4,112,5,Suture removal,None,5,0
+ec04dfe8,19,110,20,90,97.5,172,7,Severe abdominal pain,None,2,1
+f8f2c2ca,22,112,20,93,98.3,199,10,Crushing chest pain radiating to jaw,None,2,1
+d7e42a36,66,134,43,86,99.7,71,7,Gunshot wound to chest,None,1,1
+204c1a87,26,158,43,82,103.0,68,9,Severe respiratory distress,None,1,1
+2a85fccc,47,92,12,97,99.5,121,3,Laceration needing stitches,None,4,0
+a3313121,72,76,13,99,98.0,119,5,Medication refill,None,5,0
+10020306,18,83,18,100,96.8,121,0,"Dehydration, Fatigue",None,2,1
+070cffb8,71,86,14,99,97.5,110,2,Poison ivy rash,None,5,0
+54b47f20,39,96,17,99,99.2,102,2,Urinary tract infection symptoms,None,4,0
+54580e34,30,118,23,93,102.5,181,8,Severe abdominal pain,None,2,1
+e978853f,53,135,41,77,99.5,88,9,Severe respiratory distress,None,1,1
+3dbc39f5,75,72,13,99,98.7,114,1,Poison ivy rash,None,5,0
+0d7dd0e9,83,88,18,97,103.2,139,9,Moderate abdominal pain with nausea,None,3,0
+75045eba,70,72,13,98,98.0,112,1,Suture removal,None,5,0
+93165779,51,89,19,97,97.3,115,8,Fever and cough for 3 days,None,3,1
+2c5caeda,64,76,16,98,97.6,113,1,Sprained ankle,None,4,0
+c1fab643,64,134,26,93,99.9,189,10,Crushing chest pain radiating to jaw,None,2,0
+12e27ee4,44,87,12,99,98.4,111,3,"Cold symptoms, no fever",None,5,0
+bfff572e,25,67,14,98,98.3,111,1,Laceration needing stitches,None,4,0
+31fc5c9d,63,163,30,88,101.5,85,7,Severe respiratory distress,None,1,1
+f90dc7db,83,143,34,82,101.1,67,9,Massive hemorrhage,None,1,1
+5cef2e11,55,124,21,90,97.2,194,7,Severe abdominal pain,None,2,1
+8aa8451b,45,73,16,98,99.1,123,5,Minor burn,None,4,0
+de371f23,78,80,13,98,99.1,114,1,Medication refill,None,5,0
+d3ba09aa,24,81,12,99,97.8,110,1,Medication refill,None,5,0
+d27490ed,86,177,32,78,102.0,62,10,Massive hemorrhage,None,1,1
+8bf8d3a0,61,111,25,90,101.7,194,8,Severe abdominal pain,None,2,0
+155ede33,27,99,17,99,98.0,111,5,Urinary tract infection symptoms,None,4,0
+4783656a,39,63,16,97,99.1,109,3,Sprained ankle,None,4,0
+7bc2aa5d,47,84,13,98,99.1,119,5,Poison ivy rash,None,5,0
+06e4262e,35,167,32,77,97.7,74,9,Cardiac arrest,None,1,1
+fa9047b2,81,82,14,98,98.7,116,4,Medication refill,None,5,0
+97527f6f,33,61,12,98,98.4,116,5,Suture removal,None,5,0
+23ec2d64,19,112,21,91,100.7,179,8,"Stroke symptoms, left side weakness",None,2,1
+a52f4293,63,91,17,98,98.5,116,2,Sprained ankle,None,4,0
+29283542,20,112,25,90,100.9,184,8,Crushing chest pain radiating to jaw,None,2,1
+0cb06e8a,29,118,21,90,98.4,172,8,Severe abdominal pain,None,2,1
+e02e1060,34,89,16,98,98.9,128,1,Laceration needing stitches,None,4,0
+e75ff0d3,70,85,17,95,98.5,137,10,Dehydration,None,3,0
+10037928,65,72,16,96,98.2,126,0,HYPERGLYCEMIA,None,2,1
+7cd7e79d,65,149,37,82,101.7,66,10,Massive hemorrhage,None,1,1
+345d69e7,63,153,31,80,97.9,82,9,Unresponsive,None,1,1
+10005866,19,66,18,99,97.4,111,8,"Abd pain, N/V",None,2,1
+1218a924,38,119,26,91,101.0,198,7,"Stroke symptoms, left side weakness",None,2,1
+4c1c523d,85,81,13,97,98.2,110,4,Urinary tract infection symptoms,None,4,0
+725a5661,44,68,15,99,98.7,119,3,Suture removal,None,5,0
+eca204c6,74,116,27,92,101.3,182,10,Crushing chest pain radiating to jaw,None,2,1
+10019003,23,96,15,97,98.4,98,0,"Weakness, Hypotension",None,2,1
+10040025,45,78,16,98,96.6,126,8,L Foot pain,None,3,0
+af4530cb,87,144,35,85,99.1,87,10,Unresponsive,None,1,1
+1eca86dc,31,123,21,92,102.6,196,7,Suicidal ideation,None,2,1
+db69d2df,35,61,17,98,97.9,111,3,Laceration needing stitches,None,4,0
+59b8191e,55,123,23,93,99.6,179,9,Severe abdominal pain,None,2,1
+741ac170,31,113,20,92,99.5,161,8,Suicidal ideation,None,2,1
+c195a2b7,75,77,14,98,98.2,118,5,"Cold symptoms, no fever",None,5,0
+c1a43b1a,33,87,15,98,97.8,117,5,Medication refill,None,5,0
+10014354,89,62,16,95,97.9,145,9,Chest pain,None,2,1
+ee22676c,41,164,30,77,97.8,75,7,Unresponsive,None,1,1
+af474a0a,48,169,34,78,97.7,83,8,Gunshot wound to chest,None,1,1
+3c473139,68,106,16,96,101.4,122,8,Dehydration,None,3,0
+28f194e0,67,85,18,95,99.3,124,8,Dehydration,None,3,0
+ff46d0e7,19,84,15,99,98.1,117,0,Poison ivy rash,None,5,0
+2fed6689,43,117,23,93,98.2,189,10,"Stroke symptoms, left side weakness",None,2,1
+886c5802,60,82,13,98,99.1,117,1,"Cold symptoms, no fever",None,5,0
+7a94d338,47,84,15,98,98.6,112,0,Laceration needing stitches,None,4,0
+d2fc66c5,28,150,39,83,102.4,81,7,Massive hemorrhage,None,1,1
+c4c76e09,32,88,17,96,101.4,138,8,Closed leg fracture,kaggle_images/wounds/laseration (35).jpg,3,0
+ab4d3c5e,49,110,24,93,102.1,171,8,Crushing chest pain radiating to jaw,None,2,1
+05d19c12,85,80,17,94,102.7,135,10,Dehydration,None,3,0
+10014354,53,72,18,100,98.6,125,0,"L Leg pain, Weakness",None,3,0
+71142983,52,137,26,93,98.5,170,8,Severe abdominal pain,None,2,0
+98b63182,22,125,29,91,103.3,165,10,"Stroke symptoms, left side weakness",None,2,1
+8ab71ad2,18,87,21,95,98.7,131,7,Fever and cough for 3 days,None,3,1
+775ae098,53,98,12,97,99.3,120,5,Urinary tract infection symptoms,None,4,0
+68a4568c,65,90,20,97,101.0,139,8,Fever and cough for 3 days,None,3,0
+7e26dc06,22,110,20,92,98.9,173,8,Severe abdominal pain,None,2,0
+b38726d6,23,69,12,98,97.5,118,2,Suture removal,None,5,0
+10002930,73,89,16,100,95.6,106,10,"ETOH, Hypoglycemia",None,3,0
+fb00556f,67,133,22,93,101.3,198,8,Severe abdominal pain,None,2,1
+4e72a953,79,159,44,82,102.5,82,9,Massive hemorrhage,None,1,1
+05ec247b,86,79,15,99,97.6,112,0,Medication refill,None,5,0
+1e480101,75,112,27,93,100.5,193,7,Suicidal ideation,None,2,1
+10014354,81,106,20,99,100.2,142,5,"Cough, Dyspnea",None,2,1
+cac43a8b,67,77,12,99,99.0,116,4,Medication refill,None,5,0
+e20898fe,49,97,21,95,98.5,137,7,Fever and cough for 3 days,None,3,0
+53fdeac3,84,153,36,85,100.9,88,7,Cardiac arrest,None,1,1
+b76341b0,26,103,20,94,102.3,118,7,Fever and cough for 3 days,None,3,0
+640d92b8,21,113,26,93,98.5,176,10,"Stroke symptoms, left side weakness",None,2,1
+a5a97a95,22,155,36,88,97.3,66,9,Cardiac arrest,None,1,1
+85006383,65,99,20,96,97.7,121,7,Dehydration,None,3,0
+4cc901d7,46,75,14,98,98.7,113,5,Poison ivy rash,None,5,0
+e993781e,71,89,14,99,99.3,117,3,"Cold symptoms, no fever",None,5,0
+5924a13e,43,138,24,92,99.8,199,10,Suicidal ideation,None,2,0
+bd0e726f,65,86,15,99,99.0,128,4,Minor burn,None,4,0
+231feb96,49,68,15,98,98.5,126,4,Laceration needing stitches,None,4,0
+10018081,39,84,18,94,99.1,139,0,Dyspnea,None,2,1
+8663448f,36,149,36,78,101.5,68,10,Severe respiratory distress,None,1,1
+10040025,20,66,16,96,98.0,154,5,HYPERTENSION,None,3,0
+d90e05f6,46,61,12,98,99.3,118,2,Poison ivy rash,None,5,0
+1150c859,48,77,15,99,97.8,116,1,Poison ivy rash,None,5,0
+d6930040,89,168,37,88,101.1,78,7,Massive hemorrhage,None,1,1
+e5a86e0e,46,90,16,97,100.4,135,8,Closed leg fracture,kaggle_images/wounds/mirrored_laseration (17).jpg,3,0
+86ec733f,51,88,16,97,97.7,120,4,Sprained ankle,None,4,0
+10040025,84,88,16,100,97.3,114,0,BRBPR,None,3,0
+501321ac,76,178,31,76,97.3,87,7,Unresponsive,None,1,1
+27b8edfe,78,136,29,92,101.5,177,10,Crushing chest pain radiating to jaw,None,2,1
+10026406,55,118,22,99,98.7,131,10,Lower back pain,None,2,1
+7a0378ab,36,113,29,90,98.1,164,9,Severe abdominal pain,None,2,1
+9bc3c89f,19,136,31,85,103.0,61,10,Cardiac arrest,None,1,1
+8fc32a5e,48,83,17,97,99.3,124,2,Urinary tract infection symptoms,None,4,0
+f2fe54b6,60,122,24,92,101.2,175,10,Suicidal ideation,None,2,1
+0e285aa1,80,71,15,98,98.8,118,0,Urinary tract infection symptoms,None,4,0
+eb7251f5,75,131,22,90,101.1,177,9,Suicidal ideation,None,2,1
+7b2014ee,26,76,14,98,98.0,121,3,Laceration needing stitches,kaggle_images/wounds/mirrored_laseration (45).jpg,4,0
+7245737e,60,60,12,98,98.2,112,2,Suture removal,None,5,0
+0322c829,32,172,42,78,97.5,72,9,Severe respiratory distress,None,1,1
+b0a32366,33,153,36,76,102.6,76,10,Severe respiratory distress,None,1,1
+94d92fdd,75,91,18,95,97.5,130,9,Moderate abdominal pain with nausea,None,3,0
+98708b77,49,139,39,77,100.4,73,7,Unresponsive,None,1,1
+ed059b9f,42,111,28,90,103.0,192,8,Severe abdominal pain,None,2,0
+984916a2,53,155,37,84,100.8,87,10,Severe respiratory distress,None,1,1
+10001725,19,73,18,100,97.5,137,0,Eye pain,None,3,0
+6a722e56,64,95,17,97,98.7,121,0,Laceration needing stitches,None,4,0
+eb3851ce,19,130,44,79,99.2,79,9,Unresponsive,None,1,1
+3f6bb173,49,90,16,96,98.9,134,7,Moderate abdominal pain with nausea,None,3,0
+83e71179,64,102,20,94,101.3,120,7,Closed leg fracture,None,3,0
+bc5be0a1,84,170,42,76,100.8,74,8,Severe respiratory distress,None,1,1
+72baf49c,20,168,35,82,99.7,86,7,Massive hemorrhage,None,1,1
+10015860,26,96,18,97,99.8,134,7,"Diarrhea, Hypotension",None,3,0
+f6bd0e4e,77,72,15,98,98.6,115,2,Poison ivy rash,None,5,0
+e092a8db,69,158,44,85,100.9,67,9,Unresponsive,None,1,1
+58611f26,25,138,25,90,98.7,181,7,Suicidal ideation,None,2,1
+ec6a7f9c,85,127,24,90,102.9,160,9,Severe abdominal pain,None,2,1
+20e72d9c,84,93,12,97,97.6,122,3,Minor burn,kaggle_images/wounds/laseration (19).jpg,4,0
+ac9e3b74,44,81,18,94,101.9,134,7,Dehydration,None,3,0
+cd9a0a56,67,66,15,98,98.4,101,1,Laceration needing stitches,kaggle_images/wounds/laseration (12).jpg,4,0
+8b9e46e2,25,117,28,90,101.3,161,9,Suicidal ideation,None,2,1
+913cebdc,75,62,13,98,98.1,115,4,Medication refill,None,5,0
+10018081,24,98,22,95,96.2,111,5,"Abd pain, n/v/d",None,2,1
+6fee08c9,36,104,16,95,101.7,126,10,Moderate abdominal pain with nausea,None,3,0
+7eab514a,55,120,28,90,102.9,197,9,Suicidal ideation,None,2,1
+be515e3d,59,74,12,99,97.7,115,1,Poison ivy rash,None,5,0
+9290011e,55,67,17,97,98.2,105,2,Laceration needing stitches,None,4,0
+2dc22643,40,145,44,85,101.5,81,10,Gunshot wound to chest,None,1,1
+14e92c6e,55,133,30,82,97.5,88,9,Severe respiratory distress,None,1,1
+7ef52a62,62,149,30,82,102.2,73,10,Gunshot wound to chest,None,1,1
+39d68538,57,70,16,98,97.9,102,0,Laceration needing stitches,None,4,0
+bd248c59,34,167,37,79,103.4,79,8,Massive hemorrhage,None,1,1
+2f48c01c,32,174,30,83,99.8,66,7,Cardiac arrest,None,1,1
+3b8aca30,31,160,36,76,101.1,66,7,Massive hemorrhage,None,1,1
+3f6055c3,35,82,19,95,97.3,121,10,Dehydration,None,3,0
+10015860,39,128,20,99,100.1,151,0,Coffee ground emesis,None,2,1
+a1914d22,29,104,20,94,98.0,110,10,Fever and cough for 3 days,None,3,0
+6252d2da,32,126,28,93,98.4,163,8,Crushing chest pain radiating to jaw,None,2,1
+65fbfa46,67,129,26,92,97.9,188,7,"Stroke symptoms, left side weakness",None,2,1
+d9465662,31,130,24,90,99.3,185,8,"Stroke symptoms, left side weakness",None,2,1
+17158970,20,94,21,94,100.9,121,10,Fever and cough for 3 days,None,3,0
+88ef4183,70,139,26,92,102.3,177,8,Suicidal ideation,None,2,1
+cc81b437,75,89,12,97,97.8,113,1,Laceration needing stitches,None,4,0
+b9b671df,67,90,18,94,98.3,128,10,Moderate abdominal pain with nausea,None,3,0
+7b82866e,80,136,25,93,102.7,166,7,"Stroke symptoms, left side weakness",None,2,1
+f2f9d3b8,45,139,36,83,98.4,76,8,Severe respiratory distress,None,1,1
+b8d737db,85,62,14,98,98.1,115,2,Medication refill,None,5,0
+9e3a1e6c,83,90,14,98,98.5,107,2,Laceration needing stitches,None,4,0
+e3335538,21,138,22,93,100.8,196,9,Crushing chest pain radiating to jaw,None,2,1
+0d289e77,28,118,27,92,100.1,187,9,"Stroke symptoms, left side weakness",None,2,1
+45fa8897,47,101,19,96,98.8,112,8,Dehydration,None,3,0
+49b84374,64,82,15,99,97.7,117,2,Urinary tract infection symptoms,None,4,0
+ad8bc6b0,42,106,21,96,98.7,139,9,Fever and cough for 3 days,None,3,0
+044ba88d,35,82,14,98,98.4,114,2,Medication refill,None,5,0
+42df3a54,69,65,14,99,99.1,116,5,Poison ivy rash,None,5,0
+ad875cc7,19,81,15,99,97.6,111,3,Suture removal,None,5,0
+10014354,72,72,16,98,98.2,140,0,"Hyperglycemia, Overdose",None,2,1
+39c56401,47,84,16,97,98.3,116,0,Urinary tract infection symptoms,None,4,0
+de94f619,80,67,12,98,98.1,118,0,Poison ivy rash,None,5,0
+1c28176e,40,153,34,77,101.1,71,9,Severe respiratory distress,None,1,1
+1619b9fb,23,106,18,96,97.7,136,10,Moderate abdominal pain with nausea,None,3,0
+6c76b23e,67,152,44,88,98.7,69,10,Massive hemorrhage,None,1,1
+10038999,32,116,14,99,97.6,140,6,"s/p Fall, Transfer",None,3,0
+f43bd00c,42,72,13,98,99.0,119,2,"Cold symptoms, no fever",None,5,0
+10014354,35,104,16,98,98.2,160,5,"Confusion, s/p Fall",None,2,1
+10037928,79,108,22,98,98.7,151,0,"Cough, Dyspnea",None,3,0
+5e66610d,24,74,15,98,99.0,119,3,Medication refill,None,5,0
+7264a0b7,87,161,36,78,102.0,82,9,Massive hemorrhage,None,1,1
+fa9d5b38,72,106,21,94,100.1,116,7,Dehydration,None,3,0
+ae4df86c,38,131,28,91,101.2,168,10,"Stroke symptoms, left side weakness",None,2,0
+614e55f4,79,96,16,96,101.2,133,10,Closed leg fracture,kaggle_images/wounds/laseration (30).jpg,3,0
+451f99f1,25,74,16,98,98.2,113,4,Urinary tract infection symptoms,None,4,0
+85c0a9c6,39,70,15,99,98.2,112,1,"Cold symptoms, no fever",None,5,0
+d443088c,50,107,16,96,102.8,117,10,Closed leg fracture,None,3,1
+4f49c721,72,77,14,97,98.5,111,0,Urinary tract infection symptoms,None,4,0
+1c251b90,33,77,17,99,99.3,109,2,Urinary tract infection symptoms,None,4,0
+8d9be1a0,69,138,23,93,99.8,197,9,Crushing chest pain radiating to jaw,None,2,1
+42d28c35,35,63,12,97,99.2,113,3,Sprained ankle,None,4,0
+dcdba735,30,81,20,95,102.4,130,9,Fever and cough for 3 days,None,3,0
+a990091a,49,89,15,98,97.6,110,3,Poison ivy rash,None,5,0
+f40c680a,87,67,12,99,98.2,112,3,"Cold symptoms, no fever",None,5,0
+02611112,23,179,37,84,97.4,64,10,Gunshot wound to chest,None,1,1
+10010867,22,104,16,100,99.5,146,0,T-SPINE FX DISPLACEMENT,None,2,1
+e8d61661,51,85,15,99,99.2,117,4,"Cold symptoms, no fever",None,5,0
+b6364fff,71,131,23,90,102.0,169,8,"Stroke symptoms, left side weakness",None,2,1
+1407639b,61,134,35,84,101.6,81,10,Massive hemorrhage,None,1,1
+58007a2b,28,104,16,96,100.7,128,8,Moderate abdominal pain with nausea,None,3,0
+ff291bd3,39,172,43,78,100.4,85,7,Massive hemorrhage,None,1,1
+3f52cfc2,79,80,20,96,102.9,129,9,Dehydration,None,3,0
+625ac957,56,122,23,93,102.8,196,9,Crushing chest pain radiating to jaw,None,2,0
+f9bce470,35,132,28,90,99.8,199,10,Crushing chest pain radiating to jaw,None,2,1
+10015860,30,97,16,98,98.2,180,9,R LEG CELLULITIS,None,3,0
+da55666b,43,133,38,87,99.6,69,10,Unresponsive,None,1,1
+5dbe0531,70,152,38,81,103.1,72,8,Cardiac arrest,None,1,1
+73816c9b,64,121,27,92,101.2,167,7,Severe abdominal pain,None,2,1
+ed8a1d21,18,148,43,76,100.2,80,10,Gunshot wound to chest,None,1,1
+daa2da11,55,62,17,97,98.6,100,3,Sprained ankle,None,4,0
+218b585b,77,87,12,98,98.8,104,2,Sprained ankle,None,4,0
+88fc445a,48,135,27,93,99.2,196,10,Severe abdominal pain,None,2,1
+8a6dfd5b,51,84,12,98,98.7,115,5,Medication refill,None,5,0
+10026406,60,98,20,99,97.0,133,8,"ETOH, SI",None,3,0
+293105c5,63,133,21,90,103.4,166,9,"Stroke symptoms, left side weakness",None,2,1
+8de1687e,89,134,23,90,98.4,160,10,Severe abdominal pain,None,2,1
+10023117,26,126,20,100,97.7,129,0,SHORTNESS OF BREATH,None,2,1
+109a4d64,51,84,21,96,99.2,130,9,Dehydration,None,3,0
+fde5d28e,70,89,14,99,98.3,112,5,Urinary tract infection symptoms,None,4,0
+254d3d5b,62,74,14,99,98.3,120,0,Minor burn,None,4,0
+bb0c5460,59,117,27,93,98.7,185,10,Crushing chest pain radiating to jaw,None,2,1
+caac60a8,87,71,15,98,98.6,116,5,Suture removal,None,5,0
+ff22f9bc,81,115,28,90,102.7,184,7,"Stroke symptoms, left side weakness",None,2,1
+a83bd6fd,42,114,27,91,102.3,175,10,Suicidal ideation,None,2,0
+10002428,68,100,16,96,98.4,126,5,LEFT HIP FX,None,3,0
+bef503a7,87,128,26,91,102.5,191,10,"Stroke symptoms, left side weakness",None,2,1
+0c1729eb,83,95,17,98,98.7,110,2,Laceration needing stitches,kaggle_images/wounds/laseration (22).jpg,4,0
+ef6e42c3,32,103,20,96,98.1,131,8,Closed leg fracture,None,3,0
+10023239,22,130,16,95,97.9,118,0,"N/V, Hyperglycemia",None,1,1
+1fba2e46,65,114,23,92,102.3,182,8,Suicidal ideation,None,2,1
+5ae05e69,50,132,24,90,97.2,181,9,"Stroke symptoms, left side weakness",None,2,1
+10018328,41,74,18,100,96.2,142,0,"N/V, Tinnitus",None,2,1
+98320c3d,72,86,12,98,99.0,111,0,Poison ivy rash,None,5,0
+8dcd3a6b,80,92,20,94,101.1,139,10,Closed leg fracture,None,3,0
+10039708,36,71,16,100,98.0,105,0,Dizziness,None,3,0
+ec604f72,49,138,21,93,98.0,182,9,"Stroke symptoms, left side weakness",None,2,1
+eae3684d,26,105,20,94,99.4,129,8,Moderate abdominal pain with nausea,None,3,0
+84f05a9b,56,147,37,75,99.2,70,7,Severe respiratory distress,None,1,1
+342a2f93,27,70,12,98,97.8,101,2,Sprained ankle,None,4,0
+1aa2ef0e,20,89,17,97,98.3,122,7,Moderate abdominal pain with nausea,None,3,0
+3352803d,63,94,16,96,98.1,135,8,Closed leg fracture,None,3,0
+01c92a48,64,76,12,98,97.8,125,5,Minor burn,None,4,0
+4545dca5,51,176,37,82,100.7,76,8,Severe respiratory distress,None,1,1
+ddc6238c,52,89,12,99,97.5,118,3,Medication refill,None,5,0
+bd896ed0,22,96,20,97,98.5,131,10,Closed leg fracture,None,3,0
+10019003,19,98,16,97,98.6,105,0,"Anemia, Neutropenia, Transfer",None,2,1
+d5b24ead,21,154,41,88,99.5,77,8,Severe respiratory distress,None,1,1
+2240d609,89,127,22,91,98.2,162,8,Severe abdominal pain,None,2,1
+cad629cd,71,101,16,97,98.9,130,9,Moderate abdominal pain with nausea,None,3,0
+4d7ca47a,83,88,14,99,98.7,114,4,Suture removal,None,5,0
+add88ee9,46,63,12,99,98.4,125,4,Laceration needing stitches,None,4,0
+d5a458c5,56,131,32,75,98.9,64,7,Gunshot wound to chest,None,1,1
+f21d6463,75,132,29,91,103.5,193,7,Suicidal ideation,None,2,1
+4d993080,24,118,22,93,103.3,167,9,Crushing chest pain radiating to jaw,None,2,1
+09dcbf60,66,79,13,98,98.6,114,0,"Cold symptoms, no fever",None,5,0
+a0bf7e9c,88,126,23,93,98.3,168,7,Crushing chest pain radiating to jaw,None,2,1
+9b481a1a,34,135,27,92,102.0,199,9,Crushing chest pain radiating to jaw,None,2,1
+549d6327,44,65,15,98,98.0,115,2,Suture removal,None,5,0
+bc153d6a,37,120,22,92,102.7,165,7,Suicidal ideation,None,2,1
+a751d784,89,167,41,82,99.2,87,8,Unresponsive,None,1,1
+10002428,58,95,28,100,100.2,99,8,LETHARGY/SOB,None,2,1
+c14f5625,46,80,19,96,101.6,134,8,Moderate abdominal pain with nausea,None,3,0
+61719076,75,149,41,82,102.3,88,9,Massive hemorrhage,None,1,1
+7a9048ce,79,169,34,87,100.5,77,10,Gunshot wound to chest,None,1,1
+23cebc95,42,153,42,86,97.0,85,10,Severe respiratory distress,None,1,1
+95d8f71a,54,138,24,92,103.4,165,9,Crushing chest pain radiating to jaw,None,2,1
+dd0d964c,45,85,17,97,98.7,112,0,Sprained ankle,None,4,0
+25ca9e3c,32,100,18,94,99.7,130,10,Fever and cough for 3 days,None,3,0
+9574db77,43,114,25,90,98.2,199,8,Suicidal ideation,None,2,1
+41966267,71,68,14,98,98.1,116,2,Medication refill,None,5,0
+17f07710,36,168,43,77,97.1,72,10,Severe respiratory distress,None,1,1
+656b4e23,83,102,18,95,98.6,114,7,Fever and cough for 3 days,None,3,0
+66879593,45,131,39,87,101.1,89,8,Massive hemorrhage,None,1,1
+c732a2b2,41,78,13,99,98.2,110,4,Medication refill,None,5,0
+9486da32,47,133,29,91,102.2,173,10,Suicidal ideation,None,2,1
+9dd07245,70,173,41,79,97.6,66,7,Gunshot wound to chest,None,1,1
+62ee1422,29,82,18,94,100.8,132,8,Fever and cough for 3 days,None,3,0
+eb56127a,68,131,44,85,100.1,67,7,Cardiac arrest,None,1,1
+e17c33e1,21,109,17,96,102.1,110,10,Closed leg fracture,kaggle_images/wounds/mirrored_laseration (33).jpg,3,0
+10040025,81,80,19,98,97.0,182,1,EYE EVAL,None,2,1
+08df08e6,33,152,38,85,103.2,71,10,Severe respiratory distress,None,1,1
+70e3d11e,75,86,19,94,100.7,139,10,Closed leg fracture,kaggle_images/wounds/mirrored_laseration (42).jpg,3,0
+e531ea78,80,63,12,97,98.2,118,5,Sprained ankle,None,4,0
+fdcf1407,79,70,14,99,97.9,116,1,Sprained ankle,None,4,0
+7dc1ce34,27,91,15,99,98.6,104,4,Minor burn,None,4,0
+8d1f1803,74,67,13,98,99.5,128,1,Laceration needing stitches,None,4,0
+10014354,79,98,16,96,97.7,105,10,"Chest pain, Nausea",None,2,1
+4630415f,50,163,38,77,97.1,60,9,Unresponsive,None,1,1
+c030284e,32,86,16,97,97.9,120,3,Urinary tract infection symptoms,None,4,0
+10002930,36,88,16,100,98.2,150,6,"ETOH, Hallucinations",None,3,0
+7217d565,36,109,21,96,97.1,129,10,Fever and cough for 3 days,None,3,0
+d6b43e23,18,133,25,92,99.1,184,7,Suicidal ideation,None,2,1
+10014354,71,63,16,97,98.2,118,7,"Transfer, CVA",None,2,1
+ec63fb1a,21,154,32,77,101.3,86,8,Severe respiratory distress,None,1,1
+10007795,76,118,18,100,97.6,151,4,?INFECTION,None,3,0
+79329ae1,32,158,37,79,98.5,88,10,Massive hemorrhage,None,1,1
+ce13abfa,34,66,14,98,98.4,100,3,Urinary tract infection symptoms,None,4,0
+9bbca085,79,76,14,97,98.4,126,4,Sprained ankle,None,4,0
+e0c0b8ad,59,80,12,98,99.3,105,5,Urinary tract infection symptoms,None,4,0
+3a6085e2,82,87,20,96,97.5,124,8,Moderate abdominal pain with nausea,None,3,0
+6caaea25,40,166,34,79,102.5,69,7,Cardiac arrest,None,1,1
+6c118782,66,136,30,87,101.9,89,9,Gunshot wound to chest,None,1,1
+c5c84fa8,83,72,12,99,98.3,118,0,Medication refill,None,5,0
+344911d8,78,88,19,96,97.4,126,10,Moderate abdominal pain with nausea,None,3,0
+52d40472,45,114,20,91,102.7,199,8,Suicidal ideation,None,2,1
+4e2ab9da,56,61,13,99,99.5,110,4,"Cold symptoms, no fever",None,5,0
+5a06a4a3,68,171,41,82,98.1,74,10,Gunshot wound to chest,None,1,1
+40a022dc,65,94,17,98,99.3,113,0,Urinary tract infection symptoms,None,4,0
+72d0f7c1,52,152,30,84,99.5,67,8,Massive hemorrhage,None,1,1
+e5c83c25,49,86,20,97,99.1,135,8,Fever and cough for 3 days,None,3,0
+10020640,79,130,32,94,99.2,106,6,SOB/ABNL LABS,None,1,1
+9ae898f7,54,89,19,94,102.8,112,10,Dehydration,None,3,0
+10014354,45,73,15,98,100.2,149,10,"Abd pain, Dysuria",None,3,0
+8c0dbac5,84,86,14,99,98.1,114,4,Minor burn,None,4,0
+1cec9c5d,22,86,15,97,98.2,105,0,Minor burn,None,4,0
+2876fc36,46,115,29,90,97.9,172,10,Severe abdominal pain,None,2,0
+2eb514e7,65,79,14,99,98.4,111,3,Poison ivy rash,None,5,0
+10005866,32,76,18,99,98.0,147,10,RLQ abdominal pain,None,3,0
+61ed2df8,26,163,41,77,103.0,62,10,Unresponsive,None,1,1
+7bbff134,71,61,12,99,98.7,111,5,Suture removal,None,5,0
+4935f75c,20,166,32,81,99.9,80,8,Massive hemorrhage,None,1,1
+3ae8a9b1,45,134,24,92,100.5,196,7,"Stroke symptoms, left side weakness",None,2,1
+b1b22f8b,48,99,16,97,97.4,130,10,Moderate abdominal pain with nausea,None,3,0
+c5100faf,25,103,19,97,100.8,118,7,Dehydration,None,3,0
+404154d5,72,132,26,92,102.1,163,7,Severe abdominal pain,None,2,1
+bbb97746,48,68,16,98,97.6,107,3,Sprained ankle,None,4,0
+1f258457,74,99,16,99,98.3,101,3,Sprained ankle,None,4,0
+10002428,89,100,16,97,98.0,172,4,"s/p Fall, L Shoulder pain",None,3,0
+f6167f06,41,63,15,98,98.1,119,1,Medication refill,None,5,0
+10020306,52,95,18,97,98.9,138,0,"Cough, Dyspnea",None,2,1
+30153f24,63,105,19,95,103.2,126,8,Closed leg fracture,None,3,0
+111b92ab,54,153,42,75,103.3,73,9,Cardiac arrest,None,1,1
+715f7ec9,68,77,15,97,97.5,116,4,Minor burn,kaggle_images/wounds/mirrored_laseration (61).jpg,4,0
+10015860,19,117,20,100,98.2,107,9,R Foot pain,None,3,0
+6813329d,85,84,15,99,98.6,115,2,"Cold symptoms, no fever",None,5,0
+262a6565,54,129,29,90,97.8,160,8,Crushing chest pain radiating to jaw,None,2,0
+10014354,69,64,16,96,97.2,123,9,"Chest pain, Transfer",None,3,0
+900677e8,30,148,30,78,103.2,71,9,Massive hemorrhage,None,1,1
+0a95d1ac,68,108,16,96,99.0,137,8,Closed leg fracture,None,3,0
+d6ed167c,60,173,40,77,98.1,81,9,Massive hemorrhage,None,1,1
+8a41faf2,55,65,12,98,99.4,111,4,"Cold symptoms, no fever",None,5,0
+10014354,25,85,18,97,98.4,137,7,"Chest pain, NSTEMI, Transfer",None,2,1
+10016742,79,84,20,98,96.0,124,6,"Dyspnea, Transfer",None,2,1
+aaaad19b,74,66,15,98,98.3,111,3,"Cold symptoms, no fever",None,5,0
+a2b23b01,36,88,19,96,99.1,123,7,Dehydration,None,3,0
+7a44eb5f,59,80,12,99,98.7,113,2,Poison ivy rash,None,5,0
+4b2d379e,30,127,20,93,97.2,161,8,Severe abdominal pain,None,2,1
+19d04a69,76,85,15,99,99.1,118,1,Medication refill,None,5,0
+a7f02ad1,66,62,13,97,98.3,106,0,Urinary tract infection symptoms,None,4,0
+fc8b6729,30,84,12,99,98.2,115,5,Poison ivy rash,None,5,0
+21fb0fb2,62,96,16,94,102.8,110,9,Fever and cough for 3 days,None,3,0
+46dda097,18,85,13,98,97.9,119,5,Suture removal,None,5,0
+a5362142,39,85,15,98,97.6,111,0,Suture removal,None,5,0
+10022281,21,64,16,99,97.8,177,8,LOWER EXTREMITY PAIN,None,3,0
+2f54b39e,56,123,23,90,97.2,188,10,"Stroke symptoms, left side weakness",None,2,1
+b6096c70,38,72,14,99,97.6,121,4,Laceration needing stitches,None,4,0
+f5269cec,60,66,12,99,99.2,110,5,Poison ivy rash,None,5,0
+31ebb14b,57,75,13,98,98.6,116,5,Medication refill,None,5,0
+180e435d,83,124,21,93,101.3,165,9,Suicidal ideation,None,2,1
+d0c07114,88,88,14,98,97.8,118,2,"Cold symptoms, no fever",None,5,0
+f722f24c,36,115,21,91,102.2,172,9,"Stroke symptoms, left side weakness",None,2,1
+2430261e,77,85,13,99,97.8,118,2,Poison ivy rash,None,5,0
+99200eaf,23,157,30,79,103.5,64,7,Unresponsive,None,1,1
+4c09f55f,45,92,19,96,97.4,121,8,Dehydration,None,3,0
+2f33f103,30,97,20,94,102.5,113,10,Fever and cough for 3 days,None,3,0
+f81d5f5d,20,92,18,96,98.1,127,8,Fever and cough for 3 days,None,3,0
+93f3dbe1,87,93,21,95,99.8,110,7,Moderate abdominal pain with nausea,None,3,0
+10020740,38,86,17,98,98.1,124,10,"Psychiatric hold, Altered mental status",None,2,1
+a48b6f90,79,89,17,97,100.6,117,10,Closed leg fracture,kaggle_images/wounds/mirrored_laseration (27).jpg,3,0
+cc7aa16c,43,176,38,80,100.3,74,9,Severe respiratory distress,None,1,1
+50ed4b18,80,67,15,99,97.9,110,0,"Cold symptoms, no fever",None,5,0
+70164187,37,74,13,98,99.1,111,3,Medication refill,None,5,0
+9d85c610,38,135,35,81,98.0,75,9,Unresponsive,None,1,1
+dae0984b,80,139,22,92,99.7,186,8,Crushing chest pain radiating to jaw,None,2,1
+eaf1bf63,79,98,13,97,98.8,102,3,Laceration needing stitches,None,4,0
+86384df2,73,91,21,94,98.1,113,8,Moderate abdominal pain with nausea,None,3,0
+94111cd3,69,66,13,99,99.4,117,4,Suture removal,None,5,0
+f3310ec8,80,81,16,97,99.2,139,10,Dehydration,None,3,0
+ebf6a7a2,39,120,28,91,97.3,187,8,Severe abdominal pain,None,2,1
+f21dd557,39,155,41,76,100.3,80,7,Gunshot wound to chest,None,1,1
+c67a74e2,20,131,22,92,97.6,188,10,Crushing chest pain radiating to jaw,None,2,1
+ab54ebe8,40,139,23,93,103.3,167,7,Severe abdominal pain,None,2,1
+e0476145,47,144,40,77,99.3,61,8,Unresponsive,None,1,1
+10020944,61,75,24,91,98.0,154,9,Altered mental status,None,1,1
+6846d6f4,37,95,18,96,103.4,115,10,Fever and cough for 3 days,None,3,0
+5dba798c,41,141,31,77,97.8,87,7,Severe respiratory distress,None,1,1
+a26276fa,74,125,27,93,97.6,169,9,Severe abdominal pain,None,2,0
+07d244f4,68,100,21,96,99.9,127,9,Fever and cough for 3 days,None,3,0
+167d4dcb,53,72,17,99,98.5,109,2,Urinary tract infection symptoms,None,4,0
+ebf7d391,19,155,30,82,97.9,60,8,Cardiac arrest,None,1,1
+dad804fd,75,134,22,92,97.0,182,10,Crushing chest pain radiating to jaw,None,2,1
+41cb6b49,40,139,35,79,97.3,63,9,Cardiac arrest,None,1,1
+70f109dd,60,81,13,99,97.6,110,1,Poison ivy rash,None,5,0
+be703c4b,31,138,37,76,99.6,72,7,Massive hemorrhage,None,1,1
+1327ce0c,61,88,20,97,97.3,133,8,Fever and cough for 3 days,None,3,0
+aafea2b5,24,83,15,99,99.0,100,5,Sprained ankle,None,4,0
+59e313b3,62,74,13,99,98.3,118,1,Medication refill,None,5,0
+b2ded068,76,87,14,99,99.2,117,0,Suture removal,None,5,0
+b1de243e,65,141,34,79,98.2,86,7,Cardiac arrest,None,1,1
+59fef1a8,82,90,16,96,100.7,129,8,Fever and cough for 3 days,None,3,0
+bc8c583f,87,94,17,97,98.3,119,2,Sprained ankle,None,4,0
+1b482a20,27,130,26,92,101.5,186,10,Severe abdominal pain,None,2,1
+10010471,38,126,22,99,97.0,136,0,"Weakness, Atrial fibrillation, Transfer",None,2,1
+0374d400,81,67,12,97,98.3,102,0,Laceration needing stitches,kaggle_images/wounds/mirrored_laseration (29).jpg,4,0
+10023239,37,111,15,100,97.7,133,3,"Dehydration, Nausea, Rash",None,3,0
+2b27330f,66,100,17,97,101.6,114,8,Fever and cough for 3 days,None,3,0
+688528a2,77,120,24,93,97.8,185,8,Crushing chest pain radiating to jaw,None,2,1
+a61509d4,41,121,21,92,100.5,175,10,Suicidal ideation,None,2,1
+10020306,76,85,18,100,98.1,133,7,L Eye pain,None,3,0
+6781753f,41,68,13,98,99.3,118,4,Sprained ankle,None,4,0
+6975ba04,39,129,23,90,100.2,191,7,Crushing chest pain radiating to jaw,None,2,1
+e2ecbdf1,52,95,20,97,100.8,133,7,Closed leg fracture,None,3,0
+10003400,70,43,16,99,97.3,140,0,ELEVATED INR,None,2,1
+916bea02,40,69,14,97,98.3,114,3,Minor burn,None,4,0
+8fb917b1,41,146,39,88,103.4,83,9,Cardiac arrest,None,1,1
+10015860,56,115,18,96,98.3,178,5,R FOOT PAIN,None,3,0
+1ae8870c,72,86,19,97,99.5,113,7,Dehydration,None,3,0
+10015860,80,119,16,99,100.0,107,7,RIGHT FOOT INFECTION,None,3,0
+31f2bf2a,34,60,13,97,97.6,122,1,Laceration needing stitches,kaggle_images/wounds/mirrored_laseration (28).jpg,4,0
+563d558b,36,97,15,98,99.4,105,2,Sprained ankle,None,4,0
+f2e63c77,53,87,16,95,97.1,118,10,Dehydration,None,3,0
+05c1abfb,65,65,12,99,98.0,103,1,Minor burn,None,4,0
+8a5ef087,18,69,14,98,97.9,111,1,"Cold symptoms, no fever",None,5,0
+c6b1cf15,32,176,42,75,101.8,79,9,Gunshot wound to chest,None,1,1
+1b683ed2,38,83,12,97,97.9,122,4,Urinary tract infection symptoms,None,4,0
+d910dadc,65,103,18,95,100.7,139,9,Moderate abdominal pain with nausea,None,3,0
+e514a4d7,75,113,23,93,102.8,169,9,Crushing chest pain radiating to jaw,None,2,1
+d7c7fb24,66,113,23,91,100.4,184,8,Suicidal ideation,None,2,1
+2fbd236d,47,167,35,87,102.8,78,9,Massive hemorrhage,None,1,1
+2350e164,40,77,13,99,97.6,111,5,Medication refill,None,5,0
+a09b5bb2,72,70,14,98,98.0,116,5,Medication refill,None,5,0
+c21f869e,49,74,15,98,98.4,118,3,Poison ivy rash,None,5,0
+bf8f81a8,41,94,21,95,97.9,113,9,Moderate abdominal pain with nausea,None,3,0
+10000032,24,77,16,98,98.7,96,10,"Abdominal distention, Abd pain, LETHAGIC",None,2,1
+b83f4ac8,55,95,12,97,98.3,112,1,Laceration needing stitches,kaggle_images/wounds/mirrored_laseration (37).jpg,4,0
+48b4cb9d,47,148,30,82,99.9,78,9,Unresponsive,None,1,1
+81fb2774,69,178,43,75,103.3,85,8,Cardiac arrest,None,1,1
+c944242a,74,100,19,95,102.0,110,8,Closed leg fracture,kaggle_images/wounds/mirrored_laseration (43).jpg,3,0
+0908e1e9,28,86,19,94,101.4,126,7,Dehydration,None,3,1
+34629d01,22,159,43,85,100.8,84,9,Cardiac arrest,None,1,1
+00f1b0e1,79,162,30,83,99.8,86,10,Gunshot wound to chest,None,1,1
+9f9d3915,66,94,16,96,100.3,126,8,Fever and cough for 3 days,None,3,0
+10018328,35,74,20,96,97.7,133,3,"Syncope, Transfer",None,2,1
+10039708,52,90,18,100,97.8,70,5,Hypotension,None,1,1
+f9707004,38,101,18,95,101.4,113,9,Closed leg fracture,None,3,0
+10002930,25,102,20,100,98.9,180,5,SI,None,2,1
+10039708,88,106,18,95,98.4,131,5,"Abd pain, Transfer",None,3,0
+c38215d9,59,107,19,95,98.1,121,10,Fever and cough for 3 days,None,3,0
+815966be,68,168,35,86,99.3,61,8,Cardiac arrest,None,1,1
+f6758ca0,44,163,34,88,100.7,60,10,Gunshot wound to chest,None,1,1
+d9dc22a6,24,63,14,99,98.7,112,4,Suture removal,None,5,0
+8b3410ea,41,91,18,94,101.6,113,8,Dehydration,None,3,1
+cd8c8461,41,152,43,79,99.8,71,7,Cardiac arrest,None,1,1
+bb474f30,30,65,13,98,97.6,104,5,Laceration needing stitches,None,4,0
+bd36859d,21,135,28,91,97.8,170,10,Severe abdominal pain,None,2,1
+4255e148,60,76,15,99,99.0,116,4,Suture removal,None,5,0
+10019003,50,92,26,95,97.8,116,0,Anemia,None,2,1
+2a970f18,82,88,13,98,98.6,118,0,Sprained ankle,None,4,0
+10018423,21,84,16,97,97.9,135,3,"Chest pain, Dizziness",None,2,1
+16279eeb,74,77,13,97,99.5,112,3,Laceration needing stitches,None,4,0
+10020306,44,102,18,98,96.9,121,8,"Lower back pain, s/p Fall",None,4,0
+7f8adc03,19,138,24,92,103.3,186,9,"Stroke symptoms, left side weakness",None,2,1
+926d9170,47,135,25,90,102.4,190,9,Severe abdominal pain,None,2,1
+0566530d,68,172,34,86,102.3,62,10,Massive hemorrhage,None,1,1
+10037928,79,76,16,98,98.3,144,0,Altered mental status,None,3,0
+4ee278a8,69,161,33,88,98.6,64,7,Unresponsive,None,1,1
+0d91b384,88,72,15,99,99.0,114,3,"Cold symptoms, no fever",None,5,0
+10023239,68,75,16,99,97.8,112,7,"Presyncope, Weakness",None,3,0
+2a054fb0,78,148,34,79,98.8,77,7,Massive hemorrhage,None,1,1
+90b07801,31,105,21,96,102.6,131,9,Fever and cough for 3 days,None,3,1
+966a77e2,55,163,30,79,100.2,84,10,Severe respiratory distress,None,1,1
+7b902041,61,83,19,95,103.1,124,9,Fever and cough for 3 days,None,3,0
+10040025,72,80,20,100,98.3,198,0,Dyspnea,None,3,0
+8202c7ad,52,114,24,92,102.0,160,10,"Stroke symptoms, left side weakness",None,2,1
+31dee498,71,132,40,76,102.3,71,10,Cardiac arrest,None,1,1
+d936b3aa,32,68,15,98,98.5,111,3,Urinary tract infection symptoms,None,4,0
+4ef80663,58,139,25,93,100.3,173,7,Crushing chest pain radiating to jaw,None,2,1
+1a292e61,40,137,22,93,101.8,164,10,Crushing chest pain radiating to jaw,None,2,1
+1df2dc9f,21,86,20,96,103.5,125,10,Closed leg fracture,None,3,0
+350018f9,22,128,21,91,97.4,184,9,"Stroke symptoms, left side weakness",None,2,0
+c9925e3a,18,107,20,96,101.1,122,9,Dehydration,None,3,1
+1558acd1,54,137,44,84,100.7,76,8,Gunshot wound to chest,None,1,1
+7b9b75a1,67,90,19,97,97.7,115,10,Dehydration,None,3,0
+81600901,57,73,15,98,98.0,110,0,"Cold symptoms, no fever",None,5,0
+fb266742,84,86,12,99,97.9,102,4,Urinary tract infection symptoms,None,4,0
+eb9e7732,60,70,12,98,98.9,112,0,"Cold symptoms, no fever",None,5,0
+c6d006c1,23,64,15,98,99.0,108,1,Sprained ankle,None,4,0
+c8c1a7be,24,138,20,91,102.3,174,9,Suicidal ideation,None,2,1
+10026255,47,95,28,98,99.9,150,8,"R Leg pain, Weakness",None,3,0
+10018845,47,70,16,99,98.0,155,0,"s/p Fall, SDH",None,2,1
+23d6d98c,53,80,15,98,97.7,119,3,Medication refill,None,5,0
+10029484,58,105,18,100,98.2,138,2,Syncope,None,2,1
+6e088441,77,97,19,96,99.5,120,9,Dehydration,None,3,0
+bab8b7a5,33,66,15,98,97.8,111,4,"Cold symptoms, no fever",None,5,0
+c75755f0,25,123,27,91,98.2,166,10,Suicidal ideation,None,2,1
+477616c7,73,146,39,75,97.4,87,7,Gunshot wound to chest,None,1,1
+bfb1e612,21,131,43,80,100.6,81,8,Unresponsive,None,1,1
+ba6b86b7,82,99,19,97,98.4,124,10,Dehydration,None,3,0
+cb7e4247,56,122,26,92,99.8,195,8,Severe abdominal pain,None,2,1
+7c8b0707,43,131,26,91,100.7,197,8,Crushing chest pain radiating to jaw,None,2,1
+69b9cc77,81,66,15,97,97.9,114,5,Urinary tract infection symptoms,None,4,0
+a3eed31f,32,155,39,86,98.3,72,10,Massive hemorrhage,None,1,1
+8ae51a77,39,96,20,97,102.5,120,9,Closed leg fracture,None,3,0
+a06eb15e,86,90,18,94,99.1,112,9,Fever and cough for 3 days,None,3,0
+6f160f3a,80,85,18,96,100.3,114,8,Moderate abdominal pain with nausea,None,3,0
+10037928,70,97,32,88,99.8,176,1,ILI,None,2,1
+fc38d888,40,133,25,92,100.8,196,10,Crushing chest pain radiating to jaw,None,2,1
+10015272,31,118,18,96,97.5,100,0,PE,None,2,1
+0973071e,42,151,39,84,98.6,81,8,Gunshot wound to chest,None,1,1
+ff5c45b5,49,85,15,97,98.9,121,0,Laceration needing stitches,None,4,0
+10012853,33,77,22,100,97.5,194,8,Suprapubic pain,None,3,0
+5ba5afed,72,62,14,99,98.8,110,3,Suture removal,None,5,0
+9f2258a8,68,108,21,97,102.1,133,8,Dehydration,None,3,0
+10000032,87,70,16,97,98.4,106,0,"Abd pain, Abdominal distention",None,3,0
+a3f25f47,47,76,17,99,99.3,109,1,Urinary tract infection symptoms,None,4,0
+2c10757d,36,90,20,96,98.1,123,10,Closed leg fracture,kaggle_images/wounds/laseration (7).jpg,3,0
+b3e473d5,38,84,15,97,97.7,119,5,Minor burn,None,4,0
+10015860,40,77,18,99,97.1,154,5,"L Arm pain, L Arm swelling",None,3,0
+6ca47885,31,75,12,98,98.1,110,3,"Cold symptoms, no fever",None,5,0
+5a91f2f9,52,162,40,79,99.3,69,7,Cardiac arrest,None,1,1
+2145e858,65,105,18,94,101.6,131,7,Dehydration,None,3,0
+86b4392a,41,137,29,92,102.2,179,7,Severe abdominal pain,None,2,1
+10021487,79,114,14,96,96.7,119,5,"ABDOMINAL MASS, FEVER",None,3,0
+c02331a4,58,83,18,97,102.5,137,7,Dehydration,None,3,0
+8fd1e3f3,64,152,44,79,101.2,80,9,Severe respiratory distress,None,1,1
+64f52c59,35,176,41,83,102.4,69,7,Severe respiratory distress,None,1,1
+be1eac44,89,134,26,92,97.5,160,10,Severe abdominal pain,None,2,1
+f8d0083b,23,99,16,98,99.4,102,2,Urinary tract infection symptoms,None,4,0
+6da9dac8,45,90,18,94,103.2,126,8,Closed leg fracture,None,3,0
+10003400,82,157,18,100,98.3,115,2,"Tachycardia, Hypoxia",None,1,1
+cb2be87e,52,80,19,94,97.7,125,9,Moderate abdominal pain with nausea,None,3,0
+084e5603,27,130,23,93,103.4,186,8,Severe abdominal pain,None,2,1
+10000032,44,88,18,97,98.9,116,10,Abdominal distention,None,3,0
+b20208a8,84,99,19,94,103.0,139,7,Moderate abdominal pain with nausea,None,3,0
+b08286c9,31,93,16,99,98.6,103,4,Minor burn,None,4,0
+10009049,69,87,18,96,99.0,126,0,Chest pain,None,3,0
+73af81e6,83,134,42,79,103.4,65,10,Massive hemorrhage,None,1,1
+6008fa44,68,133,28,90,103.4,171,10,Suicidal ideation,None,2,1
+10023117,36,109,22,100,98.0,148,0,SHORTNESS OF BREATH,None,3,0
+829701c4,60,156,34,78,103.2,70,10,Unresponsive,None,1,1
+6cbcad15,29,76,13,98,97.7,128,2,Sprained ankle,None,4,0
+64d77ff1,38,112,29,93,102.6,189,7,"Stroke symptoms, left side weakness",None,2,1
+9632e32b,29,124,20,91,102.3,197,9,Suicidal ideation,None,2,0
+d58a16ae,41,75,14,99,97.7,114,5,Medication refill,None,5,0
+b4f3f79a,63,85,21,97,100.6,130,9,Fever and cough for 3 days,None,3,0
+d99bea79,32,111,29,92,101.1,199,9,"Stroke symptoms, left side weakness",None,2,1
+7e106051,19,132,36,81,102.4,71,7,Gunshot wound to chest,None,1,1
+ed3a9635,21,88,13,98,98.9,110,0,Poison ivy rash,None,5,0
+b2b13620,87,64,12,98,98.0,110,4,Medication refill,None,5,0
+2f34c33f,24,129,28,92,97.1,180,9,Severe abdominal pain,None,2,1
+1b3e0f44,36,62,15,99,97.9,116,3,Medication refill,None,5,0
+76472306,82,120,22,93,103.1,182,8,"Stroke symptoms, left side weakness",None,2,1
+2e976dde,59,99,18,95,101.3,116,7,Closed leg fracture,kaggle_images/wounds/mirrored_laseration (15).jpg,3,0
+641b669d,65,64,15,99,98.9,112,5,"Cold symptoms, no fever",None,5,0
+10005866,73,72,16,100,97.6,163,10,Right sided abdominal pain,None,3,0
+10021487,18,106,16,97,99.8,110,8,ABD PAIN,None,3,0
+657741cb,33,134,32,86,100.6,84,7,Massive hemorrhage,None,1,1
+676b2c09,38,98,21,97,101.6,134,10,Dehydration,None,3,0
+10014354,66,80,18,98,99.4,158,10,Epigastric pain,None,2,1
+5e25cdea,87,135,32,81,99.2,78,10,Gunshot wound to chest,None,1,1
+10007058,21,62,18,98,98.6,121,2,"Chest pain, Transfer",None,2,1
+3b279c36,19,116,25,90,103.3,184,8,Suicidal ideation,None,2,1
+cfc9ae8c,18,174,42,78,102.7,89,10,Massive hemorrhage,None,1,1
+f9e88143,42,158,31,88,100.2,77,9,Unresponsive,None,1,1
+65765da7,77,124,24,90,103.1,181,10,"Stroke symptoms, left side weakness",None,2,0
+9e8afa1f,42,111,29,90,101.3,174,7,Severe abdominal pain,None,2,1
+40825d5d,32,91,14,98,97.7,100,1,Minor burn,None,4,0
+14e3fc69,56,78,17,99,99.4,129,2,Minor burn,kaggle_images/wounds/mirrored_laseration (58).jpg,4,0
+7fb8628d,64,97,17,96,99.8,134,10,Moderate abdominal pain with nausea,None,3,0
+f0e42ff3,46,142,43,77,103.1,88,9,Gunshot wound to chest,None,1,1
+6ba1bc2f,69,135,34,82,99.4,60,9,Massive hemorrhage,None,1,1
+7a8fe9f9,34,117,21,93,102.3,183,10,"Stroke symptoms, left side weakness",None,2,1
+10020740,89,95,18,99,98.1,149,0,Psych eval,None,2,1
+06dc89e4,52,130,32,79,101.6,74,7,Unresponsive,None,1,1
+e17c15f2,34,80,13,99,98.9,117,4,"Cold symptoms, no fever",None,5,0
+dad02b50,78,98,18,95,101.4,125,7,Closed leg fracture,None,3,0
+c880b07c,75,65,14,99,98.3,115,1,Suture removal,None,5,0
+16124a57,87,127,22,91,103.5,196,7,"Stroke symptoms, left side weakness",None,2,1
+05cec504,41,80,13,99,98.7,114,5,Poison ivy rash,None,5,0
+10012853,69,78,16,95,96.8,186,8,Abd pain,None,3,0
+9ac191bf,40,144,30,83,102.8,76,9,Gunshot wound to chest,None,1,1
+10003400,49,86,18,100,99.9,142,5,"Hematuria, Dysuria",None,3,0
+9526f301,30,123,23,91,97.7,188,8,Crushing chest pain radiating to jaw,None,2,1
+2ac1fa4c,76,112,29,92,98.4,194,8,Suicidal ideation,None,2,1
+40c2cc34,21,70,15,98,98.4,116,2,Poison ivy rash,None,5,0
+fb065ee1,70,66,15,98,98.3,111,3,"Cold symptoms, no fever",None,5,0
+37255538,30,63,15,98,98.0,114,0,Medication refill,None,5,0
+a5aeaeff,54,140,44,78,100.5,72,7,Cardiac arrest,None,1,1
+d6c9a5e1,50,60,15,98,97.6,111,3,Suture removal,None,5,0
+10012853,19,65,18,96,97.5,218,0,Hypertension,None,3,0
+2cf7d788,45,85,17,96,98.1,136,9,Dehydration,None,3,0
+aa26131e,87,88,21,95,97.9,137,7,Moderate abdominal pain with nausea,None,3,0
+3eb54ac2,45,62,14,99,99.4,112,4,Suture removal,None,5,0
+feab7be1,20,93,19,94,101.5,122,7,Fever and cough for 3 days,None,3,1
+6d820dbd,79,74,12,98,99.1,111,4,Poison ivy rash,None,5,0
+3c1fd0c9,33,90,13,98,98.0,126,5,Urinary tract infection symptoms,None,4,0
+a3bc2816,32,99,13,97,99.3,104,5,Sprained ankle,None,4,0
+d6b9afbb,37,137,27,91,100.8,191,8,Suicidal ideation,None,2,1
+dfd552a8,64,73,15,98,97.9,119,4,Poison ivy rash,None,5,0
+10023117,77,79,20,99,97.7,100,0,"Weakness, Abnormal labs",None,2,1
+e52a2729,72,75,17,98,97.9,110,4,Urinary tract infection symptoms,None,4,0
+aa5e1969,25,117,21,93,99.2,179,9,Crushing chest pain radiating to jaw,None,2,1
+2d3dcbd4,72,87,15,99,99.2,110,2,Medication refill,None,5,0
+c70b1980,88,72,14,98,98.3,116,1,Suture removal,None,5,0
+ee3e2244,40,77,17,97,98.9,129,2,Sprained ankle,None,4,0
+6853205b,77,131,25,90,102.2,161,9,Severe abdominal pain,None,2,1
+d46ebe0a,58,79,15,99,97.7,119,1,Minor burn,kaggle_images/wounds/laseration (56).jpg,4,0
+4fc72da4,28,101,20,96,97.2,121,8,Fever and cough for 3 days,None,3,0
+e6da84b4,34,75,14,97,99.3,125,4,Urinary tract infection symptoms,None,4,0
+837d2316,65,91,19,97,100.8,115,8,Moderate abdominal pain with nausea,None,3,0
+4d875645,23,92,12,99,98.5,120,2,Sprained ankle,None,4,0
+7105b58b,71,121,20,91,101.9,173,7,"Stroke symptoms, left side weakness",None,2,1
+7a66f235,49,74,14,98,99.4,102,4,Laceration needing stitches,None,4,0
+58a52cbe,26,92,17,97,98.9,118,1,Sprained ankle,None,4,0
+732ac235,35,66,12,98,98.9,110,3,Poison ivy rash,None,5,0
+742c41e8,80,72,12,98,99.0,119,0,"Cold symptoms, no fever",None,5,0
+10000032,64,87,14,97,97.8,71,7,Hypotension,None,2,1
+e106a09d,36,88,15,97,98.1,123,1,Sprained ankle,None,4,0
+0cd386b7,81,122,20,93,97.5,180,10,Crushing chest pain radiating to jaw,None,2,1
+10005866,61,84,18,100,98.2,175,10,"Abd pain, Right sided abdominal pain",None,3,0
+1c678c7e,47,61,17,97,97.5,108,3,Urinary tract infection symptoms,None,4,0
+1eb0672d,69,91,12,97,98.7,103,5,Sprained ankle,None,4,0
+f140b279,76,114,20,90,101.5,173,10,Suicidal ideation,None,2,1
+0a330599,64,100,17,95,99.5,122,10,Moderate abdominal pain with nausea,None,3,0
+b547735a,73,93,15,97,98.5,111,5,Laceration needing stitches,None,4,0
+10040025,26,71,16,93,98.1,168,0,"Dyspnea, Productive cough",None,2,1
+10039708,20,55,16,99,96.6,159,0,Altered mental status,None,2,1
+52204ba6,36,177,32,78,99.6,83,7,Massive hemorrhage,None,1,1
+1ef4c06c,24,82,12,99,99.4,111,1,Suture removal,None,5,0
+c6668c44,56,78,15,98,98.0,116,1,Suture removal,None,5,0
+bfb72705,38,66,14,97,98.9,114,2,Laceration needing stitches,None,4,0
+ba294631,63,79,13,98,97.8,119,2,Suture removal,None,5,0
+10004720,69,106,18,99,97.0,133,7,"s/p Fall, R Wrist pain, R Wrist injury",None,3,0
+10039708,61,89,16,98,98.1,98,0,Hypotension,None,3,0
+10015860,49,120,18,96,99.6,158,8,R FOOT ULCER/CELLULITIS,None,3,0
+85fe47e6,18,87,18,97,100.3,135,8,Fever and cough for 3 days,None,3,0
+0ea3195d,41,70,17,98,98.7,122,2,Laceration needing stitches,None,4,0
+3728b29e,57,126,20,90,99.8,199,9,Severe abdominal pain,None,2,0
+c2adf929,82,74,15,98,99.1,119,1,Suture removal,None,5,0
+c9575f4f,85,99,14,98,98.3,103,3,Laceration needing stitches,None,4,0
+10040025,43,100,17,100,97.7,127,10,"Leg pain, Wound eval",None,2,1
+c3330d6b,38,93,20,95,103.0,115,8,Fever and cough for 3 days,None,3,0
+2bf2ad5f,45,89,18,94,102.3,133,10,Moderate abdominal pain with nausea,None,3,0
+216ef6ff,78,170,33,75,98.5,63,7,Severe respiratory distress,None,1,1
+10002930,53,103,18,97,97.7,137,0,SI,None,2,1
+669f7cc7,73,137,24,92,102.6,175,10,Severe abdominal pain,None,2,1
+242994e9,18,132,42,86,99.6,89,10,Massive hemorrhage,None,1,1
+5985eefc,74,75,14,98,98.1,109,1,Sprained ankle,None,4,0
+a1043269,32,88,12,99,99.2,115,3,Minor burn,None,4,0
+f10585d9,24,175,42,82,99.6,69,9,Unresponsive,None,1,1
+bbe4903e,49,107,21,94,98.5,126,10,Dehydration,None,3,0
+71aae193,73,69,15,97,98.8,103,3,Laceration needing stitches,None,4,0
+186c4893,23,118,25,90,101.0,198,7,Crushing chest pain radiating to jaw,None,2,1
+dab29e1e,62,92,17,94,103.1,133,10,Closed leg fracture,None,3,0
+1e227280,80,124,20,92,98.1,171,7,Severe abdominal pain,None,2,1
+10040025,44,77,16,97,98.3,197,0,"LEFT EYE SWELLING, REDNESS",None,3,0
+39ea7391,34,88,21,94,100.9,122,7,Moderate abdominal pain with nausea,None,3,0
+6979c21d,34,101,17,97,98.5,122,10,Closed leg fracture,None,3,0
+9db27a3d,47,145,37,77,98.9,77,9,Gunshot wound to chest,None,1,1
+8b587533,23,64,17,98,98.3,116,1,Urinary tract infection symptoms,None,4,0
+10040025,88,105,18,98,98.0,168,0,B Leg swelling,None,3,0
+05097554,51,117,25,93,102.8,174,9,Suicidal ideation,None,2,1
+946ffc49,40,150,32,87,100.8,78,10,Cardiac arrest,None,1,1
+d7227451,55,82,15,99,99.0,119,2,"Cold symptoms, no fever",None,5,0
+75e321c7,82,63,13,99,99.1,110,3,Poison ivy rash,None,5,0
+280eb369,57,95,13,97,98.2,123,3,Minor burn,None,4,0
+10010867,19,84,18,97,99.3,128,7,"Dyspnea, Transfer",None,2,1
+a648f66f,50,70,13,98,98.8,111,4,"Cold symptoms, no fever",None,5,0
+10039997,87,71,18,100,97.2,165,0,"L Weakness, Unable to ambulate",None,3,0
+2dd6c856,50,92,17,96,102.3,137,10,Dehydration,None,3,1
+1efbab1d,23,106,20,96,98.9,130,7,Dehydration,None,3,0
+2a269bcf,29,65,13,99,98.8,118,5,Poison ivy rash,None,5,0
+c5d68ae0,64,179,31,80,100.1,87,8,Unresponsive,None,1,1
+c43cb69e,86,176,30,88,103.4,73,7,Unresponsive,None,1,1
+01c2ca64,36,79,15,99,99.2,125,4,Urinary tract infection symptoms,None,4,0
+67951a7b,67,78,17,97,97.6,126,3,Laceration needing stitches,kaggle_images/wounds/mirrored_laseration (33).jpg,4,0
+15f8ea65,88,114,25,90,97.9,161,7,Severe abdominal pain,None,2,1
+f0506f5e,70,127,24,90,100.2,191,9,Crushing chest pain radiating to jaw,None,2,1
+c5e52e6e,32,78,14,99,98.9,111,2,Minor burn,kaggle_images/wounds/laseration (38).jpg,4,0
+2de27104,79,84,12,99,98.5,129,3,Sprained ankle,None,4,0
+10005866,46,63,18,99,97.9,149,10,Abd pain,None,3,0
+645f283a,45,68,13,98,97.5,119,5,"Cold symptoms, no fever",None,5,0
+1a972b8a,53,81,13,98,98.7,113,0,Poison ivy rash,None,5,0
+10014354,79,120,16,96,98.9,120,8,"Chest pain, Transfer",None,2,1
+020910db,84,101,19,95,100.9,133,9,Dehydration,None,3,0
+58f2bf09,64,164,36,82,97.9,79,8,Unresponsive,None,1,1
+c4af4ee3,34,132,29,90,103.0,181,8,Suicidal ideation,None,2,1
+05a43bc4,71,61,12,98,98.7,118,4,Medication refill,None,5,0
+b142aef1,28,92,20,97,102.9,117,9,Closed leg fracture,None,3,0
+f5b6c218,52,90,21,95,100.4,130,7,Fever and cough for 3 days,None,3,1
+10001217,79,81,16,97,99.0,160,0,LEFT HAND PAINS,None,3,0
+c47b21ad,78,79,14,99,99.0,121,3,Minor burn,None,4,0
+10015860,25,100,16,100,98.1,119,0,"L Arm numbness, L Arm swelling",None,2,1
+f6a8e3fe,56,76,13,99,97.9,108,4,Sprained ankle,None,4,0
+fba7ad70,68,80,12,99,98.1,114,0,Medication refill,None,5,0
+91e174b1,55,82,21,97,97.1,111,8,Moderate abdominal pain with nausea,None,3,1
+d2dd2158,21,66,13,98,98.0,111,0,Poison ivy rash,None,5,0
+10040025,77,122,18,98,98.5,182,2,Palpitations,None,2,1
+4844c3e4,36,111,23,93,103.0,186,10,Suicidal ideation,None,2,1
+fee5ea48,47,93,17,99,98.0,105,1,Minor burn,None,4,0
+09e74f91,31,82,12,98,97.7,117,2,Poison ivy rash,None,5,0
+95eb2df4,30,104,16,95,100.4,131,10,Closed leg fracture,None,3,0
+8e006178,84,75,12,99,97.6,114,5,Suture removal,None,5,0
+452c7bd8,26,102,20,97,100.5,129,9,Closed leg fracture,None,3,1
+fa0a5050,56,107,18,97,97.8,115,8,Dehydration,None,3,0
+80554157,61,81,13,98,99.3,116,3,Poison ivy rash,None,5,0
+c89839e8,54,103,16,94,98.0,124,7,Closed leg fracture,None,3,0
+c295559a,66,94,19,95,97.7,127,8,Moderate abdominal pain with nausea,None,3,0
+10020740,53,82,18,99,98.4,125,0,Insomnia,None,3,0
+0889080f,39,114,27,90,100.5,195,9,Crushing chest pain radiating to jaw,None,2,1
+e4944997,18,83,18,95,99.6,117,8,Fever and cough for 3 days,None,3,0
+10040025,51,78,18,96,99.4,208,7,Allergic reaction,None,2,1
+10023239,85,81,16,100,97.9,132,0,Abnormal labs,None,3,0
+8f0cfdb3,25,76,12,97,99.1,105,0,Urinary tract infection symptoms,None,4,0
+badc50ac,26,99,21,95,101.6,115,10,Dehydration,None,3,0
+4dfd54b2,31,83,19,94,102.2,116,10,Moderate abdominal pain with nausea,None,3,0
+90ad44f1,88,101,16,94,97.7,133,8,Fever and cough for 3 days,None,3,0
+9048641b,44,82,15,98,99.0,113,3,Medication refill,None,5,0
+2782ffa1,65,60,17,97,97.9,101,1,Urinary tract infection symptoms,None,4,0
+b2f4862c,50,177,41,85,101.1,78,8,Gunshot wound to chest,None,1,1
+2d63b9e6,70,131,33,86,101.4,74,10,Cardiac arrest,None,1,1
+10019385,67,55,14,97,97.9,120,0,"Chest pain, Jaw pain, L Arm pain",None,2,1
+a18f6942,74,71,13,98,97.9,111,3,"Cold symptoms, no fever",None,5,0
+83b5d6d1,52,64,14,99,98.9,113,0,Suture removal,None,5,0
+a3f21b2a,83,96,17,98,97.8,129,0,Sprained ankle,None,4,0
+00e31f27,42,80,12,98,98.2,104,2,Laceration needing stitches,None,4,0
+deccb9bd,79,176,43,77,100.3,71,10,Massive hemorrhage,None,1,1
+f4c7d8d7,20,78,13,99,97.6,112,5,Suture removal,None,5,0
+01405253,30,118,26,92,101.5,188,10,Crushing chest pain radiating to jaw,None,2,0
+1e07931b,60,69,12,99,98.8,103,1,Urinary tract infection symptoms,None,4,0
+10018081,61,67,16,96,97.4,126,0,DISLODGED ABD TUBE,None,3,0
+10023239,26,123,18,99,96.2,123,5,"Back pain, Decreased PO intake, R Ear pain",None,3,0
+edf03f4d,30,103,19,95,99.6,116,9,Closed leg fracture,None,3,0
+10037928,38,81,18,99,97.0,161,0,S/P FALL,None,2,1
+8505112a,22,114,25,93,98.7,167,8,"Stroke symptoms, left side weakness",None,2,0
+5e002069,19,174,39,88,98.6,86,9,Gunshot wound to chest,None,1,1
+10016810,69,72,18,90,98.8,98,10,Abd pain,None,2,1
+0c2bd6b2,47,72,14,98,97.9,111,5,Suture removal,None,5,0
+214897a4,65,84,14,97,97.7,104,0,Laceration needing stitches,None,4,0
+f25c9c0a,77,172,41,86,103.0,63,7,Unresponsive,None,1,1
+1720ed2a,32,134,23,92,98.3,174,7,Severe abdominal pain,None,2,0
+0c7923cd,76,81,14,97,99.0,126,3,Minor burn,None,4,0
+e78e887a,19,67,14,97,98.9,121,5,Urinary tract infection symptoms,None,4,0
+b5e0e2d2,60,100,19,94,102.7,116,9,Dehydration,None,3,1
+5d10a3aa,38,176,38,79,98.3,68,7,Severe respiratory distress,None,1,1
+14323289,52,98,17,97,99.1,121,0,Laceration needing stitches,None,4,0
+0b13a846,28,96,16,95,100.5,114,10,Fever and cough for 3 days,None,3,0
+523bc1ae,76,66,12,98,98.7,110,5,"Cold symptoms, no fever",None,5,0
+e4d2c7ad,87,117,28,91,101.2,184,9,"Stroke symptoms, left side weakness",None,2,1
+1ed47680,34,138,40,82,99.7,65,8,Cardiac arrest,None,1,1
+f17a8331,57,68,15,99,98.7,118,0,Medication refill,None,5,0
+10021938,31,110,18,93,99.8,178,10,Tachycardia,None,2,1
+27d2c9ac,64,71,12,99,97.9,116,1,Poison ivy rash,None,5,0
+d1430959,48,78,14,98,98.4,111,1,Suture removal,None,5,0
+108c86e8,58,166,35,78,100.9,85,9,Gunshot wound to chest,None,1,1
+85204fd2,66,149,35,80,100.5,87,10,Unresponsive,None,1,1
+ed699efc,71,83,14,99,99.2,117,5,"Cold symptoms, no fever",None,5,0
+a0d1c7fa,53,83,13,98,98.8,111,5,"Cold symptoms, no fever",None,5,0
+7fb97647,30,130,21,92,99.2,169,10,"Stroke symptoms, left side weakness",None,2,1
+10040025,29,77,18,96,97.1,107,0,Urinary retention,None,3,0
+766df6f6,73,99,16,99,98.8,107,1,Laceration needing stitches,None,4,0
+60599997,58,85,20,97,97.5,134,10,Closed leg fracture,kaggle_images/wounds/mirrored_laseration (27).jpg,3,0
+ae3d7d8a,68,71,15,99,98.6,118,5,Suture removal,None,5,0
+10039708,46,69,18,100,97.3,109,5,Lethargy,None,2,1
+ca177ead,36,65,13,99,97.8,118,3,Poison ivy rash,None,5,0
+5cec7116,49,74,12,99,98.7,113,3,Poison ivy rash,None,5,0
+52d31310,68,80,14,98,98.6,117,4,Poison ivy rash,None,5,0
+dbaaee48,41,140,30,82,102.8,63,10,Unresponsive,None,1,1
+10023239,32,115,20,99,97.8,92,0,"DKA, Transfer",None,2,1
+c452e09c,86,109,18,96,97.9,120,8,Moderate abdominal pain with nausea,None,3,0
+8448b0de,65,122,23,91,97.6,192,10,Severe abdominal pain,None,2,1
+4ea45d8f,43,82,14,98,97.7,118,2,Medication refill,None,5,0
+e13310a1,56,83,13,97,97.7,106,1,Sprained ankle,None,4,0
+0b8d4ce2,33,74,14,98,98.9,113,4,Poison ivy rash,None,5,0
+94f6ceac,61,92,18,97,97.9,110,9,Closed leg fracture,None,3,0
+0b010915,57,67,15,99,97.9,107,4,Minor burn,None,4,0
+b3c6587b,31,125,29,90,101.4,169,7,Suicidal ideation,None,2,0
+aa104a15,31,160,44,82,98.3,73,7,Gunshot wound to chest,None,1,1
+152d2fd0,46,81,13,99,99.3,112,2,Medication refill,None,5,0
+10000032,76,105,18,96,99.4,106,10,"n/v/d, Abd pain",None,3,0
+2ea0b9da,43,170,32,78,102.6,84,8,Severe respiratory distress,None,1,1
+4de2b0b8,33,155,39,79,99.3,66,8,Cardiac arrest,None,1,1
+d9a6a9a8,89,86,15,99,97.6,117,4,Poison ivy rash,None,5,0
+d8f18f59,40,64,17,97,98.6,129,4,Sprained ankle,None,4,0
+3b282414,55,84,17,99,99.2,110,2,Minor burn,None,4,0
+f9d2e7ab,47,85,13,99,99.5,113,1,Poison ivy rash,None,5,0
+e450a6dc,35,93,18,97,97.3,118,7,Closed leg fracture,None,3,0
+fd9e265c,25,110,25,90,97.5,198,7,Suicidal ideation,None,2,0
+59584fcc,47,96,12,99,97.9,118,5,Laceration needing stitches,None,4,0
+b572fa35,82,131,29,93,102.7,177,10,Severe abdominal pain,None,2,1
+770fc96d,27,148,39,75,101.3,83,10,Cardiac arrest,None,1,1
+dab1849e,28,81,19,97,99.3,118,8,Fever and cough for 3 days,None,3,0
+9b956cda,43,64,13,98,98.8,105,1,Minor burn,None,4,0
+fc09a467,63,91,20,97,100.6,120,9,Dehydration,None,3,0
+7d0bdec6,84,162,41,82,102.2,61,10,Massive hemorrhage,None,1,1
+b8dcb787,46,110,29,91,100.0,199,9,Suicidal ideation,None,2,1
+10037928,45,130,15,95,98.1,179,8,UNKNOWN-CC,None,2,1
+39ce2445,72,63,15,99,97.6,111,1,Poison ivy rash,None,5,0
+e903c298,88,93,16,96,102.4,137,10,Dehydration,None,3,0
+6acefe77,69,144,44,82,98.5,81,10,Massive hemorrhage,None,1,1
+18003afc,77,137,22,90,97.4,178,7,Suicidal ideation,None,2,1
+21fde8f5,54,103,16,96,103.3,128,10,Moderate abdominal pain with nausea,None,3,0
+dcc127b8,85,64,12,99,98.6,123,0,Urinary tract infection symptoms,None,4,0
+b1598bc2,40,62,13,98,99.4,124,2,Urinary tract infection symptoms,None,4,0
+73cefb21,76,116,27,92,99.6,193,10,Severe abdominal pain,None,2,1
+3bf1b087,61,67,15,99,98.5,112,5,Poison ivy rash,None,5,0
+b2c410d3,64,120,28,93,99.7,192,10,Suicidal ideation,None,2,1
+2368da6e,23,83,13,98,98.9,115,0,Poison ivy rash,None,5,0
+10026255,70,90,20,86,99.4,153,8,R RIB PAIN,None,2,1
+c6ab986f,89,129,25,90,97.3,169,7,Crushing chest pain radiating to jaw,None,2,1
+b7426556,35,78,14,99,99.1,107,0,Urinary tract infection symptoms,None,4,0
+7b3604dd,66,93,16,95,97.2,117,10,Fever and cough for 3 days,None,3,0
+157d9275,55,60,17,98,97.8,120,4,Urinary tract infection symptoms,None,4,0
+edeba237,58,86,12,99,98.7,126,1,Minor burn,None,4,0
+14c0e313,52,93,17,96,102.5,114,7,Fever and cough for 3 days,None,3,0
+4ae575d8,25,97,19,96,102.7,123,10,Closed leg fracture,kaggle_images/wounds/laseration (47).jpg,3,0
+10037928,41,105,24,96,98.2,177,10,"Abd pain, n/v/d",None,3,0
+9ead7ba5,44,66,12,99,97.5,114,4,"Cold symptoms, no fever",None,5,0
+139227ed,39,158,37,85,101.9,68,10,Unresponsive,None,1,1
+f7393c66,73,148,43,88,101.1,88,7,Gunshot wound to chest,None,1,1
+57c54aca,33,73,14,99,98.8,112,0,Medication refill,None,5,0
+e32a1145,55,159,38,76,98.9,80,10,Unresponsive,None,1,1
+b10bc7d3,19,101,16,97,99.7,123,7,Dehydration,None,3,0
+48f0cec6,64,60,12,99,97.8,125,3,Laceration needing stitches,None,4,0
+13d8f554,78,91,21,95,97.9,136,10,Fever and cough for 3 days,None,3,0
+45ff9223,18,176,31,88,101.6,81,10,Gunshot wound to chest,None,1,1
+b6d1b81c,54,140,35,76,102.3,80,7,Gunshot wound to chest,None,1,1
+c004d4db,86,68,14,98,98.9,100,2,Urinary tract infection symptoms,None,4,0
+2a2cf5a3,55,131,41,79,99.0,60,8,Massive hemorrhage,None,1,1
+2f1614ba,22,99,19,94,97.3,120,7,Fever and cough for 3 days,None,3,0
+10035631,57,100,18,91,98.7,109,7,"Abnormal labs, Weakness",None,2,1
+4d21a045,65,77,15,99,98.5,124,4,Minor burn,None,4,0
+2faa6b7f,26,88,21,96,102.7,131,7,Fever and cough for 3 days,None,3,0
+9878e591,78,62,15,98,99.1,117,1,Medication refill,None,5,0
+9fdd7470,52,79,16,98,98.7,116,0,Minor burn,None,4,0
+10018501,89,72,20,96,98.3,160,0,"Transfer, MVC",None,2,1
+33cc368e,26,91,15,97,97.7,112,0,Laceration needing stitches,None,4,0
+b053118e,88,89,16,95,102.1,134,7,Moderate abdominal pain with nausea,None,3,1
+0c9d231d,22,80,15,98,99.2,103,1,Urinary tract infection symptoms,None,4,0
+3896d245,24,120,23,93,100.9,163,8,"Stroke symptoms, left side weakness",None,2,1
+b3c53f3a,80,84,14,99,98.2,112,4,Poison ivy rash,None,5,0
+10003400,80,91,16,100,97.7,111,10,Altered mental status,None,2,1
+10014354,18,78,19,100,98.8,151,9,"Abd pain, Back pain",None,3,0
+23dd3611,41,112,21,92,100.4,196,8,Suicidal ideation,None,2,1
+10039708,28,64,18,100,98.2,94,0,Hemodialysis,None,3,0
+54c7fb22,34,92,21,97,98.0,114,7,Moderate abdominal pain with nausea,None,3,0
+4f9e0b23,75,94,17,99,98.0,127,1,Laceration needing stitches,None,4,0
+a57c85ed,51,139,26,90,99.5,172,10,"Stroke symptoms, left side weakness",None,2,1
+7162f31e,55,74,13,98,98.7,113,5,Laceration needing stitches,None,4,0
+1e0b3857,50,83,17,94,100.9,128,10,Dehydration,None,3,0
+d9658bfe,69,125,21,93,99.4,194,10,Crushing chest pain radiating to jaw,None,2,0
+3a14b607,25,176,32,88,98.7,76,10,Cardiac arrest,None,1,1
+10039997,76,112,20,100,96.5,124,0,"Depression, Anxiety",None,3,0
+3392a0de,55,142,44,78,97.8,72,10,Severe respiratory distress,None,1,1
+fd3412a9,65,70,14,98,99.0,119,0,"Cold symptoms, no fever",None,5,0
+f0dc285f,27,78,12,97,99.0,128,2,Laceration needing stitches,None,4,0
+10012853,20,77,16,97,97.4,137,8,Hematuria,None,3,0
+0616b067,80,62,13,99,99.5,110,3,Minor burn,kaggle_images/wounds/mirrored_laseration (25).jpg,4,0
+2e33f199,45,67,12,97,97.6,121,4,Laceration needing stitches,None,4,0
+217b813c,44,134,25,92,98.6,199,7,Suicidal ideation,None,2,0
+80f7c39e,87,65,15,97,97.7,102,0,Sprained ankle,None,4,0
+d736bcc5,36,94,19,95,101.6,133,7,Dehydration,None,3,0
+8ff99d84,33,155,38,78,98.7,87,7,Severe respiratory distress,None,1,1
+e0ef6398,82,85,12,98,98.3,110,4,Medication refill,None,5,0
+10039708,34,76,20,100,97.9,112,0,Wound eval,None,3,0
+79b0bc78,39,79,15,98,97.7,113,2,Poison ivy rash,None,5,0
+b49bb964,70,127,27,92,99.1,193,7,Suicidal ideation,None,2,1
+10020740,49,95,20,100,97.9,117,8,Abd pain,None,3,0
+10014354,20,83,20,98,98.3,159,9,Chest pain,None,2,1
+43a8f6b0,84,101,17,95,101.2,139,10,Dehydration,None,3,0
+5bb6d105,36,92,19,96,102.9,124,8,Closed leg fracture,None,3,0
+effe8159,32,63,16,99,98.4,108,2,Sprained ankle,None,4,0
+5b053c74,59,66,13,99,98.9,113,2,Poison ivy rash,None,5,0
+10019777,32,90,18,98,98.1,110,0,Hematemesis,None,2,1
+10012853,68,77,18,98,98.1,100,8,"Dizziness, Weakness",None,2,1
+09b86207,18,175,34,79,102.5,85,8,Gunshot wound to chest,None,1,1
+b071738e,71,107,16,96,101.5,118,8,Dehydration,None,3,1
+d92f8918,57,82,17,98,98.1,117,4,Urinary tract infection symptoms,None,4,0
+e50dcf0d,74,130,44,80,98.5,82,9,Massive hemorrhage,None,1,1
+e6cbd338,64,71,13,98,99.1,117,3,"Cold symptoms, no fever",None,5,0
+46e422fd,38,118,22,92,101.5,175,7,Crushing chest pain radiating to jaw,None,2,0
+328cb846,38,99,18,96,103.5,121,7,Closed leg fracture,None,3,0
+4bec68e9,50,74,15,98,99.4,119,2,Sprained ankle,None,4,0
+10015860,77,103,18,97,100.0,138,0,Abnormal labs,None,2,1
+88b35adc,43,109,21,94,98.2,112,7,Moderate abdominal pain with nausea,None,3,0
+ba7b98da,70,116,29,90,99.7,176,10,Suicidal ideation,None,2,1
+a9badef7,86,104,18,94,101.7,113,8,Moderate abdominal pain with nausea,None,3,0
+0d90cd2f,62,65,14,98,98.3,113,4,Urinary tract infection symptoms,None,4,0
+d5a03a3d,28,136,21,93,97.0,174,9,Suicidal ideation,None,2,1
+3747b8f8,23,74,12,98,97.8,118,4,"Cold symptoms, no fever",None,5,0
+d173c5e3,44,93,21,96,98.0,136,8,Dehydration,None,3,0
+10035631,54,99,23,78,98.2,98,0,"Dyspnea, Hypoxia",None,1,1
+bddacec3,27,95,13,97,98.7,109,5,Urinary tract infection symptoms,None,4,0
+a403ed38,62,117,26,90,100.2,191,8,Suicidal ideation,None,2,1
+90371433,41,137,22,93,99.2,185,10,Severe abdominal pain,None,2,1
+be8793ca,79,152,44,83,99.7,71,8,Gunshot wound to chest,None,1,1
+10026406,83,105,20,98,98.0,153,10,Assault,None,3,0
+2a506d63,38,77,14,98,97.7,117,0,Suture removal,None,5,0
+10004457,64,103,16,98,97.6,138,0,? AORTIC DISECTION,None,2,1
+45a3498f,28,177,30,83,100.3,87,10,Unresponsive,None,1,1
+827a4321,84,91,20,94,102.9,119,8,Fever and cough for 3 days,None,3,0
+26f83252,89,102,16,96,102.9,124,10,Moderate abdominal pain with nausea,None,3,0
+3945b780,45,136,38,82,99.2,71,10,Gunshot wound to chest,None,1,1
+10421969,62,63,15,99,98.1,115,4,"Cold symptoms, no fever",None,5,0
+10040025,54,87,15,92,98.1,160,0,"Dyspnea, Foot swelling",None,3,0
+d664a1c7,34,133,28,90,102.3,160,10,Crushing chest pain radiating to jaw,None,2,0
+10014354,71,95,16,100,98.5,158,8,Toe pain,None,3,0
+972ddaca,89,86,16,99,98.7,113,2,Urinary tract infection symptoms,None,4,0
+9df7c24c,87,96,18,94,103.1,128,8,Moderate abdominal pain with nausea,None,3,0
+4386fbdb,39,150,35,75,100.0,64,8,Severe respiratory distress,None,1,1
+e2a5acdf,34,173,41,88,98.8,88,8,Cardiac arrest,None,1,1
+f25eebff,63,92,21,96,102.6,139,10,Fever and cough for 3 days,None,3,0
+10035631,55,59,16,100,97.8,145,4,"Dyspnea, ABNORMAL LAB VALUES",None,3,0
+2cb9844c,36,114,20,90,103.2,176,9,Severe abdominal pain,None,2,0
+84e4f977,19,142,37,76,98.7,79,7,Gunshot wound to chest,None,1,1
+a9c37da2,48,118,23,91,99.1,197,8,Suicidal ideation,None,2,1
+10002428,41,109,16,100,99.4,138,0,LARYNGITIS/SOB WITH TALKING,None,3,0
+81509293,65,168,42,84,99.7,82,8,Unresponsive,None,1,1
+618376d7,82,104,20,94,101.0,126,8,Closed leg fracture,None,3,0
+10014354,41,80,18,99,97.3,138,4,"Fatigue, s/p Fall",None,2,1
+10002428,56,98,14,98,97.2,158,0,BRBPR,None,2,1
+11fcedfb,20,68,15,99,98.9,113,0,Laceration needing stitches,None,4,0
+10039708,64,76,16,100,98.2,86,0,"Abnormal labs, ETOH, Hypotension",None,1,1
+10014354,59,73,20,99,98.2,122,0,Weakness,None,3,0
+7041e0c7,77,106,17,96,102.1,128,10,Closed leg fracture,None,3,0
+fc184251,43,112,28,93,97.5,173,8,Severe abdominal pain,None,2,1
+3b7d6cc0,43,67,12,98,97.9,118,2,"Cold symptoms, no fever",None,5,0
+4820066f,79,71,13,97,98.9,112,2,Laceration needing stitches,None,4,0
+10005866,86,88,18,100,97.2,163,7,"Abd pain, N/V",None,3,0
+10002930,52,110,18,100,98.5,123,0,SI,None,2,1
+b4d75514,46,165,38,79,98.8,88,8,Massive hemorrhage,None,1,1
+1de85f3a,38,89,17,97,98.7,133,7,Moderate abdominal pain with nausea,None,3,0
+b37a99d1,35,87,15,99,98.7,118,3,"Cold symptoms, no fever",None,5,0
+65ee52cc,73,174,35,79,98.5,84,8,Massive hemorrhage,None,1,1
+10037928,62,95,18,98,36.5,150,8,"Head injury, s/p Fall",None,3,0
+34f8ccc7,74,85,12,99,97.7,112,5,Poison ivy rash,None,5,0
+9c5a2c96,65,66,12,99,98.5,115,3,Suture removal,None,5,0
+6b2affaf,66,143,44,75,101.5,80,9,Cardiac arrest,None,1,1
+10014354,78,57,18,99,98.3,161,0,"Fever, Neutropenia",None,2,1
+f19f1038,46,106,20,95,103.2,126,7,Moderate abdominal pain with nausea,None,3,0
+e022597e,68,67,13,99,98.5,113,0,Suture removal,None,5,0
+1a918f25,62,131,40,77,100.7,78,8,Gunshot wound to chest,None,1,1
+10007795,50,108,18,95,98.6,143,7,"Abd pain, Back pain",None,3,0
+a14a897c,29,89,15,99,98.1,119,4,Medication refill,None,5,0
+4b100586,22,72,14,99,99.0,116,2,Poison ivy rash,None,5,0
+0a177ea0,72,157,31,81,99.7,88,7,Cardiac arrest,None,1,1
+d0dfea6a,65,99,12,99,97.9,111,1,Urinary tract infection symptoms,None,4,0
+5b341532,52,121,25,91,100.9,170,8,"Stroke symptoms, left side weakness",None,2,0
+e040cd00,60,173,42,87,97.7,71,8,Cardiac arrest,None,1,1
+3812ff7d,29,116,21,93,101.0,172,7,Severe abdominal pain,None,2,1
+c69608d4,52,117,29,93,101.7,189,7,Crushing chest pain radiating to jaw,None,2,1
+e603989b,43,81,15,99,98.2,117,5,Sprained ankle,None,4,0
+e164be9a,80,147,39,86,99.6,61,10,Severe respiratory distress,None,1,1
+1080694d,67,138,27,92,99.8,168,7,"Stroke symptoms, left side weakness",None,2,1
+dda93d08,64,132,20,90,100.9,194,7,Crushing chest pain radiating to jaw,None,2,0
+84e1ddb1,47,70,15,99,99.1,125,4,Laceration needing stitches,None,4,0
+10023117,80,115,18,97,96.8,95,0,Chest pain,None,2,1
+00fb332f,22,162,35,75,103.4,77,7,Cardiac arrest,None,1,1
+f3404de9,81,81,13,99,99.0,116,2,Suture removal,None,5,0
+a152d527,28,129,22,92,99.3,187,8,Crushing chest pain radiating to jaw,None,2,1
+e85fc895,42,122,24,91,100.1,167,10,Crushing chest pain radiating to jaw,None,2,0
+770d097a,76,72,16,97,99.0,127,1,Minor burn,None,4,0
+0d6bc276,81,88,14,98,98.4,128,2,Urinary tract infection symptoms,None,4,0
+10002930,20,76,18,100,98.1,181,10,"Head injury, Neck pain, s/p Fall",None,3,0
+33c70c7a,51,135,34,76,98.4,72,9,Cardiac arrest,None,1,1
+10014354,45,78,19,98,97.7,158,5,"R Leg pain, R Leg swelling",None,3,0
+35341aa5,85,136,20,93,101.6,181,8,Crushing chest pain radiating to jaw,None,2,1
+10019568,51,98,22,95,98.6,148,8,"Transfer, s/p Fall",None,2,1
+265d930b,23,63,16,99,98.0,105,1,Laceration needing stitches,None,4,0
+1331f91c,25,153,44,85,101.6,78,9,Cardiac arrest,None,1,1
+dc62904e,21,97,15,99,98.0,108,3,Minor burn,None,4,0
+04d8ecb2,41,86,17,97,99.8,137,10,Fever and cough for 3 days,None,3,0
+883afe18,54,105,20,95,101.3,114,8,Closed leg fracture,None,3,0
+dd552a9e,57,64,16,98,99.1,103,3,Urinary tract infection symptoms,None,4,0
+5c81cf9a,49,163,41,82,101.4,66,8,Massive hemorrhage,None,1,1
+0cd8643e,71,94,15,99,99.3,120,3,Minor burn,kaggle_images/wounds/mirrored_laseration (27).jpg,4,0
+201380bd,84,147,38,84,101.5,81,10,Unresponsive,None,1,1
+10020187,61,95,18,97,98.4,190,0,Facial numbness,None,2,1
+c1685d5b,49,174,42,79,100.4,75,9,Cardiac arrest,None,1,1
+7d08aa86,62,128,24,93,99.9,160,10,"Stroke symptoms, left side weakness",None,2,1
+4284cefb,63,134,20,90,102.0,167,8,Suicidal ideation,None,2,1
+10014354,79,76,16,97,98.2,136,8,"R Leg pain, R Leg swelling",None,3,0
+10018081,79,100,16,98,99.1,131,0,"Wound eval, Transfer",None,2,1
+10016742,32,98,16,100,96.8,147,0,"Transfer, Abnormal EKG",None,2,1
+7b2ce0f7,21,144,35,80,100.2,76,8,Gunshot wound to chest,None,1,1
+720e8ffb,84,89,12,99,98.1,121,4,Laceration needing stitches,None,4,0
+50617b09,36,91,20,94,101.0,122,10,Dehydration,None,3,0
+d5b48356,35,93,17,99,97.5,125,3,Minor burn,None,4,0
+3287d222,41,105,18,94,99.6,116,10,Moderate abdominal pain with nausea,None,3,0
+3347c485,35,101,21,94,100.8,132,10,Closed leg fracture,None,3,0
+1191273a,35,107,16,94,98.9,138,9,Closed leg fracture,None,3,0
+6909689f,19,101,16,95,100.0,119,10,Dehydration,None,3,0
+66bb7d8d,21,133,27,91,102.2,189,9,Crushing chest pain radiating to jaw,None,2,1
+14de1913,86,176,38,76,103.1,69,8,Unresponsive,None,1,1
+d88a78bb,52,70,14,97,98.3,118,5,Urinary tract infection symptoms,None,4,0
+a2c310c3,26,89,12,98,99.3,112,1,Suture removal,None,5,0
+10023117,37,106,18,100,97.4,109,0,Dyspnea on exertion,None,3,0
+10037928,57,75,16,95,97.8,159,6,Back pain,None,3,0
+043139ab,64,80,15,99,98.3,113,0,Poison ivy rash,None,5,0
+93edf29b,21,98,12,97,97.8,126,5,Sprained ankle,None,4,0
+ca4721d5,85,76,13,98,98.6,117,3,Poison ivy rash,None,5,0
+5b661c2b,58,103,20,95,98.9,126,10,Fever and cough for 3 days,None,3,0
+f0e9e795,77,65,16,97,97.9,109,5,Minor burn,None,4,0
+14070a43,46,66,15,97,98.3,127,1,Urinary tract infection symptoms,None,4,0
+2045cc44,83,115,24,90,97.7,185,7,Severe abdominal pain,None,2,1
+10020740,88,99,16,100,98.4,111,0,Psychiatric hold,None,2,1
+9d93c50f,18,114,23,93,101.6,171,10,Crushing chest pain radiating to jaw,None,2,1
+f6e73a8c,76,136,28,90,103.0,184,10,"Stroke symptoms, left side weakness",None,2,1
+10039708,87,86,16,100,98.0,133,10,Dyspnea,None,3,0
+2e6fe025,23,128,28,90,99.0,162,8,"Stroke symptoms, left side weakness",None,2,1
+787345b0,82,89,15,99,99.5,116,5,"Cold symptoms, no fever",None,5,0
+4925e929,56,112,21,92,97.2,198,9,"Stroke symptoms, left side weakness",None,2,1
+3bfed504,83,69,16,99,98.0,124,2,Urinary tract infection symptoms,None,4,0
+19164ed8,41,132,35,79,101.7,61,8,Cardiac arrest,None,1,1
+10040025,49,83,18,98,97.1,137,5,"L Foot swelling, L Foot pain",None,3,0
+f1690906,31,81,12,99,98.3,117,2,"Cold symptoms, no fever",None,5,0
+30f1c846,30,80,17,97,98.2,115,2,Urinary tract infection symptoms,None,4,0
+a15ba3fd,60,72,12,99,98.1,118,3,"Cold symptoms, no fever",None,5,0
+ffd40aff,30,91,17,99,97.7,115,0,Laceration needing stitches,None,4,0
+92502c3d,20,91,19,95,98.6,135,10,Fever and cough for 3 days,None,3,0
+263f7fae,58,165,40,80,98.8,76,7,Cardiac arrest,None,1,1
+37fb4e56,72,162,43,78,101.6,81,7,Cardiac arrest,None,1,1
+1d6ed44a,47,164,34,79,98.5,64,8,Massive hemorrhage,None,1,1
+f5fe2967,51,170,36,78,101.5,85,7,Severe respiratory distress,None,1,1
+8d7b7125,27,95,21,96,102.5,119,8,Moderate abdominal pain with nausea,None,3,0
+b6a0e94c,53,122,26,92,98.5,190,9,Severe abdominal pain,None,2,0
+3c683b23,47,86,18,94,102.4,113,7,Closed leg fracture,None,3,0
+34c1a6f4,58,81,15,98,98.4,114,1,Suture removal,None,5,0
+10002930,52,89,16,100,97.3,106,10,Hypoglycemia,None,2,1
+2d0e0ce9,83,69,14,98,98.2,111,3,Poison ivy rash,None,5,0
+1ce04288,42,64,15,98,98.3,114,4,"Cold symptoms, no fever",None,5,0
+de5e7e6d,50,72,15,98,98.8,106,5,Urinary tract infection symptoms,None,4,0
+b645093f,68,82,17,96,102.5,118,7,Closed leg fracture,None,3,0
+0ecab52d,73,76,12,99,98.4,111,0,Suture removal,None,5,0
+10012853,79,96,16,97,98.2,189,0,"Urinary retention, Lower abdominal pain",None,3,0
+a7eeebe8,66,85,19,96,97.8,114,9,Closed leg fracture,None,3,0
+77a344a4,40,154,32,83,102.9,89,8,Cardiac arrest,None,1,1
+a884e1cf,77,111,24,93,101.2,186,10,Severe abdominal pain,None,2,1
+4b58b3eb,76,86,16,99,99.3,123,0,Urinary tract infection symptoms,None,4,0
+eb8a12f2,37,178,41,75,102.0,85,8,Cardiac arrest,None,1,1
+f057e63d,56,143,44,84,101.8,64,7,Severe respiratory distress,None,1,1
+68bde282,44,108,16,97,101.9,135,7,Closed leg fracture,None,3,0
+801a3c84,57,103,19,96,98.1,116,10,Closed leg fracture,kaggle_images/wounds/laseration (14).jpg,3,0
+10015931,62,125,22,100,97.5,122,0,"Dyspnea, Transfer",None,2,1
+3d88a242,38,89,15,98,97.9,110,1,"Cold symptoms, no fever",None,5,0
+c91e4caa,50,109,18,96,99.4,134,7,Closed leg fracture,None,3,0
+10020187,29,84,18,95,98.3,168,7,"Headache, SAH, Transfer",None,2,1
+1593d133,82,123,25,91,103.2,162,8,Severe abdominal pain,None,2,1
+f9bec1e6,71,95,12,97,97.9,114,1,Sprained ankle,None,4,0
+e50e7eba,24,131,20,93,100.9,172,8,Severe abdominal pain,None,2,1
+63643574,19,90,14,98,97.8,129,5,Sprained ankle,None,4,0
+2d5e826c,61,82,15,98,99.5,116,2,"Cold symptoms, no fever",None,5,0
+0eaeb5dd,52,98,17,97,102.4,135,9,Dehydration,None,3,0
+10015860,70,105,16,100,98.0,136,0,Foot laceration,None,3,0
+10015860,20,140,20,95,100.3,139,0,"N/V, Tachycardia",None,1,1
+60063249,35,98,21,95,103.4,127,10,Dehydration,None,3,0
+cb5a7759,82,151,33,75,103.4,66,10,Cardiac arrest,None,1,1
+10007928,19,98,15,99,97.1,102,3,VOMITING BLOOD,None,2,1
+9b0113cb,58,126,29,92,102.2,165,8,Suicidal ideation,None,2,1
+8b398f62,32,97,18,97,100.6,133,9,Fever and cough for 3 days,None,3,0
+822961fa,20,149,41,85,97.1,63,9,Severe respiratory distress,None,1,1
+c8529deb,59,86,14,99,98.5,111,5,Poison ivy rash,None,5,0
+10019003,61,96,17,96,99.1,114,0,"Weakness, GI bleed",None,2,1
+3d2e69df,33,86,12,99,98.8,114,5,Medication refill,None,5,0
+2655ddc3,85,74,14,97,98.3,100,2,Urinary tract infection symptoms,None,4,0
+10012853,31,66,14,99,97.8,165,8,Clogged foley,None,4,0
+c39ec59c,33,71,14,98,97.5,115,3,Suture removal,None,5,0
+0ca5768f,55,87,12,99,98.9,119,0,Medication refill,None,5,0
+10014354,76,100,22,98,97.4,122,0,BRBPR,None,2,1
+f03e4f52,20,176,36,88,100.5,70,7,Massive hemorrhage,None,1,1
+77e91bc5,61,133,25,93,98.8,179,8,Severe abdominal pain,None,2,1
+aa5805e8,80,84,14,97,98.4,108,1,Urinary tract infection symptoms,None,4,0
+3dcf538d,45,105,18,94,101.6,116,7,Fever and cough for 3 days,None,3,0
+10019003,77,97,16,93,98.1,117,5,"Abnormal CT, LUQ abd pain",None,2,1
+d241ef90,72,132,29,92,97.1,169,8,Crushing chest pain radiating to jaw,None,2,1
+d43f0feb,78,74,12,97,98.6,125,4,Laceration needing stitches,None,4,0
+d40345fb,63,93,19,95,99.0,115,10,Moderate abdominal pain with nausea,None,3,0
+3f8a916f,66,156,40,84,103.3,87,9,Unresponsive,None,1,1
+f2bb5700,71,73,14,99,98.2,129,3,Urinary tract infection symptoms,None,4,0
+4908fe89,76,83,18,94,103.1,118,8,Closed leg fracture,None,3,0
+10029291,40,124,32,99,98.6,105,1,"Transfer, PE",None,1,1
+10018423,68,84,16,98,98.2,142,6,Chest pain,None,2,1
+118e4837,44,74,13,99,98.0,116,2,Poison ivy rash,None,5,0
+d422c3a3,83,123,28,92,102.6,180,10,Severe abdominal pain,None,2,1
+621bc74f,84,141,39,77,97.8,64,7,Unresponsive,None,1,1
+abace2d0,23,78,16,97,98.5,127,5,Sprained ankle,None,4,0
+2bee86f5,86,69,12,99,98.6,118,5,Suture removal,None,5,0
+d890cae9,47,171,32,75,102.2,64,8,Gunshot wound to chest,None,1,1
+0e0037d8,83,81,20,95,102.0,117,10,Fever and cough for 3 days,None,3,0
+7b150231,69,104,21,96,98.9,130,9,Dehydration,None,3,0
+fefa13a2,24,67,13,99,98.6,119,5,Medication refill,None,5,0
+10002930,77,108,16,100,97.5,154,9,Psychiatric hold,None,2,1
+10015860,71,110,18,97,98.0,179,0,"Abnormal labs, Hyperglycemia",None,2,1
+1490203e,55,135,37,81,98.9,74,9,Gunshot wound to chest,None,1,1
+6122bab7,27,62,14,98,99.2,114,4,Medication refill,None,5,0
+c99ae084,70,86,13,98,98.2,116,4,Suture removal,None,5,0
+25501cdf,55,64,13,98,98.4,119,2,Medication refill,None,5,0
+10012853,21,72,16,97,97.6,173,0,"DVT, Transfer",None,2,1
+e1776f48,57,76,13,99,98.6,114,4,Sprained ankle,None,4,0
+10037928,75,96,16,94,97.6,121,7,RIGHT EAR PAIN/DRAINAGE,None,2,1
+d3f12a06,79,135,21,93,97.5,160,10,Severe abdominal pain,None,2,0
+a2c489ef,34,97,20,97,100.7,138,9,Closed leg fracture,None,3,0
+7658a1ae,82,134,24,93,98.7,165,10,Severe abdominal pain,None,2,1
+f92078c1,78,102,17,97,101.5,131,9,Dehydration,None,3,0
+e1046219,77,162,33,87,98.2,80,7,Severe respiratory distress,None,1,1
+de417a4f,52,74,16,98,99.1,117,0,Sprained ankle,None,4,0
+10005866,50,106,20,100,98.8,163,8,"Chest pain, N/V",None,2,1
+4e2760a3,29,155,42,82,97.7,89,7,Gunshot wound to chest,None,1,1
+79e3e5dd,59,72,13,98,99.3,118,5,Medication refill,None,5,0
+c3a1ad3a,72,115,22,91,103.4,174,7,Suicidal ideation,None,2,1
+66167ede,60,86,15,99,98.3,118,3,Poison ivy rash,None,5,0
+10015860,32,98,18,96,98.2,106,7,"L Leg pain, s/p Fall",None,2,1
+92ab2056,42,162,35,79,102.2,65,7,Severe respiratory distress,None,1,1
+bf7fb6c0,61,154,30,87,100.1,79,8,Unresponsive,None,1,1
+694c2ac2,29,132,28,90,103.3,178,10,Suicidal ideation,None,2,1
+fb523623,25,131,29,93,98.1,164,9,Severe abdominal pain,None,2,1
+2baadd49,43,154,41,86,98.8,87,7,Massive hemorrhage,None,1,1
+3254c42c,72,98,14,97,99.4,114,2,Laceration needing stitches,kaggle_images/wounds/mirrored_laseration (29).jpg,4,0
+10002428,82,125,22,100,98.5,111,4,"DIARRHEA,FEVER",None,2,1
+3af0daa3,20,92,18,94,102.4,139,7,Fever and cough for 3 days,None,3,0
+31c01046,60,73,15,99,97.6,118,2,Medication refill,None,5,0
+74c8bfed,89,83,12,98,97.8,111,0,Poison ivy rash,None,5,0
+cb7c425b,64,138,23,92,100.9,194,10,Severe abdominal pain,None,2,0
+10039997,50,52,17,99,97.8,134,0,"Leg weakness, Abnormal CT",None,2,1
+14d3f6e2,26,80,12,98,99.0,114,4,Medication refill,None,5,0
+757694d8,57,96,12,97,98.7,124,5,Sprained ankle,None,4,0
+329786d7,49,111,23,91,98.8,170,7,Crushing chest pain radiating to jaw,None,2,1
+ee7b9e9a,74,139,28,91,100.9,194,8,"Stroke symptoms, left side weakness",None,2,0
+4b279ef5,52,89,15,98,98.4,112,5,Suture removal,None,5,0
+a79ca275,26,81,16,97,98.6,115,3,Minor burn,None,4,0
+606c598b,61,85,13,99,99.3,117,3,Sprained ankle,None,4,0
+1f66a063,38,61,14,99,98.7,127,5,Urinary tract infection symptoms,None,4,0
+65a26e74,88,124,24,92,99.9,188,7,Suicidal ideation,None,2,1
+10040025,74,93,18,98,97.6,135,0,N/V,None,3,0
+ad71af3c,56,80,14,98,99.1,117,4,Medication refill,None,5,0
+10015931,59,82,28,98,97.8,124,0,Dyspnea,None,2,1
+10005909,79,106,18,98,98.2,121,5,L Leg DVT,None,2,1
+10016742,18,100,20,95,98.6,190,0,"Transfer, Dyspnea",None,1,1
+3f3a0625,42,124,23,90,103.3,171,10,Crushing chest pain radiating to jaw,None,2,1
+b041db1b,50,115,27,92,101.3,175,7,Crushing chest pain radiating to jaw,None,2,1
+d7cd8512,26,95,14,97,98.3,109,4,Laceration needing stitches,None,4,0
+ab83deac,18,86,15,99,98.3,116,0,Medication refill,None,5,0
+10039708,87,60,16,100,98.0,104,0,Wound eval,None,3,0
+6588add6,21,91,17,98,99.0,104,0,Minor burn,None,4,0
+ff65e76d,53,158,35,83,101.6,60,9,Severe respiratory distress,None,1,1
+69cf7758,24,89,14,98,99.3,118,5,"Cold symptoms, no fever",None,5,0
+10bfe781,79,136,21,90,100.1,185,7,Suicidal ideation,None,2,1
+7fe9e526,64,92,12,98,97.7,104,1,Minor burn,None,4,0
+7ee2302a,29,126,27,93,103.0,162,7,Severe abdominal pain,None,2,1
+5cc5f688,58,66,17,97,99.1,118,0,Minor burn,None,4,0
+02f55b5d,84,82,19,97,101.9,124,9,Fever and cough for 3 days,None,3,1
+8484f483,32,157,31,76,101.4,82,9,Massive hemorrhage,None,1,1
+66c4803c,86,88,15,98,99.3,110,4,Laceration needing stitches,None,4,0
+6a9377b7,49,175,40,78,101.3,79,7,Severe respiratory distress,None,1,1
+0b953de2,80,177,42,75,102.6,85,10,Massive hemorrhage,None,1,1
+257e5eb2,71,87,13,98,97.6,108,1,Sprained ankle,None,4,0
+10006580,75,89,18,96,98.1,131,10,"Neck pain, Med refill",None,3,0
+ebdd2094,56,100,20,94,99.6,139,8,Moderate abdominal pain with nausea,None,3,1
+c30c17f6,34,79,16,99,99.1,116,3,Laceration needing stitches,None,4,0
+10039708,19,84,17,100,98.5,116,10,L Knee pain,None,3,0
+e0425889,32,84,20,97,102.0,117,10,Closed leg fracture,None,3,0
+a00ce8b6,44,86,14,98,99.3,117,5,Medication refill,None,5,0
+9d4c8679,66,82,15,98,98.3,115,0,Suture removal,None,5,0
+a22b71cf,69,88,13,98,98.9,114,1,Medication refill,None,5,0
+28b1ed5f,39,79,16,98,99.3,129,3,Laceration needing stitches,None,4,0
+838cff38,40,88,13,99,99.3,112,0,Poison ivy rash,None,5,0
+10005866,28,82,22,100,98.0,157,10,"Abd pain, Diarrhea, Vomiting",None,2,1
+4bd85047,26,136,41,88,100.7,79,9,Massive hemorrhage,None,1,1
+f47e54be,19,97,13,98,97.8,127,3,Laceration needing stitches,None,4,0
+a5dcd041,27,106,18,94,98.5,118,7,Closed leg fracture,None,3,0
+950deb3a,62,71,13,99,99.2,112,2,Medication refill,None,5,0
+818c06ba,43,118,29,92,101.6,191,9,Suicidal ideation,None,2,1
+8568a6a3,78,64,13,97,98.4,120,2,Minor burn,None,4,0
+c654c0f1,56,63,14,99,99.0,112,4,Poison ivy rash,None,5,0
+55918479,27,62,14,97,99.2,126,4,Minor burn,None,4,0
+4f252f38,61,88,20,95,99.3,113,10,Dehydration,None,3,0
+b56999c8,68,90,20,95,101.1,123,8,Moderate abdominal pain with nausea,None,3,0
+812d3098,45,157,41,86,102.8,79,9,Gunshot wound to chest,None,1,1
+f008b448,18,145,42,81,101.0,64,9,Gunshot wound to chest,None,1,1
+82ea76cf,52,75,13,98,99.4,105,2,Sprained ankle,None,4,0
+400540b9,41,126,24,93,99.5,180,9,Severe abdominal pain,None,2,1
+10003400,76,124,16,98,98.8,136,8,Rectal pain,None,3,0
+093aac88,76,84,12,98,98.6,109,0,Minor burn,kaggle_images/wounds/mirrored_laseration (33).jpg,4,0
+cf78e13c,19,61,15,99,98.5,110,5,Medication refill,None,5,0
+f133214a,65,86,19,97,100.1,118,10,Fever and cough for 3 days,None,3,0
+9bb764ec,52,112,21,90,97.0,189,10,"Stroke symptoms, left side weakness",None,2,1
+10021938,88,89,18,97,98.4,217,5,Abd pain,None,2,1
+10015860,65,101,18,99,97.2,94,0,Dizziness,None,1,1
+10014354,23,75,18,98,99.5,180,9,Epigastric pain,None,3,0
+1c098ba1,53,164,32,78,100.4,84,7,Massive hemorrhage,None,1,1
+10001217,59,75,20,98,98.0,132,0,PICC LINE INFECTION,None,3,0
