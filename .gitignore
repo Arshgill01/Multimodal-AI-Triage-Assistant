@@ -2,3 +2,10 @@
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
+
+# Rust build artifacts
+backend/target/
+
+# Python environment
+.venv/
+*.egg-info/
