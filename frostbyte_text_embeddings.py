@@ -19,14 +19,6 @@
 # from google.colab import drive
 # drive.mount('/content/drive')
 
-# ============================================================
-# 📁 CONFIGURE THIS: set the path to your project folder on
-#    Google Drive.  Everything else is derived from this.
-# ============================================================
-BASE_DIR = "/content/drive/MyDrive/frostbyte"
-# For local testing you can override:
-# BASE_DIR = "."
-
 import os
 import warnings
 
@@ -34,6 +26,20 @@ import numpy as np
 import pandas as pd
 
 warnings.filterwarnings("ignore")
+
+# ============================================================
+# 📁 DATA DIRECTORY — auto-detects Colab vs local environment.
+#    Override with: export FROSTBYTE_DATA_DIR="/your/path"
+# ============================================================
+def _resolve_base_dir():
+    env = os.environ.get("FROSTBYTE_DATA_DIR")
+    if env:
+        return env
+    if os.path.exists("/content/drive/MyDrive/frostbyte"):
+        return "/content/drive/MyDrive/frostbyte"  # Colab
+    return "."  # Local
+
+BASE_DIR = _resolve_base_dir()
 
 print("✅ Cell 1 complete — environment ready.")
 

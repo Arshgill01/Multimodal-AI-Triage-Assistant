@@ -31,9 +31,16 @@ warnings.filterwarnings("ignore")
 # from google.colab import drive
 # drive.mount('/content/drive')
 
-BASE_DIR = "/content/drive/MyDrive/frostbyte"
-# For local testing:
-# BASE_DIR = "."
+# Auto-detect Colab vs local. Override: export FROSTBYTE_DATA_DIR="/your/path"
+def _resolve_base_dir():
+    env = os.environ.get("FROSTBYTE_DATA_DIR")
+    if env:
+        return env
+    if os.path.exists("/content/drive/MyDrive/frostbyte"):
+        return "/content/drive/MyDrive/frostbyte"  # Colab
+    return "."  # Local
+
+BASE_DIR = _resolve_base_dir()
 
 # %% — Cell 2: Load Text-Enriched Dataset
 # ============================================================
