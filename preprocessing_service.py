@@ -4,8 +4,10 @@
 FastAPI sidecar for the Rust backend. Handles ML preprocessing that
 requires HuggingFace models (no Rust equivalents exist):
 
-  POST /embed  → ClinicalBERT text embeddings + ResNet-50 image features
-  POST /rag    → ChromaDB retrieval + Gemini generation
+  POST /embed      → ClinicalBERT text embeddings + ResNet-50 image features
+  POST /shap       → Real-time per-patient SHAP explainability values
+  POST /rag        → ChromaDB retrieval + Gemini generation
+  GET  /rag-stream → Server-Sent Events streaming for Gemini RAG output
 
 Run:  uvicorn preprocessing_service:app --host 0.0.0.0 --port 8000
 """
@@ -13,9 +15,12 @@ Run:  uvicorn preprocessing_service:app --host 0.0.0.0 --port 8000
 import os
 import warnings
 
+import time
+
 import numpy as np
 import torch
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from typing import Optional, List
 
@@ -49,6 +54,10 @@ resnet_model = None
 image_pca = None
 image_preprocess = None
 device = None
+
+# SHAP + LightGBM
+lgb_model = None
+shap_explainer = None
 
 # RAG components
 chroma_collection = None
@@ -90,6 +99,21 @@ class RagResponse(BaseModel):
     recommendation: str
     similar_cases: List[SimilarCase]
 
+class ShapRequest(BaseModel):
+    feature_vector: List[float]
+    predicted_class: int
+
+class ShapFeature(BaseModel):
+    name: str
+    value: float
+    shap_value: float
+
+class ShapResponse(BaseModel):
+    base_value: float
+    features: List[ShapFeature]
+    predicted_class: int
+    prediction_label: str
+
 
 # ── Startup: Load all models ─────────────────────────────────
 
@@ -98,6 +122,7 @@ async def load_models():
     global bert_model, bert_tokenizer, text_pca, device
     global resnet_model, image_pca, image_preprocess
     global chroma_collection, gemini_model
+    global lgb_model, shap_explainer
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Device: {device}")
@@ -255,6 +280,28 @@ async def load_models():
     except Exception as e:
         print(f"⚠️  RAG setup failed: {e}")
 
+    # ---- LightGBM + SHAP (for real-time explainability) ----
+    try:
+        import joblib
+        import shap
+
+        model_path_txt = os.path.join(BASE_DIR, "triage_multimodal_model(1).txt")
+        model_path_pkl = os.path.join(BASE_DIR, "triage_multimodal_model.pkl")
+
+        if os.path.exists(model_path_pkl):
+            lgb_model = joblib.load(model_path_pkl)
+            shap_explainer = shap.TreeExplainer(lgb_model)
+            print("✅ LightGBM + SHAP explainer loaded (from .pkl)")
+        elif os.path.exists(model_path_txt):
+            import lightgbm as lgb
+            lgb_model = lgb.Booster(model_file=model_path_txt)
+            shap_explainer = shap.TreeExplainer(lgb_model)
+            print("✅ LightGBM + SHAP explainer loaded (from .txt)")
+        else:
+            print("⚠️  No LightGBM model found. /shap endpoint unavailable.")
+    except Exception as e:
+        print(f"⚠️  SHAP setup failed: {e}")
+
     print("\n🧊 Preprocessing service ready!")
 
 
@@ -405,6 +452,151 @@ Keep your response concise and actionable. Format with clear headers."""
         )
 
     return RagResponse(recommendation=recommendation, similar_cases=similar_cases)
+
+
+@app.post("/shap", response_model=ShapResponse)
+async def shap_explain(req: ShapRequest):
+    """Compute real-time SHAP values for a single patient's 22-feature vector."""
+    if shap_explainer is None:
+        raise HTTPException(status_code=503, detail="SHAP explainer not loaded.")
+
+    import shap as shap_lib
+
+    feature_names = [
+        "age", "heart_rate", "resp_rate", "spo2", "temp_f", "systolic_bp", "pain_scale",
+        "text_feat_0", "text_feat_1", "text_feat_2", "text_feat_3", "text_feat_4",
+        "text_feat_5", "text_feat_6", "text_feat_7", "text_feat_8", "text_feat_9",
+        "img_feat_0", "img_feat_1", "img_feat_2", "img_feat_3", "img_feat_4",
+    ]
+
+    esi_labels = [
+        "ESI 1 (Resuscitation)", "ESI 2 (Emergent)", "ESI 3 (Urgent)",
+        "ESI 4 (Less Urgent)", "ESI 5 (Non-Urgent)",
+    ]
+
+    features = np.array(req.feature_vector).reshape(1, -1)
+    shap_values = shap_explainer.shap_values(features)
+
+    # SHAP output: list of arrays (one per class) or 3D array
+    cls = req.predicted_class  # 0-indexed
+    if isinstance(shap_values, list):
+        sv = shap_values[cls][0]  # (n_features,)
+        base = float(shap_explainer.expected_value[cls])
+    else:
+        sv = shap_values[0, :, cls]
+        base = float(shap_explainer.expected_value[cls])
+
+    shap_features = []
+    for i, name in enumerate(feature_names):
+        shap_features.append(ShapFeature(
+            name=name,
+            value=round(float(features[0, i]), 4),
+            shap_value=round(float(sv[i]), 6),
+        ))
+
+    # Sort by absolute SHAP value (most impactful first)
+    shap_features.sort(key=lambda f: abs(f.shap_value), reverse=True)
+
+    return ShapResponse(
+        base_value=round(base, 6),
+        features=shap_features,
+        predicted_class=cls,
+        prediction_label=esi_labels[cls] if cls < len(esi_labels) else "Unknown",
+    )
+
+
+@app.post("/rag-stream")
+async def rag_stream(req: RagRequest):
+    """SSE streaming endpoint — streams Gemini RAG response token by token."""
+    if chroma_collection is None:
+        raise HTTPException(status_code=503, detail="ChromaDB not initialized.")
+    if gemini_model is None:
+        raise HTTPException(status_code=503, detail="Gemini not configured.")
+
+    # ── Retrieve similar patients (same as /rag) ──
+    with torch.no_grad():
+        tokens = bert_tokenizer(
+            [req.complaint], padding=True, truncation=True,
+            max_length=64, return_tensors="pt",
+        ).to(device)
+        outputs = bert_model(**tokens)
+        query_emb = outputs.last_hidden_state[:, 0, :].cpu().numpy().flatten()
+
+    results = chroma_collection.query(
+        query_embeddings=[query_emb.tolist()],
+        n_results=5,
+        include=["documents", "metadatas", "distances"],
+    )
+
+    # Build context
+    context_lines = []
+    similar_cases_json = []
+    for i in range(len(results["ids"][0])):
+        meta = results["metadatas"][0][i]
+        complaint = results["documents"][0][i]
+        similarity = 1 - results["distances"][0][i]
+        similar_cases_json.append({
+            "complaint": complaint,
+            "target_esi": meta["target_esi"],
+            "similarity": round(similarity, 4),
+        })
+        context_lines.append(
+            f"Historical Patient {i+1}:\n"
+            f'  Complaint: "{complaint}"\n'
+            f"  Vitals: HR={meta['heart_rate']}, RR={meta['resp_rate']}, "
+            f"SpO2={meta['spo2']}%, Temp={meta['temp_f']}°F, "
+            f"SBP={meta['systolic_bp']}, Pain={meta['pain_scale']}/10\n"
+            f"  ESI Level: {meta['target_esi']}\n"
+        )
+
+    v = req.vitals
+    prompt = f"""You are a clinical decision support assistant for emergency department triage.
+You provide evidence-grounded suggestions based ONLY on similar historical patient cases.
+
+CRITICAL SAFETY RULES:
+- NEVER prescribe specific medications or dosages
+- NEVER make definitive diagnoses
+- ALWAYS recommend physician confirmation
+
+SIMILAR HISTORICAL CASES FROM OUR DATABASE:
+{chr(10).join(context_lines)}
+
+NEW PATIENT PRESENTING NOW:
+  Chief Complaint: "{req.complaint}"
+  Age: {v.age}
+  Vitals: HR={v.heart_rate}, RR={v.resp_rate}, SpO2={v.spo2}%,
+          Temp={v.temp_f}°F, SBP={v.systolic_bp}, Pain={v.pain_scale}/10
+  AI Triage Prediction: ESI {req.predicted_esi}
+
+Based ONLY on the similar historical cases above, provide:
+1. IMMEDIATE TRIAGE ACTIONS (what should happen in the next 5 minutes)
+2. RECOMMENDED ASSESSMENTS (tests/evaluations to consider)
+3. CLINICAL REASONING (why these actions, based on the similar cases)
+
+Keep your response concise and actionable. Format with clear headers."""
+
+    import json
+
+    async def event_generator():
+        # First, send similar cases as a JSON event
+        yield f"data: {json.dumps({'type': 'cases', 'similar_cases': similar_cases_json})}\n\n"
+
+        # Then stream Gemini response
+        try:
+            response = gemini_model.generate_content(prompt, stream=True)
+            for chunk in response:
+                if chunk.text:
+                    yield f"data: {json.dumps({'type': 'token', 'content': chunk.text})}\n\n"
+        except Exception as e:
+            yield f"data: {json.dumps({'type': 'error', 'content': str(e)})}\n\n"
+
+        yield f"data: {json.dumps({'type': 'done'})}\n\n"
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "Connection": "keep-alive"},
+    )
 
 
 # ── Main ──────────────────────────────────────────────────────

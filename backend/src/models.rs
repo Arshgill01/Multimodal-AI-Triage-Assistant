@@ -25,6 +25,9 @@ pub struct PredictResponse {
     pub esi_label: String,
     pub probabilities: Vec<f64>,
     pub feature_vector: Vec<f64>,
+    /// Real-time SHAP explainability (None if SHAP service unavailable)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shap: Option<ShapExplanation>,
 }
 
 // ─── /next-steps Response ────────────────────────────────────
@@ -61,6 +64,30 @@ pub struct EmbedRequest {
 pub struct EmbedResponse {
     pub text_features: Vec<f64>,
     pub image_features: Vec<f64>,
+}
+
+/// Request sent to `POST /shap` on the Python service.
+#[derive(Debug, Serialize)]
+pub struct ShapRequest {
+    pub feature_vector: Vec<f64>,
+    pub predicted_class: u8,
+}
+
+/// Per-feature SHAP contribution.
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct ShapFeature {
+    pub name: String,
+    pub value: f64,
+    pub shap_value: f64,
+}
+
+/// Full SHAP explanation for a single prediction.
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct ShapExplanation {
+    pub base_value: f64,
+    pub features: Vec<ShapFeature>,
+    pub predicted_class: u8,
+    pub prediction_label: String,
 }
 
 /// Request sent to `POST /rag` on the Python service.

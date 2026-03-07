@@ -3,7 +3,8 @@ use std::sync::Arc;
 use axum::{extract::State, http::StatusCode, Json};
 
 use crate::models::{
-    EmbedRequest, EmbedResponse, PatientRequest, PredictResponse, ESI_LABELS,
+    EmbedRequest, EmbedResponse, PatientRequest, PredictResponse,
+    ShapExplanation, ShapRequest, ESI_LABELS,
 };
 use crate::state::AppState;
 
@@ -14,7 +15,8 @@ use crate::state::AppState;
 ///   2. Call Python `/embed` for ClinicalBERT (10) + ResNet-50 (5) features
 ///   3. Concatenate into a 22-feature vector
 ///   4. Run LightGBM inference via FFI
-///   5. Return ESI prediction + class probabilities
+///   5. Call Python `/shap` for real-time explainability
+///   6. Return ESI prediction + probabilities + SHAP values
 pub async fn predict(
     State(state): State<Arc<AppState>>,
     Json(patient): Json<PatientRequest>,
@@ -80,38 +82,38 @@ pub async fn predict(
     }
 
     // ── Step 4: LightGBM inference via FFI ────────────────────
-    let booster_mutex = state.booster.as_ref().ok_or_else(|| {
-        (
-            StatusCode::SERVICE_UNAVAILABLE,
-            "LightGBM model not loaded. Set FROSTBYTE_MODEL_PATH.".to_string(),
-        )
-    })?;
-
-    let booster_guard = booster_mutex.lock().map_err(|e| {
-        (
-            StatusCode::INTERNAL_SERVER_ERROR,
-            format!("Model lock poisoned: {}", e),
-        )
-    })?;
-
-    // Access the inner Booster through the SendBooster wrapper
-    let booster = &booster_guard.0;
-
-    // predict_with_params returns Vec<f64> — for multiclass, this is
-    // [p_class0, p_class1, ..., p_class4] flattened.
-    let raw_preds = booster
-        .predict_with_params(
-            &feature_vector,
-            22, // n_features
-            true,
-            "num_threads=1",
-        )
-        .map_err(|e| {
+    // Scope the MutexGuard so it's dropped before any .await calls
+    let raw_preds = {
+        let booster_mutex = state.booster.as_ref().ok_or_else(|| {
             (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                format!("LightGBM prediction failed: {:?}", e),
+                StatusCode::SERVICE_UNAVAILABLE,
+                "LightGBM model not loaded. Set FROSTBYTE_MODEL_PATH.".to_string(),
             )
         })?;
+
+        let booster_guard = booster_mutex.lock().map_err(|e| {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                format!("Model lock poisoned: {}", e),
+            )
+        })?;
+
+        let booster = &booster_guard.0;
+
+        booster
+            .predict_with_params(
+                &feature_vector,
+                22,
+                true,
+                "num_threads=1",
+            )
+            .map_err(|e| {
+                (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    format!("LightGBM prediction failed: {:?}", e),
+                )
+            })?
+    }; // MutexGuard dropped here — safe to .await below
 
     // ── Step 5: Parse output ──────────────────────────────────
     // LightGBM multiclass returns probabilities for each class
@@ -131,10 +133,49 @@ pub async fn predict(
         .unwrap_or(&"Unknown")
         .to_string();
 
+    // ── Step 6: Real-time SHAP explainability ─────────────────
+    let shap = fetch_shap_values(
+        &state,
+        &feature_vector,
+        predicted_class as u8,
+    )
+    .await;
+
     Ok(Json(PredictResponse {
         predicted_esi,
         esi_label,
         probabilities,
         feature_vector,
+        shap,
     }))
 }
+
+/// Fetch SHAP values from the Python service. Returns None on any failure
+/// (graceful degradation — prediction still works without SHAP).
+async fn fetch_shap_values(
+    state: &AppState,
+    feature_vector: &[f64],
+    predicted_class: u8,
+) -> Option<ShapExplanation> {
+    let shap_url = format!("{}/shap", state.python_service_url);
+    let shap_req = ShapRequest {
+        feature_vector: feature_vector.to_vec(),
+        predicted_class,
+    };
+
+    let resp = state
+        .http_client
+        .post(&shap_url)
+        .json(&shap_req)
+        .send()
+        .await
+        .ok()?;
+
+    if !resp.status().is_success() {
+        tracing::warn!("SHAP service returned {}", resp.status());
+        return None;
+    }
+
+    resp.json::<ShapExplanation>().await.ok()
+}
+
