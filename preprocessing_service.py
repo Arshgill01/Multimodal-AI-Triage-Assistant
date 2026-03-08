@@ -585,11 +585,17 @@ NEW PATIENT PRESENTING NOW:
   AI Triage Prediction: ESI {req.predicted_esi}
 
 Based ONLY on the similar historical cases above, provide:
-1. IMMEDIATE TRIAGE ACTIONS (what should happen in the next 5 minutes)
-2. RECOMMENDED ASSESSMENTS (tests/evaluations to consider)
-3. CLINICAL REASONING (why these actions, based on the similar cases)
+1. IMMEDIATE TRIAGE ACTIONS 
+2. RECOMMENDED ASSESSMENTS
+3. CLINICAL REASONING 
 
-Keep your response concise and actionable. Format with clear headers."""
+STRICT FORMATTING RULES:
+- NEVER write long paragraphs.
+- ALWAYS use bulleted lists (`-`) for every point.
+- Keep bullet points to 1-2 sentences maximum.
+- Use bold text (`**`) to emphasize key medical terms.
+- Use horizontal rules (`---`) between the three main sections.
+Keep your response concise, structured, and highly readable."""
 
     import json
 

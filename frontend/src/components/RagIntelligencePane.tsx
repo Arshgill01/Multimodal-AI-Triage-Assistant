@@ -125,20 +125,22 @@ export default function RagIntelligencePane() {
             </div>
 
             {/* RAG Markdown Stream */}
-            <div className="flex-1 overflow-y-auto flex flex-col min-h-0">
-                <h3 className="text-[10px] tracking-widest uppercase text-[var(--color-text-secondary)] mb-3 flex justify-between items-center">
+            <div className="flex-[2] flex flex-col min-h-0 relative">
+                <h3 className="text-[10px] tracking-widest uppercase text-[var(--color-text-secondary)] mb-2 flex justify-between items-center shrink-0">
                     <div className="flex items-center gap-2">
                         <BrainCircuit size={12} /> Clinical Action Plan
                     </div>
                     {isStreaming && <span className="text-[#00e5ff] animate-pulse">Streaming...</span>}
                 </h3>
 
-                <div className="flex-1 overflow-y-auto w-full pr-2 text-sm leading-relaxed
-                                prose prose-invert prose-p:text-[var(--color-text-secondary)] 
-                                prose-headings:text-[var(--color-text-primary)] prose-headings:font-semibold
-                                prose-strong:text-[#00e5ff] prose-li:text-[var(--color-text-secondary)]">
+                <div className="flex-1 overflow-y-auto pr-3 text-sm leading-relaxed
+                                prose prose-invert max-w-none 
+                                prose-p:text-[var(--color-text-secondary)] prose-p:my-2
+                                prose-ul:my-2 prose-ul:pl-4 prose-li:my-1
+                                prose-headings:text-[var(--color-text-primary)] prose-headings:font-bold prose-headings:text-sm prose-headings:mt-4 prose-headings:mb-2
+                                prose-strong:text-[#00e5ff] prose-li:text-[var(--color-text-secondary)] prose-hr:border-[var(--color-obsidian-border)] prose-hr:my-4">
                     <ReactMarkdown>{ragStream}</ReactMarkdown>
-                    {isStreaming && <span className="inline-block w-2 h-4 ml-1 bg-[#00e5ff] animate-pulse" />}
+                    {isStreaming && <span className="inline-block w-2 h-4 ml-1 mt-1 align-middle bg-[#00e5ff] animate-[pulse_1s_infinite]" />}
                 </div>
             </div>
         </div>
