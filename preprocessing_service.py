@@ -21,6 +21,7 @@ import numpy as np
 import torch
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import StreamingResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List
 
@@ -43,6 +44,14 @@ app = FastAPI(
     title="Frostbyte Preprocessing Service",
     description="ClinicalBERT + ResNet-50 embedding extraction and RAG pipeline",
     version="0.1.0",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # ── Global model state (loaded once at startup) ──────────────
@@ -283,20 +292,27 @@ async def load_models():
     # ---- LightGBM + SHAP (for real-time explainability) ----
     try:
         import joblib
+        import pandas as pd
+        try:
+            # Fix for older shap versions with newer pandas
+            if not hasattr(pd.core.strings, 'StringMethods'):
+                pd.core.strings.StringMethods = pd.core.strings.accessor.StringMethods
+        except Exception:
+            pass
         import shap
 
         model_path_txt = os.path.join(BASE_DIR, "triage_multimodal_model(1).txt")
         model_path_pkl = os.path.join(BASE_DIR, "triage_multimodal_model.pkl")
 
-        if os.path.exists(model_path_pkl):
-            lgb_model = joblib.load(model_path_pkl)
-            shap_explainer = shap.TreeExplainer(lgb_model)
-            print("✅ LightGBM + SHAP explainer loaded (from .pkl)")
-        elif os.path.exists(model_path_txt):
+        if os.path.exists(model_path_txt):
             import lightgbm as lgb
             lgb_model = lgb.Booster(model_file=model_path_txt)
             shap_explainer = shap.TreeExplainer(lgb_model)
             print("✅ LightGBM + SHAP explainer loaded (from .txt)")
+        elif os.path.exists(model_path_pkl):
+            lgb_model = joblib.load(model_path_pkl)
+            shap_explainer = shap.TreeExplainer(lgb_model)
+            print("✅ LightGBM + SHAP explainer loaded (from .pkl)")
         else:
             print("⚠️  No LightGBM model found. /shap endpoint unavailable.")
     except Exception as e:
@@ -579,18 +595,19 @@ Keep your response concise and actionable. Format with clear headers."""
 
     async def event_generator():
         # First, send similar cases as a JSON event
-        yield f"data: {json.dumps({'type': 'cases', 'similar_cases': similar_cases_json})}\n\n"
+        yield f"data: {json.dumps({'similar_cases': similar_cases_json})}\n\n"
 
         # Then stream Gemini response
         try:
             response = gemini_model.generate_content(prompt, stream=True)
             for chunk in response:
                 if chunk.text:
-                    yield f"data: {json.dumps({'type': 'token', 'content': chunk.text})}\n\n"
+                    yield f"data: {json.dumps({'token': chunk.text})}\n\n"
         except Exception as e:
-            yield f"data: {json.dumps({'type': 'error', 'content': str(e)})}\n\n"
+            err_msg = f"\n\n**Error:** {str(e)}"
+            yield f"data: {json.dumps({'token': err_msg})}\n\n"
 
-        yield f"data: {json.dumps({'type': 'done'})}\n\n"
+        yield "data: [DONE]\n\n"
 
     return StreamingResponse(
         event_generator(),
