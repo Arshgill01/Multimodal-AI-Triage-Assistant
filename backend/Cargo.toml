@@ -23,3 +23,11 @@ reqwest = { version = "0.12", features = ["json"] }
 # Logging
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Audit trail — SQLite for decision logging
+rusqlite = { version = "0.34", features = ["bundled"] }
+
+# Timestamps + UUIDs for audit entries
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1", features = ["v4"] }
+

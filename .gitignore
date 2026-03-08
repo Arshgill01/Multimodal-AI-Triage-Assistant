@@ -6,6 +6,9 @@ __pycache__/
 # Rust build artifacts
 backend/target/
 
+# SQLite audit trail (local state)
+*.db
+
 # Python environment
 .venv/
 *.egg-info/
