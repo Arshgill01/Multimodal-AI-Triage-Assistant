@@ -1,0 +1,64 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --color-obsidian-bg: #070709;
+  --color-obsidian-panel: rgba(255, 255, 255, 0.03);
+  --color-obsidian-border: rgba(255, 255, 255, 0.08);
+
+  /* ESI Colors */
+  --color-esi-1: #ff2a2a;
+  /* Resuscitation (Crimson) */
+  --color-esi-2: #ff9100;
+  /* Emergent (Orange) */
+  --color-esi-3: #ffb300;
+  /* Urgent (Amber) */
+  --color-esi-4: #00e5ff;
+  /* Less Urgent (Cyan) */
+  --color-esi-5: #2979ff;
+  /* Non-Urgent (Blue) */
+
+  --color-text-primary: rgba(255, 255, 255, 0.95);
+  --color-text-secondary: rgba(255, 255, 255, 0.6);
+  --color-text-muted: rgba(255, 255, 255, 0.3);
+
+  --font-inter: var(--font-inter);
+}
+
+@layer base {
+  body {
+    background-color: var(--color-obsidian-bg);
+    color: var(--color-text-primary);
+    overflow: hidden;
+    /* No scrolling in the HUD */
+    font-family: var(--font-inter), system-ui, sans-serif;
+  }
+}
+
+/* Custom Glassmorphism Utility */
+@layer utilities {
+  .glass-panel {
+    background-color: var(--color-obsidian-panel);
+    border: 1px solid var(--color-obsidian-border);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+}
+
+/* Custom Webkit scrollbar for panels if needed internally */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
