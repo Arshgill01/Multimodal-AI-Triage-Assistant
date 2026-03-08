@@ -2,10 +2,12 @@
 //
 // High-performance Axum server that:
 //   1. Loads the LightGBM multimodal model via FFI
-//   2. Accepts patient JSON on /predict
+//   2. Accepts patient JSON on /predict (single) and /batch-predict (mass casualty)
 //   3. Calls Python microservice for BERT/ResNet preprocessing
 //   4. Runs native LightGBM inference in Rust memory
-//   5. Returns ESI prediction + probabilities
+//   5. Computes confidence/uncertainty metrics
+//   6. Logs every decision to an SQLite audit trail
+//   7. Returns ESI prediction + probabilities + SHAP + confidence
 
 mod models;
 mod routes;
@@ -35,16 +37,27 @@ async fn main() {
     let python_service_url = std::env::var("FROSTBYTE_PYTHON_URL")
         .unwrap_or_else(|_| "http://localhost:8000".to_string());
 
-    tracing::info!("Loading LightGBM model from: {}", model_path);
+    let audit_db_path = std::env::var("FROSTBYTE_AUDIT_DB")
+        .unwrap_or_else(|_| "../frostbyte_audit.db".to_string());
 
-    let state = match AppState::new(&model_path, &python_service_url) {
+    tracing::info!("Loading LightGBM model from: {}", model_path);
+    tracing::info!("Audit trail DB: {}", audit_db_path);
+
+    let state = match AppState::new(&model_path, &python_service_url, &audit_db_path) {
         Ok(s) => {
             tracing::info!("✅ LightGBM model loaded successfully");
+            tracing::info!("✅ Audit trail initialized");
             Arc::new(s)
         }
         Err(e) => {
             tracing::warn!("⚠️  Could not load LightGBM model: {}. Starting in degraded mode.", e);
-            Arc::new(AppState::degraded(&python_service_url))
+            match AppState::degraded(&python_service_url, &audit_db_path) {
+                Ok(s) => Arc::new(s),
+                Err(e2) => {
+                    tracing::error!("Fatal: Could not initialize state: {}", e2);
+                    std::process::exit(1);
+                }
+            }
         }
     };
 

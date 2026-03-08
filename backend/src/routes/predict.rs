@@ -3,7 +3,7 @@ use std::sync::Arc;
 use axum::{extract::State, http::StatusCode, Json};
 
 use crate::models::{
-    EmbedRequest, EmbedResponse, PatientRequest, PredictResponse,
+    ConfidenceMetrics, EmbedRequest, EmbedResponse, PatientRequest, PredictResponse,
     ShapExplanation, ShapRequest, ESI_LABELS,
 };
 use crate::state::AppState;
@@ -15,8 +15,9 @@ use crate::state::AppState;
 ///   2. Call Python `/embed` for ClinicalBERT (10) + ResNet-50 (5) features
 ///   3. Concatenate into a 22-feature vector
 ///   4. Run LightGBM inference via FFI
-///   5. Call Python `/shap` for real-time explainability
-///   6. Return ESI prediction + probabilities + SHAP values
+///   5. Compute confidence / uncertainty metrics
+///   6. Call Python `/shap` for real-time explainability
+///   7. Return ESI prediction + probabilities + confidence + SHAP values
 pub async fn predict(
     State(state): State<Arc<AppState>>,
     Json(patient): Json<PatientRequest>,
@@ -141,13 +142,59 @@ pub async fn predict(
     )
     .await;
 
+    // ── Step 7: Confidence / uncertainty quantification ───────
+    let confidence = ConfidenceMetrics::from_probabilities(&probabilities);
+
+    // ── Step 8: Audit trail logging ──────────────────────────
+    let top_shap_drivers: Vec<String> = shap
+        .as_ref()
+        .map(|s| {
+            s.features
+                .iter()
+                .take(3)
+                .map(|f| format!("{}={:.4}", f.name, f.shap_value))
+                .collect()
+        })
+        .unwrap_or_default();
+
+    // Simple hash from complaint + vitals for patient deduplication
+    let patient_hash = format!(
+        "{:x}",
+        md5_hash(&format!(
+            "{}|{}|{}|{}",
+            patient.chief_complaint, patient.age, patient.heart_rate, patient.spo2
+        ))
+    );
+
+    if let Err(e) = state.log_decision(
+        &patient_hash,
+        &patient.chief_complaint,
+        predicted_esi,
+        confidence.top_probability,
+        confidence.is_uncertain,
+        &top_shap_drivers,
+    ) {
+        tracing::warn!("Audit log failed: {}", e);
+    }
+
     Ok(Json(PredictResponse {
         predicted_esi,
         esi_label,
         probabilities,
+        confidence,
         feature_vector,
         shap,
     }))
+}
+
+/// Simple hash function (FNV-like) for patient deduplication.
+fn md5_hash(input: &str) -> u64 {
+    let mut hash: u64 = 0xcbf29ce484222325;
+    for byte in input.bytes() {
+        hash ^= byte as u64;
+        hash = hash.wrapping_mul(0x100000001b3);
+    }
+    hash
 }
 
 /// Fetch SHAP values from the Python service. Returns None on any failure
