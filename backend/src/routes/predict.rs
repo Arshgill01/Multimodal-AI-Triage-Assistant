@@ -184,6 +184,7 @@ pub async fn predict(
         confidence,
         feature_vector,
         shap,
+        audit_id: patient_hash,
     }))
 }
 

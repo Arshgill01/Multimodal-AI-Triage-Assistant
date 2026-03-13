@@ -29,6 +29,8 @@ pub struct PredictResponse {
     /// Real-time SHAP explainability (None if SHAP service unavailable)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shap: Option<ShapExplanation>,
+    /// The SQLite audit log ID for this prediction (used for clinician overrides)
+    pub audit_id: String,
 }
 
 /// Confidence / uncertainty quantification derived from class probabilities.

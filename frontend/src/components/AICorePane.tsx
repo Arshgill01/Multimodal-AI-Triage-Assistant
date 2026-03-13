@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppStore } from "@/lib/store";
 import ShapWaterfall from "./ShapWaterfall";
+import OverrideModal from "./OverrideModal";
 
 const SEQUENCE_PHASES = {
     idle: "Awaiting Telemetry...",
@@ -114,6 +115,9 @@ export default function AICorePane() {
                                     {prediction.confidence.is_uncertain && <span>! MANUAL REVIEW RECOMMENDED</span>}
                                 </motion.div>
                             )}
+                            
+                            {/* Human-in-the-Loop Override */}
+                            <OverrideModal />
                         </motion.div>
                     )}
                 </AnimatePresence>
