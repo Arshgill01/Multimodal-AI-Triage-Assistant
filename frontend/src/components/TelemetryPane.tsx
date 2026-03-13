@@ -1,5 +1,6 @@
 import { useAppStore } from "@/lib/store";
 import VitalSlider from "./VitalSlider";
+import ImageDropzone from "./ImageDropzone";
 import { Terminal } from "lucide-react";
 
 export default function TelemetryPane() {
@@ -126,8 +127,8 @@ export default function TelemetryPane() {
                     className="w-full bg-[rgba(0,0,0,0.3)] border border-[var(--color-obsidian-border)] rounded-lg p-3 text-sm font-mono text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-text-secondary)] transition-colors h-24 resize-none"
                     value={patientData.chief_complaint}
                     onChange={(e) => updatePatient("chief_complaint", e.target.value)}
-                    placeholder="> Enter patient reported symptoms..."
-                />
+                    />
+                <ImageDropzone />
             </div>
 
             {/* Primary Action Button */}

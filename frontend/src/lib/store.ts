@@ -12,6 +12,7 @@ interface PatientState {
     systolic_bp: number;
     pain_scale: number;
     chief_complaint: string;
+    image_base64?: string;
 }
 
 interface AppState {
@@ -46,6 +47,7 @@ const defaultPatient: PatientState = {
     systolic_bp: 120,
     pain_scale: 0,
     chief_complaint: "",
+    image_base64: undefined,
 };
 
 export const useAppStore = create<AppState>((set) => ({

@@ -36,7 +36,7 @@ pub async fn predict(
     // ── Step 2: Get text + image embeddings from Python ───────
     let embed_req = EmbedRequest {
         complaint: patient.chief_complaint.clone(),
-        image_path: patient.image_path.clone(),
+        image_base64: patient.image_base64.clone(),
     };
 
     let embed_url = format!("{}/embed", state.python_service_url);

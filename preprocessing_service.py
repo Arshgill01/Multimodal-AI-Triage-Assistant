@@ -77,7 +77,7 @@ gemini_model = None
 
 class EmbedRequest(BaseModel):
     complaint: str
-    image_path: Optional[str] = None
+    image_base64: Optional[str] = None
 
 class EmbedResponse(BaseModel):
     text_features: List[float]
@@ -301,7 +301,7 @@ async def load_models():
             pass
         import shap
 
-        model_path_txt = os.path.join(BASE_DIR, "triage_multimodal_model(1).txt")
+        model_path_txt = os.path.join(BASE_DIR, "triage_multimodal_model.txt")
         model_path_pkl = os.path.join(BASE_DIR, "triage_multimodal_model.pkl")
 
         if os.path.exists(model_path_txt):
@@ -358,12 +358,14 @@ async def embed(req: EmbedRequest):
     # ── Image embedding ──
     image_features = [0.0] * 5  # Default: no image
 
-    if req.image_path and req.image_path != "None" and resnet_model is not None:
+    if req.image_base64 and resnet_model is not None:
         try:
+            import base64
+            from io import BytesIO
             from PIL import Image
 
-            full_path = os.path.join(BASE_DIR, req.image_path) if not os.path.isabs(req.image_path) else req.image_path
-            img = Image.open(full_path).convert("RGB")
+            image_bytes = base64.b64decode(req.image_base64)
+            img = Image.open(BytesIO(image_bytes)).convert("RGB")
             img_tensor = image_preprocess(img).unsqueeze(0).to(device)
 
             with torch.no_grad():
@@ -374,7 +376,7 @@ async def embed(req: EmbedRequest):
             else:
                 image_features = emb[:5].tolist()
         except Exception as e:
-            print(f"⚠️  Image processing failed for {req.image_path}: {e}")
+            print(f"⚠️  Image processing failed for base64 input: {e}")
 
     return EmbedResponse(text_features=text_features, image_features=image_features)
 

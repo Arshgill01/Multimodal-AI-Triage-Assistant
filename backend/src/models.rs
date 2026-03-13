@@ -14,7 +14,7 @@ pub struct PatientRequest {
     pub pain_scale: f64,
     pub chief_complaint: String,
     #[serde(default)]
-    pub image_path: Option<String>,
+    pub image_base64: Option<String>,
 }
 
 // ─── /predict Response ───────────────────────────────────────
@@ -72,7 +72,7 @@ pub struct SimilarCase {
 pub struct EmbedRequest {
     pub complaint: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub image_path: Option<String>,
+    pub image_base64: Option<String>,
 }
 
 /// Response from `POST /embed` on the Python service.
