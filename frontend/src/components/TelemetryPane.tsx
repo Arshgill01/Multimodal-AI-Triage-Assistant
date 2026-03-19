@@ -170,28 +170,28 @@ export default function TelemetryPane() {
                     zones={PAIN_ZONES}
                 />
 
-                {/* Clinical Image Upload — inside scrollable area */}
+                {/* Clinical Image Upload */}
                 <ImageDropzone />
+
+                {/* Chief Complaint — inside scrollable area */}
+                <div className="mt-4 pt-4 border-t border-[rgba(255,255,255,0.05)]">
+                    <label className="text-xs tracking-wider text-[var(--color-text-secondary)] uppercase mb-2 flex items-center gap-2">
+                        <Terminal size={14} /> Sequence: Chief Complaint
+                    </label>
+                    <textarea
+                        className="w-full bg-[rgba(0,0,0,0.3)] border border-[var(--color-obsidian-border)] rounded-lg p-3 text-sm font-mono text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-text-secondary)] transition-colors h-20 resize-none"
+                        value={patientData.chief_complaint}
+                        onChange={(e) => updatePatient("chief_complaint", e.target.value)}
+                        placeholder="> Enter patient reported symptoms..."
+                    />
+                </div>
             </div>
 
-            {/* Terminal Chief Complaint Input */}
-            <div className="mt-3 shrink-0">
-                <label className="text-xs tracking-wider text-[var(--color-text-secondary)] uppercase mb-2 flex items-center gap-2">
-                    <Terminal size={14} /> Sequence: Chief Complaint
-                </label>
-                <textarea
-                    className="w-full bg-[rgba(0,0,0,0.3)] border border-[var(--color-obsidian-border)] rounded-lg p-3 text-sm font-mono text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-text-secondary)] transition-colors h-16 resize-none"
-                    value={patientData.chief_complaint}
-                    onChange={(e) => updatePatient("chief_complaint", e.target.value)}
-                    placeholder="> Enter patient reported symptoms..."
-                />
-            </div>
-
-            {/* Primary Action Button — always pinned at the bottom */}
+            {/* Primary Action Button — ONLY this stays pinned at bottom */}
             <button
                 onClick={handleEvaluate}
                 disabled={analysisPhase !== "idle" && analysisPhase !== "complete"}
-                className="mt-4 shrink-0 w-full py-4 glass-panel hover:bg-[rgba(255,255,255,0.08)] transition-all font-bold tracking-widest text-[#00e5ff] uppercase disabled:opacity-50 disabled:cursor-not-allowed group relative overflow-hidden"
+                className="mt-3 shrink-0 w-full py-3 glass-panel hover:bg-[rgba(255,255,255,0.08)] transition-all font-bold tracking-widest text-[#00e5ff] uppercase disabled:opacity-50 disabled:cursor-not-allowed group relative overflow-hidden"
             >
                 <span className="relative z-10">Evaluate Patient</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#00e5ff] to-transparent opacity-0 group-hover:opacity-10 transition-opacity transform -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
