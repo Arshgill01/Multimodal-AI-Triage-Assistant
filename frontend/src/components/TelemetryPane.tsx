@@ -3,6 +3,59 @@ import VitalSlider from "./VitalSlider";
 import ImageDropzone from "./ImageDropzone";
 import { Terminal } from "lucide-react";
 
+// ── Clinical Range Definitions ──────────────────────────────
+// Based on standard ED triage thresholds (AHA/ACLS guidelines)
+// Color key: #00c853 = safe, #ffb300 = caution, #ff2a2a = critical
+
+const HEART_RATE_ZONES = [
+    { upTo: 40, color: "#ff2a2a" },   // Severe bradycardia
+    { upTo: 50, color: "#ffb300" },   // Bradycardia
+    { upTo: 60, color: "#ffb300" },   // Low normal
+    { upTo: 100, color: "#00c853" },  // Normal sinus
+    { upTo: 120, color: "#ffb300" },  // Tachycardia
+    { upTo: 200, color: "#ff2a2a" },  // SVT / unstable
+];
+
+const RESP_RATE_ZONES = [
+    { upTo: 10, color: "#ff2a2a" },   // Hypoventilation
+    { upTo: 12, color: "#ffb300" },
+    { upTo: 20, color: "#00c853" },   // Normal
+    { upTo: 24, color: "#ffb300" },
+    { upTo: 50, color: "#ff2a2a" },   // Tachypnea
+];
+
+const SPO2_ZONES = [
+    { upTo: 85, color: "#ff2a2a" },   // Severe hypoxia
+    { upTo: 90, color: "#ff2a2a" },
+    { upTo: 92, color: "#ffb300" },
+    { upTo: 100, color: "#00c853" },  // Normal
+];
+
+const TEMP_ZONES = [
+    { upTo: 95, color: "#ff2a2a" },   // Hypothermia
+    { upTo: 96.8, color: "#ffb300" },
+    { upTo: 99.5, color: "#00c853" }, // Normal
+    { upTo: 100.4, color: "#ffb300" },// Low-grade fever
+    { upTo: 103, color: "#ff2a2a" },  // High fever
+    { upTo: 106, color: "#ff2a2a" },
+];
+
+const BP_ZONES = [
+    { upTo: 80, color: "#ff2a2a" },   // Hypotensive shock
+    { upTo: 90, color: "#ffb300" },   // Hypotension
+    { upTo: 120, color: "#00c853" },  // Normal
+    { upTo: 140, color: "#ffb300" },  // Prehypertension
+    { upTo: 160, color: "#ff2a2a" },  // Stage 2 HTN
+    { upTo: 220, color: "#ff2a2a" },  // Hypertensive crisis
+];
+
+const PAIN_ZONES = [
+    { upTo: 1, color: "#00c853" },    // No pain
+    { upTo: 4, color: "#00c853" },    // Mild
+    { upTo: 7, color: "#ffb300" },    // Moderate
+    { upTo: 10, color: "#ff2a2a" },   // Severe
+];
+
 export default function TelemetryPane() {
     const { patientData, updatePatient, setPhase, analysisPhase, setPrediction, setEsi } = useAppStore();
 
@@ -61,7 +114,7 @@ export default function TelemetryPane() {
                     max={200}
                     unit="bpm"
                     onChange={(v) => updatePatient("heart_rate", v)}
-                    isAbnormal={patientData.heart_rate > 100 || patientData.heart_rate < 50}
+                    zones={HEART_RATE_ZONES}
                 />
                 <VitalSlider
                     label="Resp Rate"
@@ -70,7 +123,7 @@ export default function TelemetryPane() {
                     max={50}
                     unit="rpm"
                     onChange={(v) => updatePatient("resp_rate", v)}
-                    isAbnormal={patientData.resp_rate > 24 || patientData.resp_rate < 12}
+                    zones={RESP_RATE_ZONES}
                 />
                 <VitalSlider
                     label="SpO2"
@@ -79,7 +132,7 @@ export default function TelemetryPane() {
                     max={100}
                     unit="%"
                     onChange={(v) => updatePatient("spo2", v)}
-                    isAbnormal={patientData.spo2 < 92}
+                    zones={SPO2_ZONES}
                 />
                 <VitalSlider
                     label="Temp"
@@ -88,7 +141,7 @@ export default function TelemetryPane() {
                     max={106}
                     unit="°F"
                     onChange={(v) => updatePatient("temp_f", v)}
-                    isAbnormal={patientData.temp_f > 100.4 || patientData.temp_f < 95}
+                    zones={TEMP_ZONES}
                 />
                 <VitalSlider
                     label="Systolic BP"
@@ -97,7 +150,7 @@ export default function TelemetryPane() {
                     max={220}
                     unit="mmHg"
                     onChange={(v) => updatePatient("systolic_bp", v)}
-                    isAbnormal={patientData.systolic_bp < 90 || patientData.systolic_bp > 160}
+                    zones={BP_ZONES}
                 />
                 <VitalSlider
                     label="Age"
@@ -114,7 +167,7 @@ export default function TelemetryPane() {
                     max={10}
                     unit="/10"
                     onChange={(v) => updatePatient("pain_scale", v)}
-                    isAbnormal={patientData.pain_scale >= 7}
+                    zones={PAIN_ZONES}
                 />
             </div>
 
@@ -127,7 +180,8 @@ export default function TelemetryPane() {
                     className="w-full bg-[rgba(0,0,0,0.3)] border border-[var(--color-obsidian-border)] rounded-lg p-3 text-sm font-mono text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-text-secondary)] transition-colors h-24 resize-none"
                     value={patientData.chief_complaint}
                     onChange={(e) => updatePatient("chief_complaint", e.target.value)}
-                    />
+                    placeholder="> Enter patient reported symptoms..."
+                />
                 <ImageDropzone />
             </div>
 
