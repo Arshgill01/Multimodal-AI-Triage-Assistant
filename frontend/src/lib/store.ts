@@ -19,14 +19,16 @@ interface AppState {
     // UI State
     currentEsi: EsiLevel;
     analysisPhase: AnalysisPhase;
+    isMciMode: boolean;
 
     // Inputs
     patientData: PatientState;
 
     // Results
-    prediction: any | null; // Will type properly later
+    prediction: any | null;
     ragStream: string;
     similarCases: any[];
+    batchResults: any[];
 
     // Actions
     setEsi: (esi: EsiLevel) => void;
@@ -35,6 +37,8 @@ interface AppState {
     setPrediction: (pred: any) => void;
     appendRagStream: (chunk: string) => void;
     setSimilarCases: (cases: any[]) => void;
+    setMciMode: (on: boolean) => void;
+    setBatchResults: (results: any[]) => void;
     reset: () => void;
 }
 
@@ -53,12 +57,14 @@ const defaultPatient: PatientState = {
 export const useAppStore = create<AppState>((set) => ({
     currentEsi: null,
     analysisPhase: "idle",
+    isMciMode: false,
 
     patientData: { ...defaultPatient },
 
     prediction: null,
     ragStream: "",
     similarCases: [],
+    batchResults: [],
 
     setEsi: (esi) => set({ currentEsi: esi }),
     setPhase: (phase) => set({ analysisPhase: phase }),
@@ -67,6 +73,8 @@ export const useAppStore = create<AppState>((set) => ({
     setPrediction: (pred) => set({ prediction: pred }),
     appendRagStream: (chunk) => set((state) => ({ ragStream: state.ragStream + chunk })),
     setSimilarCases: (cases) => set({ similarCases: cases }),
+    setMciMode: (on) => set({ isMciMode: on }),
+    setBatchResults: (results) => set({ batchResults: results }),
 
     reset: () => set({
         currentEsi: null,
