@@ -115,10 +115,10 @@ export default function Home() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.3 }}
-              className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6"
+              className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-6"
             >
               {/* Left Pane: Telemetry (Input) */}
-              <div className="lg:col-span-3 h-full flex flex-col glass-panel rounded-2xl overflow-hidden p-6 shadow-2xl">
+              <div className="lg:col-span-3 min-h-0 flex flex-col glass-panel rounded-2xl overflow-hidden p-6 shadow-2xl">
                 <h2 className="text-sm tracking-[0.2em] text-[var(--color-text-secondary)] uppercase mb-6 border-b border-[var(--color-obsidian-border)] pb-4">
                   Patient Telemetry
                 </h2>
