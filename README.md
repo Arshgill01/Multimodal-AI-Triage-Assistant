@@ -2,7 +2,7 @@
 
 A production-grade late-fusion multimodal AI system that predicts Emergency Severity Index (ESI) levels for emergency department triage. The system fuses three clinical data modalities -- structured vitals, unstructured text, and medical imagery -- through a LightGBM meta-model served via a high-performance Rust backend, augmented by a Retrieval-Augmented Generation (RAG) engine for clinical decision support.
 
-Built for the Frostbyte Hackathon (March 2026).
+
 
 ![Rust](https://img.shields.io/badge/Rust-Axum-B7410E?style=flat-square&logo=rust)
 ![Python](https://img.shields.io/badge/Python-FastAPI-3776AB?style=flat-square&logo=python)
@@ -140,8 +140,8 @@ flowchart LR
 
     subgraph Processing
         MERGE["build_final_dataset.py<br/>Merge + Map Images"]
-        TEXT["frostbyte_text_embeddings.py<br/>ClinicalBERT → PCA"]
-        VIS["frostbyte_vision_embeddings.py<br/>ResNet-50 → PCA"]
+        TEXT["text_embeddings.py<br/>ClinicalBERT → PCA"]
+        VIS["vision_embeddings.py<br/>ResNet-50 → PCA"]
     end
 
     subgraph Output
@@ -560,7 +560,7 @@ These are internal endpoints called by the Rust backend. They are not intended f
 ### 10.2 Clone and Install
 
 ```bash
-git clone https://github.com/frostbyte/MultimodalTriage.git
+git clone https://github.com/Arshgill01/Multimodal-AI-Triage-Assistant.git
 cd MultimodalTriage
 
 # Python dependencies
@@ -574,9 +574,9 @@ pip install -r requirements.txt
 export GEMINI_API_KEY="your-gemini-api-key"
 
 # Optional overrides
-export FROSTBYTE_MODEL_PATH="../triage_multimodal_model(1).txt"  # Path to LightGBM model
-export FROSTBYTE_PYTHON_URL="http://localhost:8000"               # Python sidecar URL
-export FROSTBYTE_DATA_DIR="."                                     # Data directory
+export TRIAGE_MODEL_PATH="../triage_multimodal_model(1).txt"  # Path to LightGBM model
+export TRIAGE_PYTHON_URL="http://localhost:8000"               # Python sidecar URL
+export TRIAGE_DATA_DIR="."                                     # Data directory
 ```
 
 ### 10.4 Start the Python Sidecar
@@ -591,7 +591,7 @@ This loads ClinicalBERT, ResNet-50, fits PCA transforms, builds the ChromaDB vec
 
 ```bash
 cd backend
-FROSTBYTE_MODEL_PATH="../triage_multimodal_model(1).txt" cargo run --release
+TRIAGE_MODEL_PATH="../triage_multimodal_model(1).txt" cargo run --release
 ```
 
 The backend binds to `0.0.0.0:3001`.
@@ -728,13 +728,13 @@ MultimodalTriage/
 │
 ├── dataset.py                            # Synthetic triage data generator (1,000 patients)
 ├── build_final_dataset.py                # Merge synthetic + MIMIC-IV-ED, map Kaggle images
-├── frostbyte_text_embeddings.py          # ClinicalBERT 768-d extraction + PCA to 10-d
-├── frostbyte_vision_embeddings.py        # ResNet-50 2048-d extraction + PCA to 5-d
-├── frostbyte_late_fusion.py              # LightGBM meta-model training + SHAP explainability
+├── text_embeddings.py                    # ClinicalBERT 768-d extraction + PCA to 10-d
+├── vision_embeddings.py                  # ResNet-50 2048-d extraction + PCA to 5-d
+├── late_fusion.py                        # LightGBM meta-model training + SHAP explainability
 ├── train_tabular.py                      # Baseline tabular-only LightGBM (7 features)
 ├── clinical_rag_engine.py                # Standalone RAG engine: hybrid retrieval + Gemini
 ├── pytorch_fusion_model.py               # Research: PyTorch cross-attention fusion network
-├── frostbyte_multimodal_pipeline.ipynb   # Consolidated Colab notebook (all pipeline stages)
+├── multimodal_pipeline.ipynb             # Consolidated Colab notebook (all pipeline stages)
 │
 ├── triage_master_multimodal.csv          # Final dataset: 1,197 patients x 25 columns
 ├── triage_dataset_final.csv              # Pre-embedding merged dataset (1,197 rows)
