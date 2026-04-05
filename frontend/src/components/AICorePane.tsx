@@ -29,10 +29,10 @@ export default function AICorePane() {
     };
 
     return (
-        <div className="w-full h-full flex flex-col items-center justify-between py-4">
+        <div className="w-full h-full flex flex-col overflow-hidden">
 
-            {/* Sequence Roller Tracker */}
-            <div className="h-8 overflow-hidden w-full text-center relative border-b border-[rgba(255,255,255,0.05)] pb-6 mb-8 flex justify-center">
+            {/* Sequence Roller Tracker — fixed height */}
+            <div className="shrink-0 h-10 overflow-hidden w-full text-center flex justify-center border-b border-[rgba(255,255,255,0.05)] pb-2 mb-4">
                 <AnimatePresence mode="popLayout">
                     <motion.p
                         key={analysisPhase}
@@ -48,92 +48,100 @@ export default function AICorePane() {
                 </AnimatePresence>
             </div>
 
-            {/* Massive ESI Hero Display */}
-            <div className="flex-1 flex flex-col items-center justify-center w-full min-h-[250px] relative">
-                <AnimatePresence mode="wait">
+            {/* Scrollable Content Area — hero + SHAP */}
+            <div className="flex-1 min-h-0 overflow-y-auto">
+
+                {/* ESI Hero Display */}
+                <div className="flex flex-col items-center justify-center w-full py-4 relative">
+                    <AnimatePresence mode="wait">
+                        {!prediction ? (
+                            <motion.div
+                                key="empty"
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
+                                className="text-center py-12"
+                            >
+                                <div className="w-40 h-40 border border-[var(--color-obsidian-border)] rounded-full flex items-center justify-center relative mx-auto">
+                                    <div className="absolute inset-0 border border-[var(--color-text-muted)] opacity-20 rounded-full animate-[spin_10s_linear_infinite]" />
+                                    <div className="absolute inset-4 border border-[var(--color-text-muted)] opacity-10 rounded-full animate-[spin_15s_linear_infinite_reverse]" />
+                                    <span className="text-[var(--color-text-muted)] font-mono text-xs uppercase tracking-widest">No Data</span>
+                                </div>
+                            </motion.div>
+                        ) : (
+                            <motion.div
+                                key="result"
+                                initial={{ opacity: 0, scale: 0.5, filter: "blur(20px)" }}
+                                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                                transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                                className="text-center w-full flex flex-col items-center gap-4"
+                            >
+                                <div className="flex flex-col items-center justify-center">
+                                    <motion.span
+                                        initial={{ y: -20, opacity: 0 }}
+                                        animate={{ y: 0, opacity: 1 }}
+                                        transition={{ delay: 0.3 }}
+                                        className="text-sm font-mono tracking-[0.3em] uppercase text-[var(--color-text-secondary)]"
+                                    >
+                                        Predicted ESI Level
+                                    </motion.span>
+                                    <motion.div
+                                        className={`text-[10rem] leading-none font-bold tracking-tighter ${getEsiColor()} drop-shadow-[0_0_30px_currentColor]`}
+                                        initial={{ scale: 0.5 }}
+                                        animate={{ scale: 1 }}
+                                        transition={{ type: "spring", bounce: 0.5 }}
+                                    >
+                                        {prediction.predicted_esi}
+                                    </motion.div>
+                                    <motion.div
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ delay: 0.6 }}
+                                        className="uppercase tracking-widest mt-1 font-bold text-lg"
+                                    >
+                                        {prediction.esi_label}
+                                    </motion.div>
+                                </div>
+
+                                {/* Confidence Metrics Badge */}
+                                {prediction.confidence && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.8 }}
+                                        className={`px-4 py-2 rounded-full border ${prediction.confidence.is_uncertain
+                                                ? 'border-[#ffb300] bg-[rgba(255,179,0,0.1)] text-[#ffb300]'
+                                                : 'border-[var(--color-obsidian-border)] bg-[rgba(255,255,255,0.03)] text-[var(--color-text-secondary)]'
+                                            } text-xs font-mono flex gap-4`}
+                                    >
+                                        <span>Confidence: {(prediction.confidence.top_probability * 100).toFixed(1)}%</span>
+                                        {prediction.confidence.is_uncertain && <span>! MANUAL REVIEW RECOMMENDED</span>}
+                                    </motion.div>
+                                )}
+                                
+                                {/* Human-in-the-Loop Override — clearly clickable */}
+                                <div className="relative z-10">
+                                    <OverrideModal />
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
+
+                {/* SHAP Waterfall Chart */}
+                <div className="w-full border-t border-[var(--color-obsidian-border)] pt-4 mt-2" style={{ minHeight: '280px' }}>
                     {!prediction ? (
-                        <motion.div
-                            key="empty"
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
-                            className="text-center"
-                        >
-                            <div className="w-48 h-48 border border-[var(--color-obsidian-border)] rounded-full flex items-center justify-center relative">
-                                <div className="absolute inset-0 border border-[var(--color-text-muted)] opacity-20 rounded-full animate-[spin_10s_linear_infinite]" />
-                                <div className="absolute inset-4 border border-[var(--color-text-muted)] opacity-10 rounded-full animate-[spin_15s_linear_infinite_reverse]" />
-                                <span className="text-[var(--color-text-muted)] font-mono text-xs uppercase tracking-widest">No Data</span>
-                            </div>
-                        </motion.div>
+                        <div className="flex items-center justify-center h-48">
+                            <span className="text-[var(--color-text-muted)] font-mono text-xs tracking-widest uppercase">Shapley Additive Explanations</span>
+                        </div>
                     ) : (
-                        <motion.div
-                            key="result"
-                            initial={{ opacity: 0, scale: 0.5, filter: "blur(20px)" }}
-                            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                            transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                            className="text-center w-full flex flex-col items-center gap-6"
-                        >
-                            <div className="flex flex-col items-center justify-center">
-                                <motion.span
-                                    initial={{ y: -20, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    transition={{ delay: 0.3 }}
-                                    className="text-sm font-mono tracking-[0.3em] uppercase text-[var(--color-text-secondary)]"
-                                >
-                                    Predicted ESI Level
-                                </motion.span>
-                                <motion.div
-                                    className={`text-[12rem] leading-none font-bold tracking-tighter ${getEsiColor()} drop-shadow-[0_0_30px_currentColor]`}
-                                    initial={{ scale: 0.5 }}
-                                    animate={{ scale: 1 }}
-                                    transition={{ type: "spring", bounce: 0.5 }}
-                                >
-                                    {prediction.predicted_esi}
-                                </motion.div>
-                                <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ delay: 0.6 }}
-                                    className="uppercase tracking-widest mt-2 font-bold text-lg"
-                                >
-                                    {prediction.esi_label}
-                                </motion.div>
-                            </div>
-
-                            {/* Confidence Metrics Badge */}
-                            {prediction.confidence && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.8 }}
-                                    className={`px-4 py-2 rounded-full border ${prediction.confidence.is_uncertain
-                                            ? 'border-[#ffb300] bg-[rgba(255,179,0,0.1)] text-[#ffb300]'
-                                            : 'border-[var(--color-obsidian-border)] bg-[rgba(255,255,255,0.03)] text-[var(--color-text-secondary)]'
-                                        } text-xs font-mono flex gap-4`}
-                                >
-                                    <span>Confidence: {(prediction.confidence.top_probability * 100).toFixed(1)}%</span>
-                                    {prediction.confidence.is_uncertain && <span>! MANUAL REVIEW RECOMMENDED</span>}
-                                </motion.div>
-                            )}
-                            
-                            {/* Human-in-the-Loop Override */}
-                            <OverrideModal />
-                        </motion.div>
+                        <ShapWaterfall />
                     )}
-                </AnimatePresence>
-            </div>
+                </div>
 
-            {/* SHAP Waterfall Chart (Appears after prediction) */}
-            <div className="h-[40%] w-full border-t border-[var(--color-obsidian-border)] pt-6 mt-4 relative">
-                {!prediction ? (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-[var(--color-text-muted)] font-mono text-xs tracking-widest uppercase">Shapley Additive Explanations</span>
-                    </div>
-                ) : (
-                    <ShapWaterfall />
-                )}
             </div>
-
         </div>
     );
 }
+
+
