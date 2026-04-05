@@ -1,11 +1,11 @@
 # %% [markdown]
-# # 🧊 Frostbyte — Late-Fusion Meta-Model + SHAP Explainability
+# # 🏥 Multimodal Triage — Late-Fusion Meta-Model + SHAP Explainability
 #
 # **Objective:** Train a LightGBM classifier on the concatenated multimodal
 # feature space (7 tabular + 10 text + 5 image = 22 features) and generate
 # SHAP explainability plots for the judges.
 #
-# **Prerequisite:** Run `frostbyte_vision_embeddings.py` first to produce
+# **Prerequisite:** Run `vision_embeddings.py` first to produce
 # `triage_master_multimodal.csv`.
 #
 # **Expected runtime on Colab T4:** ~30 seconds (training) + ~30 seconds (SHAP).
@@ -31,13 +31,13 @@ warnings.filterwarnings("ignore")
 # from google.colab import drive
 # drive.mount('/content/drive')
 
-# Auto-detect Colab vs local. Override: export FROSTBYTE_DATA_DIR="/your/path"
+# Auto-detect Colab vs local. Override: export TRIAGE_DATA_DIR="/your/path"
 def _resolve_base_dir():
-    env = os.environ.get("FROSTBYTE_DATA_DIR")
+    env = os.environ.get("TRIAGE_DATA_DIR")
     if env:
         return env
-    if os.path.exists("/content/drive/MyDrive/frostbyte"):
-        return "/content/drive/MyDrive/frostbyte"  # Colab
+    if os.path.exists("/content/drive/MyDrive/triage_data"):
+        return "/content/drive/MyDrive/triage_data"  # Colab
     return "."  # Local
 
 BASE_DIR = _resolve_base_dir()
@@ -117,7 +117,7 @@ print(classification_report(y_test, y_pred, target_names=ESI_NAMES))
 # %% — Cell 4: SHAP Explainability Engine
 # ============================================================
 #
-# Three visualizations for the hackathon pitch:
+# Three visualizations for the project:
 #   1. Global bar chart — proves which features matter most
 #   2. ESI-1 beeswarm  — shows feature directionality for critical patients
 #   3. Local waterfall — single-patient "why ESI 1?" explanation

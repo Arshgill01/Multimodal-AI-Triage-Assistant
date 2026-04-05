@@ -1,5 +1,5 @@
 # %% [markdown]
-# # 🧊 Frostbyte — ClinicalBERT Text Embeddings Pipeline
+# # 🏥 Multimodal Triage — ClinicalBERT Text Embeddings Pipeline
 #
 # **Objective:** Extract semantic embeddings from `chief_complaint` using
 # Bio_ClinicalBERT, compress via PCA to 10 features, and save an enriched CSV
@@ -29,14 +29,14 @@ warnings.filterwarnings("ignore")
 
 # ============================================================
 # 📁 DATA DIRECTORY — auto-detects Colab vs local environment.
-#    Override with: export FROSTBYTE_DATA_DIR="/your/path"
+#    Override with: export TRIAGE_DATA_DIR="/your/path"
 # ============================================================
 def _resolve_base_dir():
-    env = os.environ.get("FROSTBYTE_DATA_DIR")
+    env = os.environ.get("TRIAGE_DATA_DIR")
     if env:
         return env
-    if os.path.exists("/content/drive/MyDrive/frostbyte"):
-        return "/content/drive/MyDrive/frostbyte"  # Colab
+    if os.path.exists("/content/drive/MyDrive/triage_data"):
+        return "/content/drive/MyDrive/triage_data"  # Colab
     return "."  # Local
 
 BASE_DIR = _resolve_base_dir()

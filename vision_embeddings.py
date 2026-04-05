@@ -1,11 +1,11 @@
 # %% [markdown]
-# # 🧊 Frostbyte — ResNet-50 Vision Embeddings Pipeline
+# # 🏥 Multimodal Triage — ResNet-50 Vision Embeddings Pipeline
 #
 # **Objective:** Extract visual feature vectors from mapped Kaggle burn/wound
 # images using a pre-trained ResNet-50 (transfer learning), compress via PCA
 # to 5 features, and save an enriched CSV for the late-fusion meta-model.
 #
-# **Prerequisite:** Run `frostbyte_text_embeddings.py` first to produce
+# **Prerequisite:** Run `text_embeddings.py` first to produce
 # `triage_with_text_features.csv`.
 #
 # **Expected runtime on Colab T4:** ~20 seconds for 1,197 rows (28 real images).
@@ -31,13 +31,13 @@ warnings.filterwarnings("ignore")
 # from google.colab import drive
 # drive.mount('/content/drive')
 
-# Auto-detect Colab vs local. Override: export FROSTBYTE_DATA_DIR="/your/path"
+# Auto-detect Colab vs local. Override: export TRIAGE_DATA_DIR="/your/path"
 def _resolve_base_dir():
-    env = os.environ.get("FROSTBYTE_DATA_DIR")
+    env = os.environ.get("TRIAGE_DATA_DIR")
     if env:
         return env
-    if os.path.exists("/content/drive/MyDrive/frostbyte"):
-        return "/content/drive/MyDrive/frostbyte"  # Colab
+    if os.path.exists("/content/drive/MyDrive/triage_data"):
+        return "/content/drive/MyDrive/triage_data"  # Colab
     return "."  # Local
 
 BASE_DIR = _resolve_base_dir()
@@ -140,4 +140,4 @@ print(f"💾 Saved to: {OUT_PATH}")
 print(f"Final shape: {df.shape}")
 print(f"Zero-image rows (should be {len(df) - images_found}): {(~has_image_mask).sum()}")
 print(f"\nFeatures: Vitals(7) + ClinicalBERT(10) + ResNet50(5) = 22 input features")
-print("Next step → run frostbyte_late_fusion.py for the meta-model + SHAP.")
+print("Next step → run late_fusion.py for the meta-model + SHAP.")
