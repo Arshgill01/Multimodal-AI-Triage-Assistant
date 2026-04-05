@@ -129,7 +129,7 @@ export default function AICorePane() {
                 </div>
 
                 {/* SHAP Waterfall Chart */}
-                <div className="w-full border-t border-[var(--color-obsidian-border)] pt-4 mt-2" style={{ minHeight: '280px' }}>
+                <div className="w-full border-t border-[var(--color-obsidian-border)] pt-4 mt-2 h-[320px]">
                     {!prediction ? (
                         <div className="flex items-center justify-center h-48">
                             <span className="text-[var(--color-text-muted)] font-mono text-xs tracking-widest uppercase">Shapley Additive Explanations</span>
