@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { useAppStore } from "@/lib/store";
+import { RUST_API } from "@/lib/config";
 import VitalSlider from "./VitalSlider";
 import ImageDropzone from "./ImageDropzone";
 import { Terminal } from "lucide-react";
@@ -58,9 +60,11 @@ const PAIN_ZONES = [
 
 export default function TelemetryPane() {
     const { patientData, updatePatient, setPhase, analysisPhase, setPrediction, setEsi } = useAppStore();
+    const [inferenceError, setInferenceError] = useState<string | null>(null);
 
     const handleEvaluate = async () => {
         try {
+            setInferenceError(null);
             // 1. Initiate & show embeddings phase
             setPhase("extracting");
 
@@ -74,13 +78,13 @@ export default function TelemetryPane() {
             // 3. Inference phase
             setPhase("inferring");
 
-            const response = await fetch("http://localhost:3001/predict", {
+            const response = await fetch(`${RUST_API}/predict`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(patientData),
             });
 
-            if (!response.ok) throw new Error("Inference failed");
+            if (!response.ok) throw new Error(`Backend returned ${response.status}`);
 
             const data = await response.json();
 
@@ -97,8 +101,9 @@ export default function TelemetryPane() {
             // Reset to complete shortly after RAG initializes
             setTimeout(() => setPhase("complete"), 2000);
 
-        } catch (err) {
+        } catch (err: any) {
             console.error(err);
+            setInferenceError(err?.message || "Connection to Rust backend failed");
             setPhase("idle");
         }
     };
@@ -186,6 +191,13 @@ export default function TelemetryPane() {
                     />
                 </div>
             </div>
+
+            {/* Error Feedback */}
+            {inferenceError && (
+                <div className="mt-2 shrink-0 px-3 py-2 rounded border border-[#ff2a2a]/30 bg-[#ff2a2a]/5 text-[#ff2a2a] text-xs font-mono">
+                    ✕ {inferenceError}
+                </div>
+            )}
 
             {/* Primary Action Button — ONLY this stays pinned at bottom */}
             <button

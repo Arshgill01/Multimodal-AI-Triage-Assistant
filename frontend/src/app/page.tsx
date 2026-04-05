@@ -9,11 +9,13 @@ import TelemetryPane from "@/components/TelemetryPane";
 import AICorePane from "@/components/AICorePane";
 import RagIntelligencePane from "@/components/RagIntelligencePane";
 import MCIMode from "@/components/MCIMode";
+import { RotateCcw } from "lucide-react";
 
 export default function Home() {
   const currentEsi = useAppStore((state) => state.currentEsi);
   const isMciMode = useAppStore((state) => state.isMciMode);
   const setMciMode = useAppStore((state) => state.setMciMode);
+  const reset = useAppStore((state) => state.reset);
 
   // Mouse tracking for ambient radial gradient
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -90,9 +92,18 @@ export default function Home() {
             )}
           </div>
 
-          <span className="text-[10px] font-mono text-[var(--color-text-muted)] tracking-widest uppercase">
-            Frostbyte Obsidian HUD v2
-          </span>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={reset}
+              className="flex items-center gap-1.5 px-3 py-2 text-[10px] font-mono uppercase tracking-widest text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)] transition-colors border border-[var(--color-obsidian-border)] rounded-lg bg-[rgba(255,255,255,0.02)] hover:bg-[rgba(255,255,255,0.05)]"
+              title="Clear all data and start fresh"
+            >
+              <RotateCcw size={10} /> New Patient
+            </button>
+            <span className="text-[10px] font-mono text-[var(--color-text-muted)] tracking-widest uppercase">
+              Frostbyte Obsidian HUD v2
+            </span>
+          </div>
         </div>
 
         {/* Conditional Layout */}
