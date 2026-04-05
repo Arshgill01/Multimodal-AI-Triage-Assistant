@@ -12,3 +12,12 @@ backend/target/
 # Python environment
 .venv/
 *.egg-info/
+
+# Node / Next.js
+frontend/node_modules/
+frontend/.next/
+node_modules/
+
+# Large ML artifacts (not tracked in git)
+*.npy
+.ruff_cache/
