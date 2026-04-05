@@ -155,7 +155,7 @@ export default function MCIMode() {
                     className="flex h-2 rounded-full overflow-hidden mb-4 origin-left"
                 >
                     {[1, 2, 3, 4, 5].map((esi) => {
-                        const count = batchResults.filter((r: any) => r.prediction.predicted_esi === esi).length;
+                        const count = batchResults.filter((r: any) => r.predicted_esi === esi).length;
                         const pct = (count / batchResults.length) * 100;
                         if (pct === 0) return null;
                         return (
@@ -188,9 +188,8 @@ export default function MCIMode() {
                     <tbody>
                         <AnimatePresence>
                             {batchResults.map((result: any, i: number) => {
-                                const p = result.prediction;
-                                const esiColor = ESI_COLORS[p.predicted_esi] || "#888";
-                                const conf = p.confidence?.top_probability ?? 0;
+                                const esiColor = ESI_COLORS[result.predicted_esi] || "#888";
+                                const conf = result.confidence?.top_probability ?? 0;
                                 return (
                                     <motion.tr
                                         key={`${result.index}-${i}`}
@@ -205,7 +204,7 @@ export default function MCIMode() {
                                                 className="inline-flex items-center justify-center w-6 h-6 rounded font-bold text-sm"
                                                 style={{ color: esiColor, border: `1px solid ${esiColor}`, backgroundColor: `${esiColor}15` }}
                                             >
-                                                {p.predicted_esi}
+                                                {result.predicted_esi}
                                             </span>
                                         </td>
                                         <td className="px-3 py-2 text-[var(--color-text-primary)] max-w-[240px] truncate">
@@ -213,16 +212,16 @@ export default function MCIMode() {
                                         </td>
                                         <td className="px-3 py-2 text-right text-[var(--color-text-secondary)]">
                                             {/* Use inline data from the feature vector: index 1 = heart_rate */}
-                                            {p.feature_vector?.[1]?.toFixed(0) ?? "—"}
+                                            {result.feature_vector?.[1]?.toFixed(0) ?? "—"}
                                         </td>
                                         <td className="px-3 py-2 text-right text-[var(--color-text-secondary)]">
-                                            {p.feature_vector?.[3]?.toFixed(0) ?? "—"}
+                                            {result.feature_vector?.[3]?.toFixed(0) ?? "—"}
                                         </td>
                                         <td className="px-3 py-2 text-right text-[var(--color-text-secondary)]">
-                                            {p.feature_vector?.[5]?.toFixed(0) ?? "—"}
+                                            {result.feature_vector?.[5]?.toFixed(0) ?? "—"}
                                         </td>
                                         <td className="px-3 py-2 text-right text-[var(--color-text-secondary)]">
-                                            {p.feature_vector?.[4]?.toFixed(1) ?? "—"}
+                                            {result.feature_vector?.[4]?.toFixed(1) ?? "—"}
                                         </td>
                                         <td className="px-3 py-2 text-right">
                                             <span style={{ color: conf > 0.8 ? "#00c853" : conf > 0.5 ? "#ffb300" : "#ff2a2a" }}>
@@ -230,7 +229,7 @@ export default function MCIMode() {
                                             </span>
                                         </td>
                                         <td className="px-3 py-2 text-center">
-                                            {p.confidence?.is_uncertain && (
+                                            {result.confidence?.is_uncertain && (
                                                 <span className="text-[#ffb300]" title="Manual review recommended">⚠</span>
                                             )}
                                         </td>
