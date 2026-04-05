@@ -79,9 +79,11 @@ export const useAppStore = create<AppState>((set) => ({
     reset: () => set({
         currentEsi: null,
         analysisPhase: "idle",
+        isMciMode: false,
         patientData: { ...defaultPatient },
         prediction: null,
         ragStream: "",
-        similarCases: []
+        similarCases: [],
+        batchResults: [],
     }),
 }));
