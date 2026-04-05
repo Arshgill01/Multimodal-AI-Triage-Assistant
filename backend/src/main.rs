@@ -1,4 +1,4 @@
-// 🧊 Frostbyte — Rust Inference Backend
+// 🏥 Multimodal Triage — Rust Inference Backend
 //
 // High-performance Axum server that:
 //   1. Loads the LightGBM multimodal model via FFI
@@ -26,19 +26,19 @@ async fn main() {
     // Initialize structured logging
     tracing_subscriber::registry()
         .with(tracing_subscriber::EnvFilter::try_from_default_env()
-            .unwrap_or_else(|_| "frostbyte_backend=info,tower_http=info".into()))
+            .unwrap_or_else(|_| "triage_backend=info,tower_http=info".into()))
         .with(tracing_subscriber::fmt::layer())
         .init();
 
     // Load LightGBM model
-    let model_path = std::env::var("FROSTBYTE_MODEL_PATH")
+    let model_path = std::env::var("TRIAGE_MODEL_PATH")
         .unwrap_or_else(|_| "../triage_multimodal_model.txt".to_string());
 
-    let python_service_url = std::env::var("FROSTBYTE_PYTHON_URL")
+    let python_service_url = std::env::var("TRIAGE_PYTHON_URL")
         .unwrap_or_else(|_| "http://localhost:8000".to_string());
 
-    let audit_db_path = std::env::var("FROSTBYTE_AUDIT_DB")
-        .unwrap_or_else(|_| "../frostbyte_audit.db".to_string());
+    let audit_db_path = std::env::var("TRIAGE_AUDIT_DB")
+        .unwrap_or_else(|_| "../triage_audit.db".to_string());
 
     tracing::info!("Loading LightGBM model from: {}", model_path);
     tracing::info!("Audit trail DB: {}", audit_db_path);
@@ -74,7 +74,7 @@ async fn main() {
         .with_state(state);
 
     let addr = "0.0.0.0:3001";
-    tracing::info!("🧊 Frostbyte backend listening on http://{}", addr);
+    tracing::info!("🏥 Triage backend listening on http://{}", addr);
 
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
     axum::serve(listener, app).await.unwrap();

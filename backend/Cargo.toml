@@ -1,8 +1,8 @@
 [package]
-name = "frostbyte-backend"
+name = "triage-backend"
 version = "0.1.0"
 edition = "2021"
-description = "High-performance Rust inference backend for the Frostbyte Multimodal Triage System"
+description = "High-performance Rust inference backend for the Multimodal AI Triage Assistant"
 
 [dependencies]
 # Web framework

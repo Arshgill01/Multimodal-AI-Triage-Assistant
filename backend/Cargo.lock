@@ -331,24 +331,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "frostbyte-backend"
-version = "0.1.0"
-dependencies = [
- "axum",
- "chrono",
- "lightgbm3",
- "reqwest",
- "rusqlite",
- "serde",
- "serde_json",
- "tokio",
- "tower-http",
- "tracing",
- "tracing-subscriber",
- "uuid",
-]
-
-[[package]]
 name = "futures-channel"
 version = "0.3.32"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1746,6 +1728,24 @@ dependencies = [
  "tracing",
  "tracing-core",
  "tracing-log",
+]
+
+[[package]]
+name = "triage-backend"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "chrono",
+ "lightgbm3",
+ "reqwest",
+ "rusqlite",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tower-http",
+ "tracing",
+ "tracing-subscriber",
+ "uuid",
 ]
 
 [[package]]
