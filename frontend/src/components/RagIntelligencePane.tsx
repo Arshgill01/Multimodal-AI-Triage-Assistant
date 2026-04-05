@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppStore } from "@/lib/store";
+import { PYTHON_API } from "@/lib/config";
 import ReactMarkdown from "react-markdown";
 import { BrainCircuit, FileClock } from "lucide-react";
 
@@ -23,7 +24,7 @@ export default function RagIntelligencePane() {
 
             const initStreaming = async () => {
                 try {
-                    const response = await fetch("http://localhost:8000/rag-stream", {
+                    const response = await fetch(`${PYTHON_API}/rag-stream`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(requestBody),

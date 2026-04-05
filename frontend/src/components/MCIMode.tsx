@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppStore } from "@/lib/store";
+import { RUST_API } from "@/lib/config";
 import { Zap, AlertTriangle, Loader2 } from "lucide-react";
 
 // ── Simulated patient generator ─────────────────────────────
@@ -68,7 +69,7 @@ export default function MCIMode() {
         const start = performance.now();
 
         try {
-            const resp = await fetch("http://localhost:3001/batch-predict", {
+            const resp = await fetch(`${RUST_API}/batch-predict`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ patients }),

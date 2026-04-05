@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppStore } from "@/lib/store";
+import { RUST_API } from "@/lib/config";
 import { AlertCircle, X, ShieldAlert } from "lucide-react";
 
 export default function OverrideModal() {
@@ -17,7 +18,7 @@ export default function OverrideModal() {
 
         setStatus("submitting");
         try {
-            const resp = await fetch("http://localhost:3001/audit/override", {
+            const resp = await fetch(`${RUST_API}/audit/override`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
