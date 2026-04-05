@@ -1,5 +1,5 @@
 """
-🧊 Frostbyte — Python Preprocessing Microservice
+🏥 Multimodal Triage — Python Preprocessing Microservice
 
 FastAPI sidecar for the Rust backend. Handles ML preprocessing that
 requires HuggingFace models (no Rust equivalents exist):
@@ -29,11 +29,11 @@ warnings.filterwarnings("ignore")
 
 # ── Auto-detect paths ─────────────────────────────────────────
 def _resolve_base_dir():
-    env = os.environ.get("FROSTBYTE_DATA_DIR")
+    env = os.environ.get("TRIAGE_DATA_DIR")
     if env:
         return env
-    if os.path.exists("/content/drive/MyDrive/frostbyte"):
-        return "/content/drive/MyDrive/frostbyte"
+    if os.path.exists("/content/drive/MyDrive/triage_data"):
+        return "/content/drive/MyDrive/triage_data"
     return "."
 
 BASE_DIR = _resolve_base_dir()
@@ -41,7 +41,7 @@ BASE_DIR = _resolve_base_dir()
 # ── FastAPI App ──────────────────────────────────────────────
 
 app = FastAPI(
-    title="Frostbyte Preprocessing Service",
+    title="Triage Preprocessing Service",
     description="ClinicalBERT + ResNet-50 embedding extraction and RAG pipeline",
     version="0.1.0",
 )

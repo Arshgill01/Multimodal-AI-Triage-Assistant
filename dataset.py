@@ -82,7 +82,7 @@ esi_profiles = {
 def generate_triage_data(num_samples=1000):
     data = []
 
-    # Force a balanced dataset for easier training during the hackathon
+    # Force a balanced dataset for easier training
     samples_per_esi = num_samples // 5
 
     for esi_level in range(1, 6):

@@ -1,5 +1,5 @@
 """
-🧊 Frostbyte — Python-Only Inference Baseline Server
+🏥 Multimodal Triage — Python-Only Inference Baseline Server
 
 A pure-Python Flask server that performs the same LightGBM inference
 as the Rust backend, used for latency benchmarking comparison.
@@ -23,7 +23,7 @@ warnings.filterwarnings("ignore")
 # ── Setup ─────────────────────────────────────────────────────
 
 def _resolve_base_dir():
-    env = os.environ.get("FROSTBYTE_DATA_DIR")
+    env = os.environ.get("TRIAGE_DATA_DIR")
     if env:
         return env
     return "."

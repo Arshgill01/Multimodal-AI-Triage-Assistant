@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-🧊 Frostbyte — Latency Benchmark Suite
+🏥 Multimodal Triage — Latency Benchmark Suite
 
 Compares inference latency between:
   1. Rust (Axum + LightGBM FFI)  — port 3001
@@ -83,7 +83,7 @@ def check_server(url: str, name: str) -> bool:
 
 def main():
     print("=" * 65)
-    print("  🧊 FROSTBYTE LATENCY BENCHMARK SUITE")
+    print("  🏥 MULTIMODAL TRIAGE LATENCY BENCHMARK SUITE")
     print(f"  {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"  Warmup: {WARMUP_ROUNDS} rounds | Benchmark: {BENCHMARK_ROUNDS} rounds")
     print("=" * 65)
@@ -181,9 +181,9 @@ def main():
 
 
 def generate_markdown_report(results: dict):
-    """Generate BENCHMARKS.md for the hackathon pitch."""
+    """Generate BENCHMARKS.md for the project."""
     lines = [
-        "# 🧊 Frostbyte — Inference Latency Benchmarks\n",
+        "# 🏥 Multimodal Triage — Inference Latency Benchmarks\n",
         f"> Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | "
         f"Rounds: {BENCHMARK_ROUNDS} per patient\n",
         "",
@@ -240,7 +240,7 @@ def generate_markdown_report(results: dict):
     report = "\n".join(lines)
     with open("BENCHMARKS.md", "w") as f:
         f.write(report)
-    print("📊 BENCHMARKS.md generated for hackathon pitch")
+    print("📊 BENCHMARKS.md generated for project documentation")
 
 
 if __name__ == "__main__":

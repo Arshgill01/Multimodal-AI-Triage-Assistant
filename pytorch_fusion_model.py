@@ -1,5 +1,5 @@
 # %% [markdown]
-# # 🧊 Frostbyte — PyTorch Cross-Attention Multimodal Fusion Network
+# # 🏥 Multimodal Triage — PyTorch Cross-Attention Multimodal Fusion Network
 #
 # **Objective:** Build a custom multi-headed neural network with cross-attention
 # that learns _when_ to attend to text/image modalities based on tabular vitals.
@@ -30,13 +30,13 @@ warnings.filterwarnings("ignore")
 # from google.colab import drive
 # drive.mount('/content/drive')
 
-# Auto-detect Colab vs local. Override: export FROSTBYTE_DATA_DIR="/your/path"
+# Auto-detect Colab vs local. Override: export TRIAGE_DATA_DIR="/your/path"
 def _resolve_base_dir():
-    env = os.environ.get("FROSTBYTE_DATA_DIR")
+    env = os.environ.get("TRIAGE_DATA_DIR")
     if env:
         return env
-    if os.path.exists("/content/drive/MyDrive/frostbyte"):
-        return "/content/drive/MyDrive/frostbyte"  # Colab
+    if os.path.exists("/content/drive/MyDrive/triage_data"):
+        return "/content/drive/MyDrive/triage_data"  # Colab
     return "."  # Local
 
 BASE_DIR = _resolve_base_dir()

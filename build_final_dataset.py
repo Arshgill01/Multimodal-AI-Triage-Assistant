@@ -4,7 +4,7 @@ import random
 import numpy as np
 import pandas as pd
 
-# Set seeds for reproducible hackathon demos
+# Set seeds for reproducible demos
 np.random.seed(42)
 random.seed(42)
 

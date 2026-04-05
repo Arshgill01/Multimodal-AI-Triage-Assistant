@@ -53,7 +53,7 @@ print(
     )
 )
 
-# 6. SHAP Explainability Engine (The Hackathon Flex)
+# 6. SHAP Explainability Engine
 print("\nGenerating SHAP Values...")
 # TreeExplainer is highly optimized for LightGBM
 explainer = shap.TreeExplainer(model)
