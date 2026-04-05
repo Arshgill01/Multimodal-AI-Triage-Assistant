@@ -88,7 +88,7 @@ pub async fn predict(
         let booster_mutex = state.booster.as_ref().ok_or_else(|| {
             (
                 StatusCode::SERVICE_UNAVAILABLE,
-                "LightGBM model not loaded. Set FROSTBYTE_MODEL_PATH.".to_string(),
+                "LightGBM model not loaded. Set TRIAGE_MODEL_PATH.".to_string(),
             )
         })?;
 
@@ -166,7 +166,7 @@ pub async fn predict(
         ))
     );
 
-    if let Err(e) = state.log_decision(
+    let audit_id = match state.log_decision(
         &patient_hash,
         &patient.chief_complaint,
         predicted_esi,
@@ -174,8 +174,12 @@ pub async fn predict(
         confidence.is_uncertain,
         &top_shap_drivers,
     ) {
-        tracing::warn!("Audit log failed: {}", e);
-    }
+        Ok(id) => id,
+        Err(e) => {
+            tracing::warn!("Audit log failed: {}", e);
+            patient_hash.clone()
+        }
+    };
 
     Ok(Json(PredictResponse {
         predicted_esi,
@@ -184,7 +188,7 @@ pub async fn predict(
         confidence,
         feature_vector,
         shap,
-        audit_id: patient_hash,
+        audit_id,
     }))
 }
 
