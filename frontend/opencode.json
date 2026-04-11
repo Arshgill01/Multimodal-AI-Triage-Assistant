@@ -1,0 +1,28 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "build",
+  "share": "disabled",
+  "instructions": ["docs/ai/*.md"],
+  "permission": {
+    "bash": {
+      "*": "ask",
+      "git status*": "allow",
+      "git diff*": "allow",
+      "git log*": "allow",
+      "grep *": "allow",
+      "rg *": "allow",
+      "find *": "allow",
+      "ls *": "allow",
+      "cat *": "allow",
+      "cargo check*": "ask",
+      "cargo test*": "ask",
+      "npm run build*": "ask",
+      "npm test*": "ask",
+      "pnpm *": "ask",
+      "uvicorn *": "ask",
+      "git commit*": "ask",
+      "git push*": "ask",
+      "rm -rf *": "deny"
+    }
+  }
+}
