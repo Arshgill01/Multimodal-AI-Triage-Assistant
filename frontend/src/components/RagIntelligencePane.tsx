@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAppStore } from "@/lib/store";
+import { useAppStore, SimilarCaseEvidence } from "@/lib/store";
 import { PYTHON_API } from "@/lib/config";
 import ReactMarkdown from "react-markdown";
-import { BrainCircuit, FileClock } from "lucide-react";
+import { BrainCircuit, FileClock, Activity, HeartPulse, AlertTriangle } from "lucide-react";
 
 export default function RagIntelligencePane() {
     const { prediction, ragStream, similarCases, analysisPhase, patientData, appendRagStream, setSimilarCases } = useAppStore();
@@ -93,7 +93,7 @@ export default function RagIntelligencePane() {
             {/* Similar Cases Deck */}
             <div className="h-1/3 flex flex-col border-b border-[var(--color-obsidian-border)] pb-4">
                 <h3 className="text-[10px] tracking-widest uppercase text-[var(--color-text-secondary)] mb-3 flex items-center gap-2">
-                    <FileClock size={12} /> ChromaDB Similarity Search
+                    <Activity size={12} className="text-[#00e5ff]" /> Hybrid Evidence Retrieval
                 </h3>
 
                 <div className="flex-1 overflow-y-auto pr-2 flex flex-col gap-2">
@@ -103,7 +103,7 @@ export default function RagIntelligencePane() {
                                 Querying Vector Store...
                             </motion.div>
                         ) : (
-                            similarCases.map((c, i) => (
+                            similarCases.map((c: SimilarCaseEvidence, i) => (
                                 <motion.div
                                     key={i}
                                     initial={{ opacity: 0, x: 20 }}
@@ -112,12 +112,38 @@ export default function RagIntelligencePane() {
                                     className="p-3 bg-[rgba(255,255,255,0.02)] border border-[var(--color-obsidian-border)] rounded hover:bg-[rgba(255,255,255,0.05)] transition-colors text-xs"
                                 >
                                     <div className="flex justify-between items-start mb-1">
-                                        <span className={`font-bold ${c.target_esi === 1 ? 'text-[#ff2a2a]' : c.target_esi === 2 ? 'text-[#ff9100]' : 'text-[#ffb300]'}`}>
-                                            ESI {c.target_esi}
-                                        </span>
-                                        <span className="text-[var(--color-text-muted)] font-mono">{(c.similarity * 100).toFixed(0)}% MATCH</span>
+                                        <div className="flex items-center gap-2">
+                                            <span className={`font-bold ${c.target_esi === 1 ? 'text-[#ff2a2a]' : c.target_esi === 2 ? 'text-[#ff9100]' : 'text-[#ffb300]'}`}>
+                                                ESI {c.target_esi}
+                                            </span>
+                                            {c.flag_high_risk === 1 && (
+                                                <AlertTriangle size={12} className="text-[#ff2a2a]" />
+                                            )}
+                                        </div>
+                                        <span className="text-[var(--color-text-muted)] font-mono">{(c.similarity * 100).toFixed(0)}%</span>
                                     </div>
-                                    <p className="text-[var(--color-text-primary)] line-clamp-2 italic">"{c.complaint}"</p>
+                                    <p className="text-[var(--color-text-primary)] line-clamp-2 italic mb-2">"{c.complaint}"</p>
+                                    <div className="flex items-center gap-3 text-[10px] text-[var(--color-text-muted)] font-mono">
+                                        {c.source === "both" ? (
+                                            <span className="flex items-center gap-1 text-[#00e5ff]">
+                                                <Activity size={10} /> DUAL
+                                            </span>
+                                        ) : c.source === "vitals" ? (
+                                            <span className="flex items-center gap-1 text-[#ff9100]">
+                                                <HeartPulse size={10} /> VITALS
+                                            </span>
+                                        ) : (
+                                            <span className="flex items-center gap-1 text-[#a78bfa]">
+                                                <FileClock size={10} /> TEXT
+                                            </span>
+                                        )}
+                                        <span>
+                                            txt:{(c.text_similarity ? c.text_similarity * 100 : 0).toFixed(0)}%
+                                        </span>
+                                        <span>
+                                            vit:{(c.vitals_similarity ? c.vitals_similarity * 100 : 0).toFixed(0)}%
+                                        </span>
+                                    </div>
                                 </motion.div>
                             ))
                         )}

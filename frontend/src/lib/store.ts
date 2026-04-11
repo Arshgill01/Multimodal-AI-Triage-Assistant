@@ -3,6 +3,18 @@ import { create } from "zustand";
 export type AnalysisPhase = "idle" | "extracting" | "routing" | "inferring" | "explainability" | "rag" | "complete";
 export type EsiLevel = 1 | 2 | 3 | 4 | 5 | null;
 
+export interface SimilarCaseEvidence {
+    complaint: string;
+    target_esi: number;
+    similarity: number;
+    text_similarity?: number;
+    vitals_similarity?: number;
+    source?: "text" | "vitals" | "both";
+    flag_high_risk?: number;
+    heart_rate?: number;
+    spo2?: number;
+}
+
 interface PatientState {
     age: number;
     heart_rate: number;
@@ -27,7 +39,7 @@ interface AppState {
     // Results
     prediction: any | null;
     ragStream: string;
-    similarCases: any[];
+    similarCases: SimilarCaseEvidence[];
     batchResults: any[];
 
     // Actions
@@ -36,7 +48,7 @@ interface AppState {
     updatePatient: (field: keyof PatientState, value: any) => void;
     setPrediction: (pred: any) => void;
     appendRagStream: (chunk: string) => void;
-    setSimilarCases: (cases: any[]) => void;
+    setSimilarCases: (cases: SimilarCaseEvidence[]) => void;
     setMciMode: (on: boolean) => void;
     setBatchResults: (results: any[]) => void;
     reset: () => void;
