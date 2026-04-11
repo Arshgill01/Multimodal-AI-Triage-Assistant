@@ -103,7 +103,18 @@ export default function TelemetryPane() {
 
         } catch (err: any) {
             console.error(err);
-            setInferenceError(err?.message || "Connection to Rust backend failed");
+            const errMsg = err?.message || "Connection to Rust backend failed";
+            
+            let userMessage = errMsg;
+            if (errMsg.includes("fetch") || errMsg.includes("Network")) {
+                userMessage = "Rust backend unreachable. Run ./startup.sh to start services.";
+            } else if (errMsg.includes("503")) {
+                userMessage = "Backend in degraded mode. Model may not be loaded.";
+            } else if (errMsg.includes("500")) {
+                userMessage = "Backend error. Check python_service.log for details.";
+            }
+            
+            setInferenceError(userMessage);
             setPhase("idle");
         }
     };
