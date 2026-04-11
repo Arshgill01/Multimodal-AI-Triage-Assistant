@@ -12,7 +12,8 @@ Risk:
 - best retrieval idea is not actually what judges experience
 
 Fix:
-- port hybrid retrieval logic into `preprocessing_service.py`
+- ✅ FIXED: hybrid retrieval now live in `/rag` and `/rag-stream` endpoints
+- Now returns: text_similarity, vitals_similarity, source, flag_high_risk
 
 ## 3. `next_steps.rs` uses heuristic ESI fallback
 Risk:

@@ -27,6 +27,7 @@ from typing import Optional, List
 
 warnings.filterwarnings("ignore")
 
+
 # ── Auto-detect paths ─────────────────────────────────────────
 def _resolve_base_dir():
     env = os.environ.get("TRIAGE_DATA_DIR")
@@ -35,6 +36,7 @@ def _resolve_base_dir():
     if os.path.exists("/content/drive/MyDrive/triage_data"):
         return "/content/drive/MyDrive/triage_data"
     return "."
+
 
 BASE_DIR = _resolve_base_dir()
 
@@ -71,17 +73,27 @@ shap_explainer = None
 # RAG components
 chroma_collection = None
 gemini_model = None
+VITALS_STATS = None
+
+# Hybrid retrieval tuning
+ALPHA = 0.5
+ESI_BOOST = 0.15
+TEXT_POOL_SIZE = 50
+VITALS_POOL_SIZE = 200
 
 
 # ── Pydantic Models ──────────────────────────────────────────
+
 
 class EmbedRequest(BaseModel):
     complaint: str
     image_base64: Optional[str] = None
 
+
 class EmbedResponse(BaseModel):
     text_features: List[float]
     image_features: List[float]
+
 
 class PatientVitals(BaseModel):
     age: float
@@ -92,10 +104,12 @@ class PatientVitals(BaseModel):
     systolic_bp: float
     pain_scale: float
 
+
 class RagRequest(BaseModel):
     complaint: str
     vitals: PatientVitals
     predicted_esi: int
+
 
 class SimilarCase(BaseModel):
     complaint: str
@@ -103,19 +117,27 @@ class SimilarCase(BaseModel):
     similarity: float
     heart_rate: Optional[float] = None
     spo2: Optional[float] = None
+    text_similarity: Optional[float] = None
+    vitals_similarity: Optional[float] = None
+    source: Optional[str] = None
+    flag_high_risk: Optional[int] = None
+
 
 class RagResponse(BaseModel):
     recommendation: str
     similar_cases: List[SimilarCase]
 
+
 class ShapRequest(BaseModel):
     feature_vector: List[float]
     predicted_class: int
+
 
 class ShapFeature(BaseModel):
     name: str
     value: float
     shap_value: float
+
 
 class ShapResponse(BaseModel):
     base_value: float
@@ -125,6 +147,7 @@ class ShapResponse(BaseModel):
 
 
 # ── Startup: Load all models ─────────────────────────────────
+
 
 @app.on_event("startup")
 async def load_models():
@@ -139,6 +162,7 @@ async def load_models():
     # ---- ClinicalBERT ----
     print("Loading ClinicalBERT...")
     from transformers import AutoModel, AutoTokenizer
+
     MODEL_NAME = "emilyalsentzer/Bio_ClinicalBERT"
     bert_tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     bert_model = AutoModel.from_pretrained(MODEL_NAME).to(device).eval()
@@ -162,8 +186,11 @@ async def load_models():
                 for i in range(0, len(complaints), BATCH_SIZE):
                     batch = complaints[i : i + BATCH_SIZE]
                     tokens = bert_tokenizer(
-                        batch, padding=True, truncation=True,
-                        max_length=64, return_tensors="pt",
+                        batch,
+                        padding=True,
+                        truncation=True,
+                        max_length=64,
+                        return_tensors="pt",
                     ).to(device)
                     outputs = bert_model(**tokens)
                     cls = outputs.last_hidden_state[:, 0, :].cpu().numpy()
@@ -171,9 +198,13 @@ async def load_models():
             emb_matrix = np.vstack(all_embs)
             text_pca = PCA(n_components=10, random_state=42)
             text_pca.fit(emb_matrix)
-            print(f"✅ Text PCA fitted (variance: {text_pca.explained_variance_ratio_.sum():.4f})")
+            print(
+                f"✅ Text PCA fitted (variance: {text_pca.explained_variance_ratio_.sum():.4f})"
+            )
         else:
-            print(f"⚠️  Dataset not found at {csv_path}. Text PCA unavailable — will return raw CLS features.")
+            print(
+                f"⚠️  Dataset not found at {csv_path}. Text PCA unavailable — will return raw CLS features."
+            )
     except Exception as e:
         print(f"⚠️  Text PCA setup failed: {e}")
 
@@ -187,12 +218,14 @@ async def load_models():
     resnet_model.fc = torch.nn.Identity()
     resnet_model = resnet_model.to(device).eval()
 
-    image_preprocess = transforms.Compose([
-        transforms.Resize(256),
-        transforms.CenterCrop(224),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-    ])
+    image_preprocess = transforms.Compose(
+        [
+            transforms.Resize(256),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        ]
+    )
     print("✅ ResNet-50 loaded")
 
     # ---- PCA for Images (refit from dataset if available) ----
@@ -246,25 +279,37 @@ async def load_models():
                 metadata={"hnsw:space": "cosine"},
             )
 
-            tabular_cols = ["age", "heart_rate", "resp_rate", "spo2", "temp_f", "systolic_bp", "pain_scale"]
+            tabular_cols = [
+                "age",
+                "heart_rate",
+                "resp_rate",
+                "spo2",
+                "temp_f",
+                "systolic_bp",
+                "pain_scale",
+            ]
             BATCH = 100
             for i in range(0, len(df), BATCH):
                 end = min(i + BATCH, len(df))
-                docs = [str(row["chief_complaint"]) for _, row in df.iloc[i:end].iterrows()]
+                docs = [
+                    str(row["chief_complaint"]) for _, row in df.iloc[i:end].iterrows()
+                ]
                 metas = []
                 for _, row in df.iloc[i:end].iterrows():
-                    metas.append({
-                        "patient_id": str(row["patient_id"]),
-                        "age": int(row["age"]),
-                        "heart_rate": int(row["heart_rate"]),
-                        "resp_rate": int(row["resp_rate"]),
-                        "spo2": int(row["spo2"]),
-                        "temp_f": float(row["temp_f"]),
-                        "systolic_bp": int(row["systolic_bp"]),
-                        "pain_scale": int(row["pain_scale"]),
-                        "target_esi": int(row["target_esi"]),
-                        "flag_high_risk": int(row["flag_high_risk"]),
-                    })
+                    metas.append(
+                        {
+                            "patient_id": str(row["patient_id"]),
+                            "age": int(row["age"]),
+                            "heart_rate": int(row["heart_rate"]),
+                            "resp_rate": int(row["resp_rate"]),
+                            "spo2": int(row["spo2"]),
+                            "temp_f": float(row["temp_f"]),
+                            "systolic_bp": int(row["systolic_bp"]),
+                            "pain_scale": int(row["pain_scale"]),
+                            "target_esi": int(row["target_esi"]),
+                            "flag_high_risk": int(row["flag_high_risk"]),
+                        }
+                    )
                 ids = [f"patient_{j}" for j in range(i, end)]
                 chroma_collection.add(
                     documents=docs,
@@ -273,11 +318,27 @@ async def load_models():
                     ids=ids,
                 )
             print(f"✅ ChromaDB populated: {chroma_collection.count()} patients")
+
+            global VITALS_STATS
+            VITALS_KEYS = [
+                "heart_rate",
+                "resp_rate",
+                "spo2",
+                "temp_f",
+                "systolic_bp",
+                "pain_scale",
+            ]
+            VITALS_STATS = {
+                col: {"mean": float(df[col].mean()), "std": float(df[col].std())}
+                for col in VITALS_KEYS
+            }
+            print("📊 Vitals normalization stats precomputed for hybrid retrieval")
         else:
             print(f"⚠️  RAG data not found. /rag endpoint will be unavailable.")
 
         # Gemini
         import google.generativeai as genai
+
         api_key = os.environ.get("GEMINI_API_KEY")
         if api_key and api_key != "YOUR_GEMINI_API_KEY_HERE":
             genai.configure(api_key=api_key)
@@ -293,9 +354,10 @@ async def load_models():
     try:
         import joblib
         import pandas as pd
+
         try:
             # Fix for older shap versions with newer pandas
-            if not hasattr(pd.core.strings, 'StringMethods'):
+            if not hasattr(pd.core.strings, "StringMethods"):
                 pd.core.strings.StringMethods = pd.core.strings.accessor.StringMethods
         except Exception:
             pass
@@ -306,6 +368,7 @@ async def load_models():
 
         if os.path.exists(model_path_txt):
             import lightgbm as lgb
+
             lgb_model = lgb.Booster(model_file=model_path_txt)
             shap_explainer = shap.TreeExplainer(lgb_model)
             print("✅ LightGBM + SHAP explainer loaded (from .txt)")
@@ -321,7 +384,226 @@ async def load_models():
     print("\n🧊 Preprocessing service ready!")
 
 
+# ── Hybrid Retrieval Helpers ───────────────────────────────────────
+
+
+def _compute_vitals_similarity(query_vitals: dict, candidate_meta: dict) -> float:
+    """Compute normalized similarity between query vitals and a historical patient."""
+    if VITALS_STATS is None:
+        return 0.0
+    dist_sq = 0.0
+    for key in VITALS_STATS:
+        q_val = float(query_vitals.get(key, 0))
+        c_val = float(candidate_meta.get(key, 0))
+        std = VITALS_STATS[key]["std"]
+        mean = VITALS_STATS[key]["mean"]
+        if std > 0:
+            q_z = (q_val - mean) / std
+            c_z = (c_val - mean) / std
+            dist_sq += (q_z - c_z) ** 2
+    dist = dist_sq**0.5
+    return 1.0 / (1.0 + dist)
+
+
+def _fetch_vitals_candidates(
+    query_vitals: dict, predicted_esi: int, pool_size: int
+) -> list:
+    """Path B: Retrieve candidates by ESI metadata filter (±1), ranked by vitals similarity."""
+    if chroma_collection is None or VITALS_STATS is None:
+        return []
+
+    esi_targets = [
+        esi for esi in range(max(1, predicted_esi - 1), min(5, predicted_esi + 1) + 1)
+    ]
+
+    if len(esi_targets) == 1:
+        where_filter = {"target_esi": esi_targets[0]}
+    else:
+        where_filter = {"target_esi": {"$in": esi_targets}}
+
+    try:
+        results = chroma_collection.get(
+            where=where_filter,
+            limit=pool_size,
+            include=["documents", "metadatas"],
+        )
+    except Exception:
+        return []
+
+    candidates = []
+    for i in range(len(results["ids"])):
+        patient = results["metadatas"][i].copy()
+        patient["complaint"] = results["documents"][i]
+        patient["text_similarity"] = 0.0
+        patient["vitals_similarity"] = _compute_vitals_similarity(query_vitals, patient)
+        patient["_source"] = "vitals"
+        candidates.append(patient)
+
+    candidates.sort(key=lambda x: x["vitals_similarity"], reverse=True)
+    return candidates[:pool_size]
+
+
+def retrieve_similar_patients_hybrid(
+    complaint_text: str, query_vitals: dict, predicted_esi: int, k: int = 5
+) -> list:
+    """
+    Dual-path hybrid retrieval:
+      Path A — Text: Broad ClinicalBERT cosine similarity fetch
+      Path B — Vitals/ESI: Metadata-filtered retrieval ranked by physiology
+
+    Returns list of dicts with: complaint, target_esi, similarity, text_similarity,
+    vitals_similarity, source, flag_high_risk, heart_rate, spo2, resp_rate, etc.
+    """
+    if bert_model is None or chroma_collection is None:
+        return []
+
+    if VITALS_STATS is None:
+        text_k = k
+        results = chroma_collection.query(
+            query_embeddings=[query_vitals.get("_query_emb", [0] * 768)],
+            n_results=text_k,
+            include=["documents", "metadatas", "distances"],
+        )
+        similar_cases = []
+        for i in range(len(results["ids"][0])):
+            meta = results["metadatas"][0][i]
+            complaint = results["documents"][0][i]
+            similarity = 1 - results["distances"][0][i]
+            similar_cases.append(
+                {
+                    "complaint": complaint,
+                    "target_esi": meta["target_esi"],
+                    "similarity": round(similarity, 4),
+                    "text_similarity": round(similarity, 4),
+                    "vitals_similarity": 0.0,
+                    "source": "text",
+                    "flag_high_risk": meta.get("flag_high_risk", 0),
+                    "heart_rate": meta.get("heart_rate"),
+                    "spo2": meta.get("spo2"),
+                }
+            )
+        return similar_cases[:k]
+
+    if bert_tokenizer is None:
+        return []
+
+    with torch.no_grad():
+        tokens = bert_tokenizer(
+            [complaint_text],
+            padding=True,
+            truncation=True,
+            max_length=64,
+            return_tensors="pt",
+        ).to(device)
+        outputs = bert_model(**tokens)
+        query_emb = outputs.last_hidden_state[:, 0, :].cpu().numpy().flatten()
+
+    candidates_by_id = {}
+
+    text_k = TEXT_POOL_SIZE if query_vitals else k
+    try:
+        results = chroma_collection.query(
+            query_embeddings=[query_emb.tolist()],
+            n_results=text_k,
+            include=["documents", "metadatas", "distances"],
+        )
+
+        for i in range(len(results["ids"][0])):
+            pid = results["ids"][0][i]
+            patient = results["metadatas"][0][i].copy()
+            patient["complaint"] = results["documents"][0][i]
+            patient["text_similarity"] = 1 - results["distances"][0][i]
+            patient["vitals_similarity"] = 0.0
+            patient["_source"] = "text"
+            patient["_id"] = pid
+            candidates_by_id[pid] = patient
+    except Exception:
+        pass
+
+    if predicted_esi is not None:
+        vitals_candidates = _fetch_vitals_candidates(
+            query_vitals, predicted_esi, VITALS_POOL_SIZE
+        )
+        for vc in vitals_candidates:
+            pid = vc.get("patient_id", "")
+            vc_id = f"patient_vitals_{pid}"
+            if (
+                vc_id not in candidates_by_id
+                and f"patient_{pid}" not in candidates_by_id
+            ):
+                vc["_id"] = vc_id
+                candidates_by_id[vc_id] = vc
+            else:
+                existing_key = vc_id if vc_id in candidates_by_id else f"patient_{pid}"
+                if existing_key in candidates_by_id:
+                    candidates_by_id[existing_key]["vitals_similarity"] = vc[
+                        "vitals_similarity"
+                    ]
+                    candidates_by_id[existing_key]["_source"] = "both"
+
+    all_candidates = list(candidates_by_id.values())
+
+    for c in all_candidates:
+        source = c.get("_source", "text")
+
+        if source == "text" and c.get("vitals_similarity", 0.0) == 0.0:
+            c["vitals_similarity"] = _compute_vitals_similarity(query_vitals, c)
+
+        if source == "vitals":
+            combined = c["vitals_similarity"]
+        else:
+            combined = (
+                ALPHA * c["text_similarity"] + (1 - ALPHA) * c["vitals_similarity"]
+            )
+
+        if predicted_esi is not None:
+            candidate_esi = int(c.get("target_esi", 3))
+            if abs(candidate_esi - predicted_esi) <= 1:
+                combined *= 1 + ESI_BOOST
+
+        c["similarity"] = combined
+
+    all_candidates.sort(key=lambda x: x["similarity"], reverse=True)
+
+    seen_complaints = set()
+    diverse_results = []
+    overflow = []
+
+    for c in all_candidates:
+        complaint_key = c["complaint"].strip().lower()
+        if complaint_key not in seen_complaints:
+            seen_complaints.add(complaint_key)
+            diverse_results.append(c)
+        else:
+            overflow.append(c)
+
+        if len(diverse_results) >= k:
+            break
+
+    while len(diverse_results) < k and overflow:
+        diverse_results.append(overflow.pop(0))
+
+    formatted = []
+    for c in diverse_results[:k]:
+        formatted.append(
+            {
+                "complaint": c["complaint"],
+                "target_esi": c["target_esi"],
+                "similarity": round(c["similarity"], 4),
+                "text_similarity": round(c.get("text_similarity", 0.0), 4),
+                "vitals_similarity": round(c.get("vitals_similarity", 0.0), 4),
+                "source": c.get("_source", "text"),
+                "flag_high_risk": c.get("flag_high_risk", 0),
+                "heart_rate": c.get("heart_rate"),
+                "spo2": c.get("spo2"),
+            }
+        )
+
+    return formatted
+
+
 # ── Endpoints ─────────────────────────────────────────────────
+
 
 @app.get("/health")
 async def health():
@@ -330,6 +612,7 @@ async def health():
         "bert_loaded": bert_model is not None,
         "resnet_loaded": resnet_model is not None,
         "rag_available": chroma_collection is not None and gemini_model is not None,
+        "hybrid_retrieval": VITALS_STATS is not None,
     }
 
 
@@ -342,8 +625,11 @@ async def embed(req: EmbedRequest):
     # ── Text embedding ──
     with torch.no_grad():
         tokens = bert_tokenizer(
-            [req.complaint], padding=True, truncation=True,
-            max_length=64, return_tensors="pt",
+            [req.complaint],
+            padding=True,
+            truncation=True,
+            max_length=64,
+            return_tensors="pt",
         ).to(device)
         outputs = bert_model(**tokens)
         cls_emb = outputs.last_hidden_state[:, 0, :].cpu().numpy().flatten()
@@ -372,7 +658,9 @@ async def embed(req: EmbedRequest):
                 emb = resnet_model(img_tensor).cpu().numpy().flatten()
 
             if image_pca is not None:
-                image_features = image_pca.transform(emb.reshape(1, -1)).flatten().tolist()
+                image_features = (
+                    image_pca.transform(emb.reshape(1, -1)).flatten().tolist()
+                )
             else:
                 image_features = emb[:5].tolist()
         except Exception as e:
@@ -385,50 +673,53 @@ async def embed(req: EmbedRequest):
 async def rag(req: RagRequest):
     """RAG pipeline: retrieve similar patients + generate Gemini recommendation."""
     if chroma_collection is None:
-        raise HTTPException(status_code=503, detail="ChromaDB not initialized. Ensure data files exist.")
+        raise HTTPException(
+            status_code=503, detail="ChromaDB not initialized. Ensure data files exist."
+        )
 
-    # ── Retrieve similar patients ──
-    with torch.no_grad():
-        tokens = bert_tokenizer(
-            [req.complaint], padding=True, truncation=True,
-            max_length=64, return_tensors="pt",
-        ).to(device)
-        outputs = bert_model(**tokens)
-        query_emb = outputs.last_hidden_state[:, 0, :].cpu().numpy().flatten()
+    query_vitals = {
+        "heart_rate": req.vitals.heart_rate,
+        "resp_rate": req.vitals.resp_rate,
+        "spo2": req.vitals.spo2,
+        "temp_f": req.vitals.temp_f,
+        "systolic_bp": req.vitals.systolic_bp,
+        "pain_scale": req.vitals.pain_scale,
+    }
 
-    results = chroma_collection.query(
-        query_embeddings=[query_emb.tolist()],
-        n_results=5,
-        include=["documents", "metadatas", "distances"],
+    similar_results = retrieve_similar_patients_hybrid(
+        complaint_text=req.complaint,
+        query_vitals=query_vitals,
+        predicted_esi=req.predicted_esi,
+        k=5,
     )
 
     similar_cases = []
     context_lines = []
-    for i in range(len(results["ids"][0])):
-        meta = results["metadatas"][0][i]
-        complaint = results["documents"][0][i]
-        similarity = 1 - results["distances"][0][i]
-
-        similar_cases.append(SimilarCase(
-            complaint=complaint,
-            target_esi=meta["target_esi"],
-            similarity=round(similarity, 4),
-            heart_rate=meta.get("heart_rate"),
-            spo2=meta.get("spo2"),
-        ))
+    for r in similar_results:
+        similar_cases.append(
+            SimilarCase(
+                complaint=r["complaint"],
+                target_esi=r["target_esi"],
+                similarity=r["similarity"],
+                text_similarity=r.get("text_similarity"),
+                vitals_similarity=r.get("vitals_similarity"),
+                source=r.get("source"),
+                flag_high_risk=r.get("flag_high_risk"),
+                heart_rate=r.get("heart_rate"),
+                spo2=r.get("spo2"),
+            )
+        )
 
         context_lines.append(
-            f"Historical Patient {i+1}:\n"
-            f'  Complaint: "{complaint}"\n'
-            f"  Vitals: HR={meta['heart_rate']}, RR={meta['resp_rate']}, "
-            f"SpO2={meta['spo2']}%, Temp={meta['temp_f']}°F, "
-            f"SBP={meta['systolic_bp']}, Pain={meta['pain_scale']}/10\n"
-            f"  ESI Level: {meta['target_esi']} | "
-            f"High Risk: {'Yes' if meta['flag_high_risk'] else 'No'}\n"
+            f"Historical Patient:\n"
+            f'  Complaint: "{r["complaint"]}"\n'
+            f"  Vitals: HR={r.get('heart_rate')}, SpO2={r.get('spo2')}%\n"
+            f"  ESI Level: {r['target_esi']} | "
+            f"High Risk: {'Yes' if r.get('flag_high_risk') else 'No'}\n"
         )
 
     # ── Generate with Gemini ──
-    if gemini_model is not None:
+    if gemini_model is not None and similar_cases:
         historical_context = "\n".join(context_lines)
         v = req.vitals
         prompt = f"""You are a clinical decision support assistant for emergency department triage.
@@ -463,6 +754,10 @@ Keep your response concise and actionable. Format with clear headers."""
             recommendation = response.text
         except Exception as e:
             recommendation = f"⚠️ Gemini generation failed: {str(e)}. Please review similar cases manually."
+    elif not similar_cases:
+        recommendation = (
+            "⚠️ Could not retrieve similar cases. Check that ChromaDB is populated."
+        )
     else:
         recommendation = (
             "⚠️ Gemini API key not configured. Set GEMINI_API_KEY environment variable.\n"
@@ -481,15 +776,36 @@ async def shap_explain(req: ShapRequest):
     import shap as shap_lib
 
     feature_names = [
-        "age", "heart_rate", "resp_rate", "spo2", "temp_f", "systolic_bp", "pain_scale",
-        "text_feat_0", "text_feat_1", "text_feat_2", "text_feat_3", "text_feat_4",
-        "text_feat_5", "text_feat_6", "text_feat_7", "text_feat_8", "text_feat_9",
-        "img_feat_0", "img_feat_1", "img_feat_2", "img_feat_3", "img_feat_4",
+        "age",
+        "heart_rate",
+        "resp_rate",
+        "spo2",
+        "temp_f",
+        "systolic_bp",
+        "pain_scale",
+        "text_feat_0",
+        "text_feat_1",
+        "text_feat_2",
+        "text_feat_3",
+        "text_feat_4",
+        "text_feat_5",
+        "text_feat_6",
+        "text_feat_7",
+        "text_feat_8",
+        "text_feat_9",
+        "img_feat_0",
+        "img_feat_1",
+        "img_feat_2",
+        "img_feat_3",
+        "img_feat_4",
     ]
 
     esi_labels = [
-        "ESI 1 (Resuscitation)", "ESI 2 (Emergent)", "ESI 3 (Urgent)",
-        "ESI 4 (Less Urgent)", "ESI 5 (Non-Urgent)",
+        "ESI 1 (Resuscitation)",
+        "ESI 2 (Emergent)",
+        "ESI 3 (Urgent)",
+        "ESI 4 (Less Urgent)",
+        "ESI 5 (Non-Urgent)",
     ]
 
     features = np.array(req.feature_vector).reshape(1, -1)
@@ -506,11 +822,13 @@ async def shap_explain(req: ShapRequest):
 
     shap_features = []
     for i, name in enumerate(feature_names):
-        shap_features.append(ShapFeature(
-            name=name,
-            value=round(float(features[0, i]), 4),
-            shap_value=round(float(sv[i]), 6),
-        ))
+        shap_features.append(
+            ShapFeature(
+                name=name,
+                value=round(float(features[0, i]), 4),
+                shap_value=round(float(sv[i]), 6),
+            )
+        )
 
     # Sort by absolute SHAP value (most impactful first)
     shap_features.sort(key=lambda f: abs(f.shap_value), reverse=True)
@@ -531,40 +849,42 @@ async def rag_stream(req: RagRequest):
     if gemini_model is None:
         raise HTTPException(status_code=503, detail="Gemini not configured.")
 
-    # ── Retrieve similar patients (same as /rag) ──
-    with torch.no_grad():
-        tokens = bert_tokenizer(
-            [req.complaint], padding=True, truncation=True,
-            max_length=64, return_tensors="pt",
-        ).to(device)
-        outputs = bert_model(**tokens)
-        query_emb = outputs.last_hidden_state[:, 0, :].cpu().numpy().flatten()
+    query_vitals = {
+        "heart_rate": req.vitals.heart_rate,
+        "resp_rate": req.vitals.resp_rate,
+        "spo2": req.vitals.spo2,
+        "temp_f": req.vitals.temp_f,
+        "systolic_bp": req.vitals.systolic_bp,
+        "pain_scale": req.vitals.pain_scale,
+    }
 
-    results = chroma_collection.query(
-        query_embeddings=[query_emb.tolist()],
-        n_results=5,
-        include=["documents", "metadatas", "distances"],
+    similar_results = retrieve_similar_patients_hybrid(
+        complaint_text=req.complaint,
+        query_vitals=query_vitals,
+        predicted_esi=req.predicted_esi,
+        k=5,
     )
 
-    # Build context
     context_lines = []
     similar_cases_json = []
-    for i in range(len(results["ids"][0])):
-        meta = results["metadatas"][0][i]
-        complaint = results["documents"][0][i]
-        similarity = 1 - results["distances"][0][i]
-        similar_cases_json.append({
-            "complaint": complaint,
-            "target_esi": meta["target_esi"],
-            "similarity": round(similarity, 4),
-        })
+    for r in similar_results:
+        similar_cases_json.append(
+            {
+                "complaint": r["complaint"],
+                "target_esi": r["target_esi"],
+                "similarity": r["similarity"],
+                "text_similarity": r.get("text_similarity"),
+                "vitals_similarity": r.get("vitals_similarity"),
+                "source": r.get("source"),
+                "flag_high_risk": r.get("flag_high_risk"),
+            }
+        )
         context_lines.append(
-            f"Historical Patient {i+1}:\n"
-            f'  Complaint: "{complaint}"\n'
-            f"  Vitals: HR={meta['heart_rate']}, RR={meta['resp_rate']}, "
-            f"SpO2={meta['spo2']}%, Temp={meta['temp_f']}°F, "
-            f"SBP={meta['systolic_bp']}, Pain={meta['pain_scale']}/10\n"
-            f"  ESI Level: {meta['target_esi']}\n"
+            f"Historical Patient:\n"
+            f'  Complaint: "{r["complaint"]}"\n'
+            f"  Vitals: HR={r.get('heart_rate')}, SpO2={r.get('spo2')}%\n"
+            f"  ESI Level: {r['target_esi']} | "
+            f"High Risk: {'Yes' if r.get('flag_high_risk') else 'No'}\n"
         )
 
     v = req.vitals
@@ -602,10 +922,8 @@ Keep your response concise, structured, and highly readable."""
     import json
 
     async def event_generator():
-        # First, send similar cases as a JSON event
         yield f"data: {json.dumps({'similar_cases': similar_cases_json})}\n\n"
 
-        # Then stream Gemini response
         try:
             response = gemini_model.generate_content(prompt, stream=True)
             for chunk in response:
@@ -628,4 +946,5 @@ Keep your response concise, structured, and highly readable."""
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)
