@@ -2,6 +2,33 @@
 
 A production-grade late-fusion multimodal AI system that predicts Emergency Severity Index (ESI) levels for emergency department triage. The system fuses three clinical data modalities — structured vitals, unstructured text, and medical imagery — through a LightGBM meta-model served via a high-performance Rust backend, augmented by a Retrieval-Augmented Generation (RAG) engine for clinical decision support.
 
+![Rust](https://img.shields.io/badge/Rust-Axum-B7410E?style=flat-square&logo=rust)
+![Python](https://img.shields.io/badge/Python-FastAPI-3776AB?style=flat-square&logo=python)
+![LightGBM](https://img.shields.io/badge/LightGBM-FFI-green?style=flat-square)
+![PyTorch](https://img.shields.io/badge/PyTorch-Research-EE4C2C?style=flat-square&logo=pytorch)
+![ClinicalBERT](https://img.shields.io/badge/ClinicalBERT-HuggingFace-FFD21E?style=flat-square)
+![ChromaDB](https://img.shields.io/badge/ChromaDB-Vector%20Store-orange?style=flat-square)
+
+---
+
+## Table of Contents
+
+1. [Why This Matters](#why-this-matters)
+2. [Live System Capabilities](#live-system-capabilities)
+3. [Demo Walkthrough](#demo-walkthrough)
+4. [System Architecture](#system-architecture)
+5. [Technology Stack](#technology-stack)
+6. [Data Engineering Pipeline](#data-engineering-pipeline)
+7. [Model Training and Results](#model-training-and-results)
+8. [Clinical RAG Engine](#clinical-rag-engine)
+9. [Rust Inference Backend](#rust-inference-backend)
+10. [Setup and Quickstart](#setup-and-quickstart)
+11. [API Reference](#api-reference)
+12. [Project Structure](#project-structure)
+13. [Key Design Decisions](#key-design-decisions)
+14. [Research Prototype](#research-prototype)
+15. [License](#license)
+
 ---
 
 ## Why This Matters
@@ -67,16 +94,16 @@ curl -X POST http://localhost:3001/predict \
 
 ### 2. Dual-Path Hybrid Evidence Retrieval
 
-RAG engine that retrieves similar historical patients and generates grounded clinical recommendations via **two independent retrieval paths**:
+RAG engine that retrieves similar historical patients and generates grounded clinical recommendations.
+
+**Unlike single-path text retrieval** — this system uses two independent retrieval paths:
 
 - **Path A (Text):** ClinicalBERT cosine similarity (captures semantic similarity in chief complaint language)
 - **Path B (Vitals/ESI):** Metadata-filtered retrieval ranked by physiological z-score similarity
 
 Candidates from both paths are merged, deduplicated, and scored with an ESI acuity boost (+15%) for candidates within ±1 level of predicted ESI.
 
-**Live endpoints:** 
-- `/next-steps` (Rust backend → Python RAG proxy)
-- `/rag-stream` (frontend → Python, SSE streaming for real-time UI updates)
+**Live endpoint:** `/rag-stream` (SSE streaming)
 
 ### 3. SHAP Explainability
 
@@ -198,8 +225,8 @@ flowchart TB
         Router["Router + CORS"]
         Predict["/predict endpoint"]
         Batch["/batch-predict endpoint"]
-        Audit["/audit-log, /audit/override, /audit-summary"]
-        Next["/next-steps endpoint"]
+        Audit["/audit-log, /audit/override"]
+        Next["/next-steps /rag-stream"]
         LGB["LightGBM Booster<br/>(FFI, Mutex-guarded)"]
 
         Router --> Predict
@@ -225,8 +252,7 @@ flowchart TB
     FE -- "POST /predict<br/>/batch-predict" --> Router
     Predict -- "POST /embed" --> BERT
     Predict -- "POST /embed" --> ResNet
-    Next -- "POST /rag" --> Chroma --> Gemini
-    FE -- "POST /rag-stream" --> Chroma
+    Next -- "POST /rag-stream" --> Chroma
 ```
 
 ### Request Flow: `/predict`
@@ -326,6 +352,19 @@ Index  17-21: Image PCA          [img_feat_0 .. img_feat_4]
 The system uses `shap.TreeExplainer` to generate:
 - **Global Feature Importance** — Bar chart showing which features drive decisions
 - **Local Waterfall** — Per-patient explanation: "Why was this patient classified as ESI 1?"
+
+These visualizations solve the medical "black box" problem by providing clinical staff with transparent, auditable reasoning for every triage decision.
+
+| Global Feature Importance | Critical Patient Waterfall |
+|:------------------------:|:--------------------------:|
+| ![SHAP Global](shap_global_importance.png) | ![SHAP Critical](shap_critical_patient.png) |
+
+### Model Artifacts
+
+| File | Format | Description |
+|:-----|:-------|:------------|
+| `triage_multimodal_model.txt` | LightGBM native text | 19,157-line model dump loaded by Rust FFI |
+| `triage_multimodal_model.pkl` | Python pickle | Scikit-learn compatible serialization |
 
 ---
 
@@ -471,18 +510,18 @@ curl -X POST http://localhost:3001/batch-predict \
 | `/health` | GET | Liveness probe |
 | `/predict` | POST | Single-patient triage inference |
 | `/batch-predict` | POST | Batch MCI triage |
-| `/next-steps` | POST | RAG clinical recommendations (proxies to Python `/rag`) |
-| `/rag-stream` | POST | SSE streaming RAG (frontend → Python direct) |
+| `/next-steps` | POST | RAG clinical recommendations |
+| `/rag-stream` | POST | SSE streaming RAG |
+| `/shap` | POST | SHAP explainability |
 | `/audit-log` | GET | Query audit trail |
 | `/audit/override` | POST | Record clinician override |
-| `/audit-summary` | GET | Audit statistics summary |
 
 ---
 
 ## Project Structure
 
 ```
-triage-submission-lock/
+triage-submission-story/
 ├── backend/                           # Rust inference backend
 │   ├── Cargo.toml
 │   ├── Cargo.lock
