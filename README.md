@@ -273,7 +273,7 @@ These visualizations solve the medical "black box" problem by providing clinical
 
 | File | Format | Description |
 |:-----|:-------|:------------|
-| `triage_multimodal_model(1).txt` | LightGBM native text | 19,157-line model dump loaded by Rust FFI |
+| `triage_multimodal_model.txt` | LightGBM native text | 19,157-line model dump loaded by Rust FFI |
 | `triage_multimodal_model.pkl` | Python pickle | Scikit-learn compatible serialization |
 
 ---
@@ -574,27 +574,66 @@ pip install -r requirements.txt
 export GEMINI_API_KEY="your-gemini-api-key"
 
 # Optional overrides
-export TRIAGE_MODEL_PATH="../triage_multimodal_model(1).txt"  # Path to LightGBM model
-export TRIAGE_PYTHON_URL="http://localhost:8000"               # Python sidecar URL
-export TRIAGE_DATA_DIR="."                                     # Data directory
+export TRIAGE_MODEL_PATH="../triage_multimodal_model.txt"  # Path to LightGBM model
+export TRIAGE_PYTHON_URL="http://localhost:8000"        # Python sidecar URL
+export TRIAGE_DATA_DIR="."                                # Data directory
 ```
 
-### 10.4 Start the Python Sidecar
+### 10.4 Quick Start (One-Command)
+
+The easiest way to start the entire stack:
 
 ```bash
+./startup.sh
+```
+
+This will:
+1. Start the Python preprocessing service (port 8000)
+2. Start the Rust backend (port 3001)
+3. Start the Next.js frontend (port 3000)
+4. Wait for all services to be ready
+5. Print status and URLs
+
+To verify all services are healthy:
+
+```bash
+./smoke.sh
+```
+
+To stop all services:
+
+```bash
+./shutdown.sh
+```
+
+### 10.5 Manual Start (Step-by-Step)
+
+If you prefer to start services individually:
+
+**Start the Python Sidecar**
+
+```bash
+pip install uvicorn fastapi transformers torch torchvision chromadb lightgbm shap
 uvicorn preprocessing_service:app --host 0.0.0.0 --port 8000
 ```
 
 This loads ClinicalBERT, ResNet-50, fits PCA transforms, builds the ChromaDB vector store, and configures Gemini. Expect 30-60 seconds for initial startup.
 
-### 10.5 Build and Run the Rust Backend
+**Build and Run the Rust Backend**
 
 ```bash
 cd backend
-TRIAGE_MODEL_PATH="../triage_multimodal_model(1).txt" cargo run --release
+TRIAGE_MODEL_PATH="../triage_multimodal_model.txt" cargo run --release
 ```
 
 The backend binds to `0.0.0.0:3001`.
+
+**Start the Frontend**
+
+```bash
+cd frontend
+npm run dev
+```
 
 ### 10.6 Verify
 
@@ -738,7 +777,7 @@ MultimodalTriage/
 │
 ├── triage_master_multimodal.csv          # Final dataset: 1,197 patients x 25 columns
 ├── triage_dataset_final.csv              # Pre-embedding merged dataset (1,197 rows)
-├── triage_multimodal_model(1).txt        # LightGBM native model (19,157 lines)
+├── triage_multimodal_model.txt             # LightGBM native model (19,157 lines)
 ├── clinicalbert_embeddings_768d.npy      # Pre-computed 768-d embeddings for ChromaDB
 ├── synthetic_triage_data.csv             # Raw synthetic data (1,000 rows)
 ├── triage.csv                            # Raw MIMIC-IV-ED data (222 rows)
