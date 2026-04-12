@@ -235,3 +235,4 @@ Same as `/predict`
 
 - `next_steps.rs` uses heuristic ESI fallback when model unavailable (not full prediction path)
 - `/next-steps` does not receive predicted ESI from frontend — determines internally
+- ✅ FIXED: SimilarCase Rust model now includes text_similarity, vitals_similarity, source, flag_high_risk

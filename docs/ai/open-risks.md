@@ -44,6 +44,7 @@ Risk:
 Fix:
 - update all layers together
 - update `docs/ai/live-api-contracts.md` with every contract change
+- ✅ FIXED: Added text_similarity, vitals_similarity, source, flag_high_risk to Rust SimilarCase model
 
 ## 7. Demo reliability risk
 Risk:
