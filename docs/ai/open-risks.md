@@ -5,7 +5,8 @@ Risk:
 - judges or collaborators follow the wrong mental model
 
 Fix:
-- update README after behavior / architecture changes stabilize
+- ✅ FIXED: README rewritten to match live product (single-patient triage, hybrid RAG, SHAP, override flow, MCI mode)
+- ✅ FIXED: Demo walkthrough section added with sample scenarios
 
 ## 2. Live RAG is weaker than standalone RAG script
 Risk:
