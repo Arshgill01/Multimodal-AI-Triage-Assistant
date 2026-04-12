@@ -67,16 +67,16 @@ curl -X POST http://localhost:3001/predict \
 
 ### 2. Dual-Path Hybrid Evidence Retrieval
 
-RAG engine that retrieves similar historical patients and generates grounded clinical recommendations.
-
-**Unlike single-path text retrieval** — this system uses two independent retrieval paths:
+RAG engine that retrieves similar historical patients and generates grounded clinical recommendations via **two independent retrieval paths**:
 
 - **Path A (Text):** ClinicalBERT cosine similarity (captures semantic similarity in chief complaint language)
 - **Path B (Vitals/ESI):** Metadata-filtered retrieval ranked by physiological z-score similarity
 
 Candidates from both paths are merged, deduplicated, and scored with an ESI acuity boost (+15%) for candidates within ±1 level of predicted ESI.
 
-**Live endpoint:** `/rag-stream` (SSE streaming)
+**Live endpoints:** 
+- `/next-steps` (Rust backend → Python RAG proxy)
+- `/rag-stream` (frontend → Python, SSE streaming for real-time UI updates)
 
 ### 3. SHAP Explainability
 
@@ -198,8 +198,8 @@ flowchart TB
         Router["Router + CORS"]
         Predict["/predict endpoint"]
         Batch["/batch-predict endpoint"]
-        Audit["/audit-log, /audit/override"]
-        Next["/next-steps /rag-stream"]
+        Audit["/audit-log, /audit/override, /audit-summary"]
+        Next["/next-steps endpoint"]
         LGB["LightGBM Booster<br/>(FFI, Mutex-guarded)"]
 
         Router --> Predict
@@ -225,7 +225,8 @@ flowchart TB
     FE -- "POST /predict<br/>/batch-predict" --> Router
     Predict -- "POST /embed" --> BERT
     Predict -- "POST /embed" --> ResNet
-    Next -- "POST /rag-stream" --> Chroma
+    Next -- "POST /rag" --> Chroma --> Gemini
+    FE -- "POST /rag-stream" --> Chroma
 ```
 
 ### Request Flow: `/predict`
@@ -470,18 +471,18 @@ curl -X POST http://localhost:3001/batch-predict \
 | `/health` | GET | Liveness probe |
 | `/predict` | POST | Single-patient triage inference |
 | `/batch-predict` | POST | Batch MCI triage |
-| `/next-steps` | POST | RAG clinical recommendations |
-| `/rag-stream` | POST | SSE streaming RAG |
-| `/shap` | POST | SHAP explainability |
+| `/next-steps` | POST | RAG clinical recommendations (proxies to Python `/rag`) |
+| `/rag-stream` | POST | SSE streaming RAG (frontend → Python direct) |
 | `/audit-log` | GET | Query audit trail |
 | `/audit/override` | POST | Record clinician override |
+| `/audit-summary` | GET | Audit statistics summary |
 
 ---
 
 ## Project Structure
 
 ```
-triage-submission-story/
+triage-submission-lock/
 ├── backend/                           # Rust inference backend
 │   ├── Cargo.toml
 │   ├── Cargo.lock

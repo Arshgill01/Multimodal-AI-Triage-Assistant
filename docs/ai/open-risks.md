@@ -21,7 +21,10 @@ Risk:
 - recommendation path may diverge from actual model prediction path
 
 Fix:
-- either unify flows or clearly document the current compromise
+- Documented in README: `/next-steps` uses vitals-based heuristic when model unavailable (fast fallback for RAG)
+- The heuristic mirrors critical thresholds (SpO2 < 85%, SBP < 80 mmHg → ESI 1)
+- Full model prediction runs in `/predict` endpoint first, then passes ESI to RAG in production flow
+- Status: ACKNOWLEDGED — not blocking for demo, documented in README
 
 ## 4. Model artifact naming mismatch
 Risk:
