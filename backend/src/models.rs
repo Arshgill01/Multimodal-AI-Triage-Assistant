@@ -65,14 +65,6 @@ pub struct SimilarCase {
     pub heart_rate: Option<f64>,
     #[serde(default)]
     pub spo2: Option<f64>,
-    #[serde(default)]
-    pub text_similarity: Option<f64>,
-    #[serde(default)]
-    pub vitals_similarity: Option<f64>,
-    #[serde(default)]
-    pub source: Option<String>,
-    #[serde(default)]
-    pub flag_high_risk: Option<i32>,
 }
 
 // ─── Python Microservice DTOs ────────────────────────────────
