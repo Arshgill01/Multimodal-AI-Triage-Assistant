@@ -252,13 +252,44 @@ flowchart TB
 - LightGBM C library
 - Gemini API key (optional for RAG generation)
 
-### 1. Install Python dependencies
+### Quick Start (One-Command)
+
+The easiest way to start the entire stack:
+
+```bash
+./startup.sh
+```
+
+This will:
+1. Start the Python preprocessing service (port 8000)
+2. Start the Rust backend (port 3001)
+3. Start the Next.js frontend (port 3000)
+4. Wait for all services to be ready
+5. Print status and URLs
+
+To verify all services are healthy:
+
+```bash
+./smoke.sh
+```
+
+To stop all services:
+
+```bash
+./shutdown.sh
+```
+
+### Manual Start (Step-by-Step)
+
+If you prefer to start services individually:
+
+**1. Install Python dependencies**
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Set environment variables
+**2. Set environment variables**
 
 ```bash
 export GEMINI_API_KEY="your-gemini-api-key"
@@ -266,20 +297,27 @@ export TRIAGE_MODEL_PATH="./triage_multimodal_model.txt"
 export TRIAGE_PYTHON_URL="http://localhost:8000"
 ```
 
-### 3. Start Python sidecar
+**3. Start Python sidecar**
 
 ```bash
 uvicorn preprocessing_service:app --host 0.0.0.0 --port 8000
 ```
 
-### 4. Build and run Rust backend
+**4. Build and run Rust backend**
 
 ```bash
 cd backend
 TRIAGE_MODEL_PATH="../triage_multimodal_model.txt" cargo run --release
 ```
 
-### 5. Verify
+**5. Start frontend (optional)**
+
+```bash
+cd frontend
+npm run dev
+```
+
+### Verify
 
 ```bash
 # Health check
@@ -294,13 +332,6 @@ curl -X POST http://localhost:3001/predict \
 curl -X POST http://localhost:3001/batch-predict \
   -H "Content-Type: application/json" \
   -d '{"patients": [{"age": 55, "heart_rate": 118, "resp_rate": 24, "spo2": 92, "temp_f": 98.6, "systolic_bp": 185, "pain_scale": 9, "chief_complaint": "Chest pain"}]}'
-```
-
-### 6. Frontend (optional)
-
-```bash
-cd frontend
-npm run dev
 ```
 
 Open http://localhost:3000 for the Obsidian HUD interface.
@@ -327,15 +358,24 @@ Open http://localhost:3000 for the Obsidian HUD interface.
 ```
 triage-submission-story/
 ├── backend/                           # Rust inference backend
-│   └── src/routes/                    # /predict, /batch-predict, /audit/*
+│   ├── Cargo.toml
+│   ├── Cargo.lock
+│   └── src/
+│       ├── main.rs                    # Entry point
+│       ├── models.rs                  # DTOs
+│       ├── state.rs                   # AppState
+│       └── routes/                    # /predict, /batch-predict, /audit/*
 ├── frontend/                          # Next.js Obsidian HUD
 │   └── src/components/                # TelemetryPane, AICorePane, MCIMode, RAGIntelligencePane
 ├── preprocessing_service.py            # Python FastAPI: /embed, /shap, /rag, /rag-stream
-├── docs/ai/                        # Working notes
+├── docs/ai/                           # Working notes
+├── startup.sh                         # One-command startup
+├── smoke.sh                           # Health verification
+├── shutdown.sh                        # Stop all services
 ├── triage_multimodal_model.txt        # LightGBM model (FFI)
-├── triage_master_multimodal.csv      # 1,197 patients × 25 columns
+├── triage_master_multimodal.csv       # 1,197 patients × 25 columns
 ├── clinicalbert_embeddings_768d.npy  # Pre-computed embeddings
-└── kaggle_images/                  # Burn/wound images
+└── kaggle_images/                    # Burn/wound images
 ```
 
 ---

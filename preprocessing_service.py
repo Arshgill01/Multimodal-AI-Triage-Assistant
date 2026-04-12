@@ -607,12 +607,59 @@ def retrieve_similar_patients_hybrid(
 
 @app.get("/health")
 async def health():
+    chroma_count = 0
+    if chroma_collection is not None:
+        try:
+            chroma_count = chroma_collection.count()
+        except Exception:
+            pass
+
     return {
         "status": "ok",
         "bert_loaded": bert_model is not None,
         "resnet_loaded": resnet_model is not None,
+        "shap_loaded": shap_explainer is not None,
         "rag_available": chroma_collection is not None and gemini_model is not None,
         "hybrid_retrieval": VITALS_STATS is not None,
+        "chroma_patients": chroma_count,
+        "device": str(device) if device else "unknown",
+        "startup_complete": True,
+    }
+
+
+@app.get("/ready")
+async def ready():
+    """
+    Readiness probe with connectivity checks.
+    Returns detailed status for demo verification.
+    """
+    import httpx
+
+    rust_status = "unknown"
+    rust_healthy = False
+
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            rust_resp = await client.get("http://localhost:3001/health")
+            if rust_resp.status_code == 200:
+                rust_data = rust_resp.json()
+                rust_status = rust_data.get("status", "unknown")
+                rust_healthy = rust_data.get("model_loaded", False)
+    except Exception as e:
+        rust_status = f"unreachable: {str(e)[:50]}"
+
+    overall_ready = (
+        bert_model is not None
+        and chroma_collection is not None
+        and gemini_model is not None
+    )
+
+    return {
+        "ready": overall_ready,
+        "python_ready": bert_model is not None and chroma_collection is not None,
+        "gemini_configured": gemini_model is not None,
+        "rust_backend": rust_status,
+        "rust_model_loaded": rust_healthy,
     }
 
 

@@ -28,7 +28,7 @@ Risk:
 - startup failure or confusion around `.txt` artifact naming
 
 Fix:
-- standardize artifact name and docs
+- ✅ FIXED: standardized to `triage_multimodal_model.txt` in docs and startup scripts
 
 ## 5. Image directory mismatch
 Risk:
@@ -50,4 +50,6 @@ Risk:
 - even a strong system loses if setup is brittle
 
 Fix:
-- prioritize startup sanity, smoke-check commands, and clear failure states
+- ✅ FIXED: Added startup.sh, shutdown.sh, smoke.sh for one-command startup and verification
+- Added enhanced Python /health and /ready endpoints with detailed status
+- Improved frontend error messages in TelemetryPane with actionable guidance
