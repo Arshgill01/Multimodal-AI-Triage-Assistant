@@ -220,14 +220,31 @@ pub struct AuditQueryParams {
     pub limit: usize,
     pub esi_filter: Option<u8>,
     pub uncertain_only: Option<bool>,
+    pub overridden_only: Option<bool>,
 }
 
-fn default_limit() -> usize { 50 }
+fn default_limit() -> usize {
+    50
+}
 
 #[derive(Debug, Serialize)]
 pub struct AuditLogResponse {
     pub total: usize,
     pub entries: Vec<AuditEntry>,
+}
+
+#[derive(Debug, Serialize)]
+pub struct AuditSummary {
+    pub total_cases: usize,
+    pub uncertain_count: usize,
+    pub override_count: usize,
+    pub esi_distribution: Vec<EsiCount>,
+}
+
+#[derive(Debug, Serialize)]
+pub struct EsiCount {
+    pub esi: u8,
+    pub count: usize,
 }
 
 // ─── Confidence computation ──────────────────────────────────

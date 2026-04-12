@@ -25,4 +25,5 @@ pub fn router() -> Router<Arc<AppState>> {
         // Audit trail
         .route("/audit-log", get(audit::audit_log))
         .route("/audit/override", post(audit::audit_override))
+        .route("/audit-summary", get(audit::audit_summary))
 }
