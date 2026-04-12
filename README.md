@@ -273,7 +273,7 @@ These visualizations solve the medical "black box" problem by providing clinical
 
 | File | Format | Description |
 |:-----|:-------|:------------|
-| `triage_multimodal_model(1).txt` | LightGBM native text | 19,157-line model dump loaded by Rust FFI |
+| `triage_multimodal_model.txt` | LightGBM native text | 19,157-line model dump loaded by Rust FFI |
 | `triage_multimodal_model.pkl` | Python pickle | Scikit-learn compatible serialization |
 
 ---
@@ -777,7 +777,7 @@ MultimodalTriage/
 │
 ├── triage_master_multimodal.csv          # Final dataset: 1,197 patients x 25 columns
 ├── triage_dataset_final.csv              # Pre-embedding merged dataset (1,197 rows)
-├── triage_multimodal_model(1).txt        # LightGBM native model (19,157 lines)
+├── triage_multimodal_model.txt             # LightGBM native model (19,157 lines)
 ├── clinicalbert_embeddings_768d.npy      # Pre-computed 768-d embeddings for ChromaDB
 ├── synthetic_triage_data.csv             # Raw synthetic data (1,000 rows)
 ├── triage.csv                            # Raw MIMIC-IV-ED data (222 rows)
