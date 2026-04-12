@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { RUST_API } from "@/lib/config";
 
 export type AnalysisPhase = "idle" | "extracting" | "routing" | "inferring" | "explainability" | "rag" | "complete";
 export type EsiLevel = 1 | 2 | 3 | 4 | 5 | null;
@@ -14,6 +15,33 @@ export interface SimilarCaseEvidence {
     heart_rate?: number;
     spo2?: number;
 }
+
+export interface AuditEntry {
+    id: string;
+    timestamp: string;
+    patient_hash: string;
+    chief_complaint: string;
+    predicted_esi: number;
+    confidence: number;
+    is_uncertain: boolean;
+    top_shap_drivers: string[];
+    overridden: boolean;
+    override_esi: number | null;
+    override_reason?: string;
+}
+
+export interface AuditSummary {
+    total_cases: number;
+    uncertain_count: number;
+    override_count: number;
+    esi_distribution: Array<{ esi: number; count: number }>;
+}
+
+export type AuditFilter = {
+    esi_filter?: number;
+    uncertain_only?: boolean;
+    overridden_only?: boolean;
+};
 
 interface PatientState {
     age: number;
@@ -32,6 +60,7 @@ interface AppState {
     currentEsi: EsiLevel;
     analysisPhase: AnalysisPhase;
     isMciMode: boolean;
+    isTrustConsoleMode: boolean;
 
     // Inputs
     patientData: PatientState;
@@ -42,6 +71,12 @@ interface AppState {
     similarCases: SimilarCaseEvidence[];
     batchResults: any[];
 
+    // Audit / Trust Console State
+    auditEntries: AuditEntry[];
+    auditSummary: AuditSummary | null;
+    auditLoading: boolean;
+    auditFilter: AuditFilter;
+
     // Actions
     setEsi: (esi: EsiLevel) => void;
     setPhase: (phase: AnalysisPhase) => void;
@@ -50,7 +85,11 @@ interface AppState {
     appendRagStream: (chunk: string) => void;
     setSimilarCases: (cases: SimilarCaseEvidence[]) => void;
     setMciMode: (on: boolean) => void;
+    setTrustConsoleMode: (on: boolean) => void;
     setBatchResults: (results: any[]) => void;
+    setAuditFilter: (filter: AuditFilter) => void;
+    fetchAuditLog: () => Promise<void>;
+    fetchAuditSummary: () => Promise<void>;
     reset: () => void;
 }
 
@@ -66,10 +105,11 @@ const defaultPatient: PatientState = {
     image_base64: undefined,
 };
 
-export const useAppStore = create<AppState>((set) => ({
+export const useAppStore = create<AppState>((set, get) => ({
     currentEsi: null,
     analysisPhase: "idle",
     isMciMode: false,
+    isTrustConsoleMode: false,
 
     patientData: { ...defaultPatient },
 
@@ -78,6 +118,11 @@ export const useAppStore = create<AppState>((set) => ({
     similarCases: [],
     batchResults: [],
 
+    auditEntries: [],
+    auditSummary: null,
+    auditLoading: false,
+    auditFilter: {},
+
     setEsi: (esi) => set({ currentEsi: esi }),
     setPhase: (phase) => set({ analysisPhase: phase }),
     updatePatient: (field, value) =>
@@ -85,13 +130,43 @@ export const useAppStore = create<AppState>((set) => ({
     setPrediction: (pred) => set({ prediction: pred }),
     appendRagStream: (chunk) => set((state) => ({ ragStream: state.ragStream + chunk })),
     setSimilarCases: (cases) => set({ similarCases: cases }),
-    setMciMode: (on) => set({ isMciMode: on }),
+    setMciMode: (on) => set({ isMciMode: on, isTrustConsoleMode: false }),
+    setTrustConsoleMode: (on) => set({ isTrustConsoleMode: on, isMciMode: false }),
     setBatchResults: (results) => set({ batchResults: results }),
+    setAuditFilter: (filter) => set({ auditFilter: filter }),
+    fetchAuditLog: async () => {
+        set({ auditLoading: true });
+        try {
+            const { auditFilter } = get();
+            const params = new URLSearchParams();
+            params.append("limit", "50");
+            if (auditFilter.esi_filter) params.append("esi_filter", auditFilter.esi_filter.toString());
+            if (auditFilter.uncertain_only) params.append("uncertain_only", "true");
+            if (auditFilter.overridden_only) params.append("overridden_only", "true");
+            
+            const resp = await fetch(`${RUST_API}/audit-log?${params.toString()}`);
+            const data = await resp.json();
+            set({ auditEntries: data.entries, auditLoading: false });
+        } catch (err) {
+            console.error("Failed to fetch audit log:", err);
+            set({ auditLoading: false });
+        }
+    },
+    fetchAuditSummary: async () => {
+        try {
+            const resp = await fetch(`${RUST_API}/audit-summary`);
+            const data = await resp.json();
+            set({ auditSummary: data });
+        } catch (err) {
+            console.error("Failed to fetch audit summary:", err);
+        }
+    },
 
     reset: () => set({
         currentEsi: null,
         analysisPhase: "idle",
         isMciMode: false,
+        isTrustConsoleMode: false,
         patientData: { ...defaultPatient },
         prediction: null,
         ragStream: "",

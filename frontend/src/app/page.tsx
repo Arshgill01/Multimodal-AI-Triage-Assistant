@@ -9,12 +9,15 @@ import TelemetryPane from "@/components/TelemetryPane";
 import AICorePane from "@/components/AICorePane";
 import RagIntelligencePane from "@/components/RagIntelligencePane";
 import MCIMode from "@/components/MCIMode";
-import { RotateCcw } from "lucide-react";
+import TrustConsole from "@/components/TrustConsole";
+import { RotateCcw, ShieldCheck } from "lucide-react";
 
 export default function Home() {
   const currentEsi = useAppStore((state) => state.currentEsi);
   const isMciMode = useAppStore((state) => state.isMciMode);
+  const isTrustConsoleMode = useAppStore((state) => state.isTrustConsoleMode);
   const setMciMode = useAppStore((state) => state.setMciMode);
+  const setTrustConsoleMode = useAppStore((state) => state.setTrustConsoleMode);
   const reset = useAppStore((state) => state.reset);
 
   // Mouse tracking for ambient radial gradient
@@ -30,6 +33,7 @@ export default function Home() {
 
   // Determine ambient glow color based on ESI or MCI mode
   const getAmbientColor = () => {
+    if (isTrustConsoleMode) return "rgba(0, 229, 255, 0.08)";
     if (isMciMode) return "rgba(255, 42, 42, 0.08)";
     switch (currentEsi) {
       case 1: return "rgba(255, 42, 42, 0.15)";
@@ -60,9 +64,9 @@ export default function Home() {
           <div className="flex items-center gap-3">
             <div className="flex bg-[rgba(255,255,255,0.03)] border border-[var(--color-obsidian-border)] rounded-lg overflow-hidden">
               <button
-                onClick={() => setMciMode(false)}
+                onClick={() => { setMciMode(false); setTrustConsoleMode(false); }}
                 className={`px-4 py-2 text-[10px] font-mono uppercase tracking-widest transition-all ${
-                  !isMciMode
+                  !isMciMode && !isTrustConsoleMode
                     ? "bg-[rgba(0,229,255,0.1)] text-[#00e5ff] border-r border-[var(--color-obsidian-border)]"
                     : "text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)] border-r border-[var(--color-obsidian-border)]"
                 }`}
@@ -74,10 +78,20 @@ export default function Home() {
                 className={`px-4 py-2 text-[10px] font-mono uppercase tracking-widest transition-all ${
                   isMciMode
                     ? "bg-[rgba(255,42,42,0.1)] text-[#ff2a2a]"
-                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
+                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)] border-r border-[var(--color-obsidian-border)]"
                 }`}
               >
                 MCI Mode
+              </button>
+              <button
+                onClick={() => setTrustConsoleMode(true)}
+                className={`px-4 py-2 text-[10px] font-mono uppercase tracking-widest transition-all ${
+                  isTrustConsoleMode
+                    ? "bg-[rgba(0,200,83,0.1)] text-[#00c853]"
+                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
+                }`}
+              >
+                Trust Console
               </button>
             </div>
             {isMciMode && (
@@ -88,6 +102,16 @@ export default function Home() {
                 className="text-[10px] font-mono uppercase tracking-widest text-[#ff2a2a]"
               >
                 ● Mass Casualty Active
+              </motion.span>
+            )}
+            {isTrustConsoleMode && (
+              <motion.span
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+                className="text-[10px] font-mono uppercase tracking-widest text-[#00c853]"
+              >
+                ● Audit Review Active
               </motion.span>
             )}
           </div>
@@ -108,7 +132,18 @@ export default function Home() {
 
         {/* Conditional Layout */}
         <AnimatePresence mode="wait">
-          {isMciMode ? (
+          {isTrustConsoleMode ? (
+            <motion.div
+              key="trust"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.3 }}
+              className="flex-1 glass-panel rounded-2xl overflow-hidden p-6 shadow-2xl"
+            >
+              <TrustConsole />
+            </motion.div>
+          ) : isMciMode ? (
             <motion.div
               key="mci"
               initial={{ opacity: 0, scale: 0.98 }}

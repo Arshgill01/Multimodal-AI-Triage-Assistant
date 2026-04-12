@@ -8,6 +8,7 @@ use axum::{
 
 use crate::models::{
     AuditEntry, AuditLogResponse, AuditOverrideRequest, AuditQueryParams,
+    AuditSummary, EsiCount,
 };
 use crate::state::AppState;
 
@@ -39,6 +40,10 @@ pub async fn audit_log(
 
     if params.uncertain_only.unwrap_or(false) {
         query.push_str(" AND is_uncertain = 1");
+    }
+
+    if params.overridden_only.unwrap_or(false) {
+        query.push_str(" AND overridden = 1");
     }
 
     query.push_str(" ORDER BY timestamp DESC LIMIT ?");
@@ -131,4 +136,60 @@ pub async fn audit_override(
         "audit_id": req.audit_id,
         "new_esi": req.override_esi,
     })))
+}
+
+/// `GET /audit-summary` — Get trust metrics for the audit trail.
+pub async fn audit_summary(
+    State(state): State<Arc<AppState>>,
+) -> Result<Json<AuditSummary>, (StatusCode, String)> {
+    let db = state.audit_db.lock().map_err(|e| {
+        (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            format!("DB lock error: {}", e),
+        )
+    })?;
+
+    let total_cases: usize = db
+        .query_row("SELECT COUNT(*) FROM audit_log", [], |row| row.get(0))
+        .unwrap_or(0);
+
+    let uncertain_count: usize = db
+        .query_row("SELECT COUNT(*) FROM audit_log WHERE is_uncertain = 1", [], |row| row.get(0))
+        .unwrap_or(0);
+
+    let override_count: usize = db
+        .query_row("SELECT COUNT(*) FROM audit_log WHERE overridden = 1", [], |row| row.get(0))
+        .unwrap_or(0);
+
+    let mut stmt = db
+        .prepare("SELECT predicted_esi, COUNT(*) FROM audit_log GROUP BY predicted_esi")
+        .map_err(|e| {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                format!("SQL prepare error: {}", e),
+            )
+        })?;
+
+    let esi_distribution: Vec<EsiCount> = stmt
+        .query_map([], |row| {
+            Ok(EsiCount {
+                esi: row.get(0)?,
+                count: row.get(1)?,
+            })
+        })
+        .map_err(|e| {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                format!("SQL query error: {}", e),
+            )
+        })?
+        .filter_map(|r| r.ok())
+        .collect();
+
+    Ok(Json(AuditSummary {
+        total_cases,
+        uncertain_count,
+        override_count,
+        esi_distribution,
+    }))
 }
