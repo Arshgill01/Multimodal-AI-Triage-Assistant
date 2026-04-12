@@ -72,10 +72,19 @@ Same as `/predict`
 **Response:**
 ```json
 {
-  "results": [
-    {...prediction1...},
-    {...prediction2...}
-  ]
+  "total_patients": 2,
+  "patients": [
+    {"index": 0, "chief_complaint": "...", "prediction": {...}},
+    {"index": 1, "chief_complaint": "...", "prediction": {...}}
+  ],
+  "summary": {
+    "esi_1_count": 1,
+    "esi_2_count": 0,
+    "esi_3_count": 1,
+    "esi_4_count": 0,
+    "esi_5_count": 0,
+    "uncertain_count": 0
+  }
 }
 ```
 

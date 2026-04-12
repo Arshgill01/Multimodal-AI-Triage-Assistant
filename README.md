@@ -2,6 +2,8 @@
 
 A production-grade late-fusion multimodal AI system that predicts Emergency Severity Index (ESI) levels for emergency department triage. The system fuses three clinical data modalities — structured vitals, unstructured text, and medical imagery — through a LightGBM meta-model served via a high-performance Rust backend, augmented by a Retrieval-Augmented Generation (RAG) engine for clinical decision support.
 
+---
+
 ## Why This Matters
 
 Emergency departments face an **accuracy paradox**. Critical patients (ESI 1 — Resuscitation) represent fewer than 2% of all ED visits. Standard ML models trained on raw clinical data default to moderate acuity predictions (ESI 3), achieving high aggregate accuracy while systematically failing on the cases where failure has lethal consequences.
@@ -182,7 +184,9 @@ Returns ESI distribution, latency, and throughput stats.
 
 ---
 
-## Architecture
+## System Architecture
+
+The production system is a two-process microservice architecture. The Rust backend handles routing, feature assembly, and native LightGBM inference via FFI. The Python sidecar handles ML preprocessing that requires HuggingFace models.
 
 ```mermaid
 flowchart TB
@@ -224,6 +228,28 @@ flowchart TB
     Next -- "POST /rag-stream" --> Chroma
 ```
 
+### Request Flow: `/predict`
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant R as Rust Backend
+    participant P as Python Sidecar
+    participant L as LightGBM (FFI)
+
+    C->>R: POST /predict (patient JSON)
+    R->>R: Extract 7 tabular vitals
+    R->>P: POST /embed (complaint, image_base64)
+    P->>P: ClinicalBERT → 768-d → PCA → 10 floats
+    P->>P: ResNet-50 → 2048-d → PCA → 5 floats
+    P-->>R: {text_features[10], image_features[5]}
+    R->>R: Assemble 22-feature vector
+    R->>L: predict_with_params(features, 22)
+    L-->>R: probabilities[5]
+    R->>R: argmax → ESI class (1-5)
+    R-->>C: {predicted_esi, esi_label, probabilities, confidence, shap, audit_id}
+```
+
 ---
 
 ## Technology Stack
@@ -243,6 +269,136 @@ flowchart TB
 
 ---
 
+## Data Engineering Pipeline
+
+### Dataset Construction
+
+The system uses a hybrid dataset combining real and synthetic patients:
+
+| Source | Count | Purpose |
+|:-------|:------|:--------|
+| MIMIC-IV-ED | 197 real patients | Real clinical data anchor |
+| Synthetic Generator | 1,000 patients (200 per ESI) | Class-balanced training |
+| Kaggle Medical Images | ~260 burn/wound photos | Vision modality |
+
+### Feature Vector Layout
+
+The master dataset contains 22 features used for model inference:
+
+```
+Index  0-6:   Tabular Vitals    [age, heart_rate, resp_rate, spo2, temp_f, systolic_bp, pain_scale]
+Index  7-16:  Text PCA           [text_feat_0 .. text_feat_9]
+Index  17-21: Image PCA          [img_feat_0 .. img_feat_4]
+```
+
+### Modality Details
+
+**Tabular Vitals (7 features):** Raw physiological measurements passed directly to the model.
+
+**Text Embeddings:** ClinicalBERT `[CLS]` token → 768-d → PCA → 10-d.
+
+**Vision Features:** ResNet-50 feature map → 2048-d → PCA → 5-d.
+
+**Missing modality handling:** Patients without images receive zero-padded image vectors `[0.0, 0.0, 0.0, 0.0, 0.0]`. PCA is fitted exclusively on real images to preserve this mathematical "off-switch."
+
+---
+
+## Model Training and Results
+
+### Production Model: LightGBM Late-Fusion
+
+| Parameter | Value |
+|:----------|:------|
+| Algorithm | LightGBM (`LGBMClassifier`) |
+| Estimators | 200 |
+| Learning Rate | 0.05 |
+| Max Depth | 6 |
+| Class Weight | `balanced` |
+| Train/Test Split | 80/20 stratified |
+
+**Overall Accuracy: 90%**
+
+**ESI 1 (Resuscitation): 1.00 precision, 1.00 recall** — zero missed critical patients.
+
+### SHAP Explainability
+
+The system uses `shap.TreeExplainer` to generate:
+- **Global Feature Importance** — Bar chart showing which features drive decisions
+- **Local Waterfall** — Per-patient explanation: "Why was this patient classified as ESI 1?"
+
+---
+
+## Clinical RAG Engine
+
+### Dual-Path Hybrid Retrieval
+
+Standard single-path text retrieval fails when semantically dissimilar complaints describe physiologically identical emergencies. For example, "Unresponsive, found on floor" and "Cardiac arrest" describe ESI 1 with similar vitals, but ClinicalBERT may place them in distant embedding clusters.
+
+**Path A (Text):** ClinicalBERT cosine similarity — captures semantic similarity in chief complaint language.
+
+**Path B (Vitals/ESI):** Filters ChromaDB by ESI metadata (predicted ESI ±1), ranks by physiological z-score similarity.
+
+**Merge and Scoring:**
+
+| Source | Formula |
+|:-------|:--------|
+| `"both"` | `alpha * text_sim + (1 - alpha) * vitals_sim` |
+| `"text"` | Same formula with computed vitals similarity |
+| `"vitals"` | Pure vitals similarity (no text penalty) |
+
+**Tuning:** `ALPHA = 0.5`, `ESI_BOOST = +15%`, `TEXT_POOL_SIZE = 50`, `VITALS_POOL_SIZE = 200`.
+
+### Generation Guardrails
+
+The Gemini prompt includes strict safety constraints:
+- Never prescribe specific medications or dosages
+- Never make definitive diagnoses
+- Always recommend physician confirmation
+- Only suggest actions aligned with retrieved cases
+- Explicitly identified as decision support, not diagnostics
+
+---
+
+## Rust Inference Backend
+
+### Thread Safety
+
+LightGBM's C API exposes a raw pointer to a `BoosterHandle`. The solution is a newtype wrapper with explicit safety contracts:
+
+```rust
+pub struct SendBooster(pub Booster);
+
+// SAFETY: Booster is guarded by Mutex — only one thread accesses at a time.
+unsafe impl Send for SendBooster {}
+unsafe impl Sync for SendBooster {}
+```
+
+The `SendBooster` is wrapped in `Option<Mutex<...>>` inside `AppState`, which is wrapped in `Arc<...>`. This guarantees:
+- **Arc:** Shared ownership across async handler tasks
+- **Mutex:** Serialized access to the C handle
+- **Option:** Enables degraded mode when model unavailable
+
+### Degraded Mode
+
+If the LightGBM model file is missing at startup:
+- `/health` reports `model_loaded: false`
+- `/predict` returns HTTP 503
+- `/next-steps` continues to function (uses vitals-based heuristic fallback)
+
+### Heuristic Fallback
+
+When model unavailable, `/next-steps` uses rule-based ESI estimation:
+
+| Condition | Assigned ESI |
+|:----------|:-------------|
+| SpO2 < 85% or SBP < 80 mmHg | ESI 1 |
+| HR > 120 bpm or SpO2 < 92% | ESI 2 |
+| Pain >= 7 or HR > 100 bpm | ESI 3 |
+| Pain >= 4 | ESI 4 |
+| Otherwise | ESI 5 |
+
+---
+
 ## Setup and Quickstart
 
 ### Prerequisites
@@ -254,87 +410,56 @@ flowchart TB
 
 ### Quick Start (One-Command)
 
-The easiest way to start the entire stack:
-
 ```bash
 ./startup.sh
 ```
 
 This will:
-1. Start the Python preprocessing service (port 8000)
-2. Start the Rust backend (port 3001)
-3. Start the Next.js frontend (port 3000)
+1. Start Python preprocessing service (port 8000)
+2. Start Rust backend (port 3001)
+3. Start Next.js frontend (port 3000)
 4. Wait for all services to be ready
 5. Print status and URLs
 
-To verify all services are healthy:
-
 ```bash
-./smoke.sh
-```
-
-To stop all services:
-
-```bash
-./shutdown.sh
+./smoke.sh   # Verify all services
+./shutdown.sh # Stop all services
 ```
 
 ### Manual Start (Step-by-Step)
 
-If you prefer to start services individually:
-
-**1. Install Python dependencies**
-
 ```bash
+# 1. Install Python dependencies
 pip install -r requirements.txt
-```
 
-**2. Set environment variables**
-
-```bash
+# 2. Set environment variables
 export GEMINI_API_KEY="your-gemini-api-key"
 export TRIAGE_MODEL_PATH="./triage_multimodal_model.txt"
-export TRIAGE_PYTHON_URL="http://localhost:8000"
-```
 
-**3. Start Python sidecar**
-
-```bash
+# 3. Start Python sidecar
 uvicorn preprocessing_service:app --host 0.0.0.0 --port 8000
-```
 
-**4. Build and run Rust backend**
-
-```bash
+# 4. Build and run Rust backend
 cd backend
 TRIAGE_MODEL_PATH="../triage_multimodal_model.txt" cargo run --release
-```
 
-**5. Start frontend (optional)**
-
-```bash
-cd frontend
-npm run dev
+# 5. Start frontend (optional)
+cd frontend && npm run dev
 ```
 
 ### Verify
 
 ```bash
-# Health check
 curl http://localhost:3001/health
 
-# Single prediction
 curl -X POST http://localhost:3001/predict \
   -H "Content-Type: application/json" \
   -d '{"age": 72, "heart_rate": 145, "resp_rate": 38, "spo2": 78, "temp_f": 101.2, "systolic_bp": 72, "pain_scale": 0, "chief_complaint": "Unresponsive, found on floor"}'
 
-# Batch triage
 curl -X POST http://localhost:3001/batch-predict \
   -H "Content-Type: application/json" \
   -d '{"patients": [{"age": 55, "heart_rate": 118, "resp_rate": 24, "spo2": 92, "temp_f": 98.6, "systolic_bp": 185, "pain_scale": 9, "chief_complaint": "Chest pain"}]}'
 ```
-
-Open http://localhost:3000 for the Obsidian HUD interface.
 
 ---
 
@@ -374,7 +499,7 @@ triage-submission-story/
 ├── shutdown.sh                        # Stop all services
 ├── triage_multimodal_model.txt        # LightGBM model (FFI)
 ├── triage_master_multimodal.csv       # 1,197 patients × 25 columns
-├── clinicalbert_embeddings_768d.npy  # Pre-computed embeddings
+├── clinicalbert_embeddings_768d.npy   # Pre-computed embeddings
 └── kaggle_images/                    # Burn/wound images
 ```
 
