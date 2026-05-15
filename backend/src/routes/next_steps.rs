@@ -83,3 +83,57 @@ async fn determine_esi(
         Ok(5)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn build_patient(
+        spo2: f64,
+        systolic_bp: f64,
+        heart_rate: f64,
+        pain_scale: f64,
+    ) -> PatientRequest {
+        PatientRequest {
+            age: 45.0,
+            heart_rate,
+            resp_rate: 16.0,
+            spo2,
+            temp_f: 98.6,
+            systolic_bp,
+            pain_scale,
+            chief_complaint: "Test complaint".to_string(),
+            image_base64: None,
+        }
+    }
+
+    #[tokio::test]
+    async fn determine_esi_prefers_esi1_over_esi2_for_critical_vitals() {
+        let state = AppState::degraded("http://localhost:8000", ":memory:").unwrap();
+        let patient = build_patient(83.0, 90.0, 125.0, 2.0);
+
+        let esi = determine_esi(&state, &patient).await.unwrap();
+
+        assert_eq!(esi, 1, "ESI 1 should win when SpO2 is below 85% even if HR is > 120");
+    }
+
+    #[tokio::test]
+    async fn determine_esi_applies_threshold_boundaries_correctly() {
+        let state = AppState::degraded("http://localhost:8000", ":memory:").unwrap();
+
+        let boundary_cases = vec![
+            (build_patient(84.0, 95.0, 90.0, 1.0), 1), // SpO2 < 85
+            (build_patient(85.0, 79.0, 90.0, 1.0), 1), // SBP < 80
+            (build_patient(88.0, 95.0, 125.0, 1.0), 2), // HR > 120 and not ESI 1
+            (build_patient(91.0, 95.0, 121.0, 1.0), 2), // HR threshold edge
+            (build_patient(92.0, 95.0, 110.0, 7.0), 3), // Pain >= 7, not ESI 2
+            (build_patient(93.0, 95.0, 100.0, 4.0), 4), // Pain >= 4, not ESI 3
+            (build_patient(95.0, 95.0, 90.0, 1.0), 5), // otherwise
+        ];
+
+        for (patient, expected) in boundary_cases {
+            let esi = determine_esi(&state, &patient).await.unwrap();
+            assert_eq!(esi, expected, "Unexpected ESI for patient={:?}", patient);
+        }
+    }
+}
