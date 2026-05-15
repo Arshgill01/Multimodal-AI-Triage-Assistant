@@ -255,7 +255,7 @@ impl ConfidenceMetrics {
         let mut sorted = probs.to_vec();
         sorted.sort_by(|a, b| b.partial_cmp(a).unwrap());
 
-        let top = sorted.get(0).copied().unwrap_or(0.0);
+        let top = sorted.first().copied().unwrap_or(0.0);
         let second = sorted.get(1).copied().unwrap_or(0.0);
         let margin = top - second;
 

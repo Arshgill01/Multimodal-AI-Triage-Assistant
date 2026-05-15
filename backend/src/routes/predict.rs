@@ -113,7 +113,7 @@ pub async fn predict(
 
     // ── Step 5: Parse output ──────────────────────────────────
     // LightGBM multiclass returns probabilities for each class
-    let probabilities: Vec<f64> = raw_preds.iter().map(|&v| v).collect();
+    let probabilities: Vec<f64> = raw_preds.iter().copied().collect();
 
     let predicted_class = probabilities
         .iter()
