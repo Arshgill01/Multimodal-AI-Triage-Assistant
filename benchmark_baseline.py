@@ -22,11 +22,13 @@ warnings.filterwarnings("ignore")
 
 # ── Setup ─────────────────────────────────────────────────────
 
+
 def _resolve_base_dir():
     env = os.environ.get("TRIAGE_DATA_DIR")
     if env:
         return env
     return "."
+
 
 BASE_DIR = _resolve_base_dir()
 
@@ -51,14 +53,16 @@ text_pca = None
 csv_path = os.path.join(BASE_DIR, "triage_master_multimodal.csv")
 if os.path.exists(csv_path):
     import pandas as pd
+
     df = pd.read_csv(csv_path)
     complaints = df["chief_complaint"].fillna("Unknown").tolist()
     all_embs = []
     with torch.no_grad():
         for i in range(0, len(complaints), 32):
             batch = complaints[i : i + 32]
-            tokens = tokenizer(batch, padding=True, truncation=True,
-                             max_length=64, return_tensors="pt").to(device)
+            tokens = tokenizer(
+                batch, padding=True, truncation=True, max_length=64, return_tensors="pt"
+            ).to(device)
             outputs = bert_model(**tokens)
             cls = outputs.last_hidden_state[:, 0, :].cpu().numpy()
             all_embs.append(cls)
@@ -82,8 +86,11 @@ else:
     print("⚠️  No model found")
 
 ESI_LABELS = [
-    "ESI 1 (Resuscitation)", "ESI 2 (Emergent)", "ESI 3 (Urgent)",
-    "ESI 4 (Less Urgent)", "ESI 5 (Non-Urgent)",
+    "ESI 1 (Resuscitation)",
+    "ESI 2 (Emergent)",
+    "ESI 3 (Urgent)",
+    "ESI 4 (Less Urgent)",
+    "ESI 5 (Non-Urgent)",
 ]
 
 
@@ -103,15 +110,23 @@ def predict():
 
     # ── Tabular features ──
     tabular = [
-        data["age"], data["heart_rate"], data["resp_rate"],
-        data["spo2"], data["temp_f"], data["systolic_bp"], data["pain_scale"],
+        data["age"],
+        data["heart_rate"],
+        data["resp_rate"],
+        data["spo2"],
+        data["temp_f"],
+        data["systolic_bp"],
+        data["pain_scale"],
     ]
 
     # ── ClinicalBERT embedding + PCA ──
     with torch.no_grad():
         tokens = tokenizer(
-            [data["chief_complaint"]], padding=True, truncation=True,
-            max_length=64, return_tensors="pt",
+            [data["chief_complaint"]],
+            padding=True,
+            truncation=True,
+            max_length=64,
+            return_tensors="pt",
         ).to(device)
         outputs = bert_model(**tokens)
         cls_emb = outputs.last_hidden_state[:, 0, :].cpu().numpy().flatten()
@@ -130,7 +145,7 @@ def predict():
     # ── LightGBM inference ──
     features_arr = np.array(feature_vector).reshape(1, -1)
 
-    if hasattr(lgb_model, 'predict_proba'):
+    if hasattr(lgb_model, "predict_proba"):
         probabilities = lgb_model.predict_proba(features_arr)[0].tolist()
     else:
         probabilities = lgb_model.predict(features_arr)[0].tolist()
@@ -141,12 +156,14 @@ def predict():
     t_end = time.perf_counter()
     latency_ms = (t_end - t_start) * 1000
 
-    return jsonify({
-        "predicted_esi": predicted_esi,
-        "esi_label": ESI_LABELS[predicted_class],
-        "probabilities": probabilities,
-        "latency_ms": round(latency_ms, 3),
-    })
+    return jsonify(
+        {
+            "predicted_esi": predicted_esi,
+            "esi_label": ESI_LABELS[predicted_class],
+            "probabilities": probabilities,
+            "latency_ms": round(latency_ms, 3),
+        }
+    )
 
 
 if __name__ == "__main__":

@@ -35,24 +35,39 @@ TEST_PATIENTS = [
     {
         "name": "Critical — Unresponsive",
         "data": {
-            "age": 72, "heart_rate": 145, "resp_rate": 38, "spo2": 78,
-            "temp_f": 101.2, "systolic_bp": 72, "pain_scale": 0,
+            "age": 72,
+            "heart_rate": 145,
+            "resp_rate": 38,
+            "spo2": 78,
+            "temp_f": 101.2,
+            "systolic_bp": 72,
+            "pain_scale": 0,
             "chief_complaint": "Unresponsive, found on floor",
         },
     },
     {
         "name": "Moderate — Chest Pain",
         "data": {
-            "age": 55, "heart_rate": 110, "resp_rate": 22, "spo2": 94,
-            "temp_f": 98.6, "systolic_bp": 140, "pain_scale": 8,
+            "age": 55,
+            "heart_rate": 110,
+            "resp_rate": 22,
+            "spo2": 94,
+            "temp_f": 98.6,
+            "systolic_bp": 140,
+            "pain_scale": 8,
             "chief_complaint": "Severe chest pain radiating to left arm",
         },
     },
     {
         "name": "Minor — Ankle Sprain",
         "data": {
-            "age": 28, "heart_rate": 78, "resp_rate": 14, "spo2": 99,
-            "temp_f": 98.2, "systolic_bp": 118, "pain_scale": 4,
+            "age": 28,
+            "heart_rate": 78,
+            "resp_rate": 14,
+            "spo2": 99,
+            "temp_f": 98.2,
+            "systolic_bp": 118,
+            "pain_scale": 4,
             "chief_complaint": "Twisted ankle while running",
         },
     },
@@ -123,7 +138,11 @@ def main():
                 continue
 
             # Benchmark
-            print(f"  {label}: benchmarking {BENCHMARK_ROUNDS} requests...", end="", flush=True)
+            print(
+                f"  {label}: benchmarking {BENCHMARK_ROUNDS} requests...",
+                end="",
+                flush=True,
+            )
             try:
                 latencies = benchmark_endpoint(url, patient["data"], BENCHMARK_ROUNDS)
             except Exception as e:
@@ -139,13 +158,20 @@ def main():
             mx = max(latencies)
 
             results[patient["name"]][label] = {
-                "avg": avg, "median": med, "p95": p95, "p99": p99,
-                "min": mn, "max": mx, "samples": len(latencies),
+                "avg": avg,
+                "median": med,
+                "p95": p95,
+                "p99": p99,
+                "min": mn,
+                "max": mx,
+                "samples": len(latencies),
             }
 
-            print(f"    avg={avg:.2f}ms  median={med:.2f}ms  "
-                  f"p95={p95:.2f}ms  p99={p99:.2f}ms  "
-                  f"min={mn:.2f}ms  max={mx:.2f}ms")
+            print(
+                f"    avg={avg:.2f}ms  median={med:.2f}ms  "
+                f"p95={p95:.2f}ms  p99={p99:.2f}ms  "
+                f"min={mn:.2f}ms  max={mx:.2f}ms"
+            )
 
     # ── Summary Table ──
     print(f"\n{'=' * 65}")
@@ -212,17 +238,19 @@ def generate_markdown_report(results: dict):
 
         lines.append(f"| {patient_name} | {rust_str} | {python_str} | {speedup_str} |")
 
-    lines.extend([
-        "",
-        "## Methodology\n",
-        "- **Rust backend**: Axum HTTP server → LightGBM FFI inference (port 3001)",
-        "- **Python baseline**: Flask → sklearn LightGBM predict (port 5001)",
-        "- Both pipelines include ClinicalBERT embedding extraction + PCA",
-        "- Measured end-to-end (HTTP request → JSON response), not just model inference",
-        f"- {WARMUP_ROUNDS} warmup rounds discarded, {BENCHMARK_ROUNDS} measured rounds per patient\n",
-        "",
-        "## Detailed Metrics\n",
-    ])
+    lines.extend(
+        [
+            "",
+            "## Methodology\n",
+            "- **Rust backend**: Axum HTTP server → LightGBM FFI inference (port 3001)",
+            "- **Python baseline**: Flask → sklearn LightGBM predict (port 5001)",
+            "- Both pipelines include ClinicalBERT embedding extraction + PCA",
+            "- Measured end-to-end (HTTP request → JSON response), not just model inference",
+            f"- {WARMUP_ROUNDS} warmup rounds discarded, {BENCHMARK_ROUNDS} measured rounds per patient\n",
+            "",
+            "## Detailed Metrics\n",
+        ]
+    )
 
     for patient_name, backends in results.items():
         lines.append(f"### {patient_name}\n")

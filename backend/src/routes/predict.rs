@@ -66,8 +66,8 @@ pub async fn predict(
 
     // ── Step 3: Assemble 22-feature vector ────────────────────
     let mut feature_vector: Vec<f64> = Vec::with_capacity(22);
-    feature_vector.extend_from_slice(&tabular_features);       // 7 vitals
-    feature_vector.extend_from_slice(&embed_resp.text_features);  // 10 text
+    feature_vector.extend_from_slice(&tabular_features); // 7 vitals
+    feature_vector.extend_from_slice(&embed_resp.text_features); // 10 text
     feature_vector.extend_from_slice(&embed_resp.image_features); // 5 image
 
     if feature_vector.len() != 22 {
@@ -102,12 +102,7 @@ pub async fn predict(
         let booster = &booster_guard.0;
 
         booster
-            .predict_with_params(
-                &feature_vector,
-                22,
-                true,
-                "num_threads=1",
-            )
+            .predict_with_params(&feature_vector, 22, true, "num_threads=1")
             .map_err(|e| {
                 (
                     StatusCode::INTERNAL_SERVER_ERROR,
@@ -135,12 +130,7 @@ pub async fn predict(
         .to_string();
 
     // ── Step 6: Real-time SHAP explainability ─────────────────
-    let shap = fetch_shap_values(
-        &state,
-        &feature_vector,
-        predicted_class as u8,
-    )
-    .await;
+    let shap = fetch_shap_values(&state, &feature_vector, predicted_class as u8).await;
 
     // ── Step 7: Confidence / uncertainty quantification ───────
     let confidence = ConfidenceMetrics::from_probabilities(&probabilities);
@@ -230,4 +220,3 @@ async fn fetch_shap_values(
 
     resp.json::<ShapExplanation>().await.ok()
 }
-

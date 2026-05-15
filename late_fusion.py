@@ -31,6 +31,7 @@ warnings.filterwarnings("ignore")
 # from google.colab import drive
 # drive.mount('/content/drive')
 
+
 # Auto-detect Colab vs local. Override: export TRIAGE_DATA_DIR="/your/path"
 def _resolve_base_dir():
     env = os.environ.get("TRIAGE_DATA_DIR")
@@ -39,6 +40,7 @@ def _resolve_base_dir():
     if os.path.exists("/content/drive/MyDrive/triage_data"):
         return "/content/drive/MyDrive/triage_data"  # Colab
     return "."  # Local
+
 
 BASE_DIR = _resolve_base_dir()
 
@@ -65,21 +67,32 @@ print(f"   Loaded {len(df)} rows × {len(df.columns)} columns")
 # ============================================================
 
 tabular_features = [
-    "age", "heart_rate", "resp_rate", "spo2",
-    "temp_f", "systolic_bp", "pain_scale",
+    "age",
+    "heart_rate",
+    "resp_rate",
+    "spo2",
+    "temp_f",
+    "systolic_bp",
+    "pain_scale",
 ]
 text_features = [f"text_feat_{i}" for i in range(10)]
 img_features = [f"img_feat_{i}" for i in range(5)]
 
 ALL_FEATURES = tabular_features + text_features + img_features
-print(f"Feature space: {len(tabular_features)} tabular + {len(text_features)} text + {len(img_features)} image = {len(ALL_FEATURES)} total")
+print(
+    f"Feature space: {len(tabular_features)} tabular + {len(text_features)} text + {len(img_features)} image = {len(ALL_FEATURES)} total"
+)
 
 X = df[ALL_FEATURES]
 y = df["target_esi"] - 1  # Zero-index: ESI 1→0, ESI 2→1, ..., ESI 5→4
 
 # Stratified train/test split
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42, stratify=y,
+    X,
+    y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y,
 )
 print(f"Train: {len(X_train)}  |  Test: {len(X_test)}")
 print(f"Train ESI distribution:\n{y_train.value_counts().sort_index()}\n")
@@ -109,9 +122,9 @@ ESI_NAMES = [
     "ESI 5 (Non-Urgent)",
 ]
 
-print(f"\n{'='*50}")
+print(f"\n{'=' * 50}")
 print(f"  MULTIMODAL FUSION ACCURACY: {acc:.4f}")
-print(f"{'='*50}\n")
+print(f"{'=' * 50}\n")
 print(classification_report(y_test, y_pred, target_names=ESI_NAMES))
 
 # %% — Cell 4: SHAP Explainability Engine
@@ -143,8 +156,9 @@ print(f"   SHAP output shape: {np.array(shap_values).shape}")
 
 # ---- Plot 1: Global Feature Importance ----
 plt.figure(figsize=(12, 8))
-shap.summary_plot(shap_values, X_test, plot_type="bar", show=False,
-                  feature_names=ALL_FEATURES)
+shap.summary_plot(
+    shap_values, X_test, plot_type="bar", show=False, feature_names=ALL_FEATURES
+)
 plt.title("Global Feature Importance — Multimodal Triage Model", fontsize=14)
 plt.tight_layout()
 p1 = os.path.join(BASE_DIR, "shap_global_importance.png")

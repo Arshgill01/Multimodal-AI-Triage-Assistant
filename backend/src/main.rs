@@ -25,8 +25,10 @@ use crate::state::AppState;
 async fn main() {
     // Initialize structured logging
     tracing_subscriber::registry()
-        .with(tracing_subscriber::EnvFilter::try_from_default_env()
-            .unwrap_or_else(|_| "triage_backend=info,tower_http=info".into()))
+        .with(
+            tracing_subscriber::EnvFilter::try_from_default_env()
+                .unwrap_or_else(|_| "triage_backend=info,tower_http=info".into()),
+        )
         .with(tracing_subscriber::fmt::layer())
         .init();
 
@@ -34,11 +36,11 @@ async fn main() {
     let model_path = std::env::var("TRIAGE_MODEL_PATH")
         .unwrap_or_else(|_| "../triage_multimodal_model.txt".to_string());
 
-    let python_service_url = std::env::var("TRIAGE_PYTHON_URL")
-        .unwrap_or_else(|_| "http://localhost:8000".to_string());
+    let python_service_url =
+        std::env::var("TRIAGE_PYTHON_URL").unwrap_or_else(|_| "http://localhost:8000".to_string());
 
-    let audit_db_path = std::env::var("TRIAGE_AUDIT_DB")
-        .unwrap_or_else(|_| "../triage_audit.db".to_string());
+    let audit_db_path =
+        std::env::var("TRIAGE_AUDIT_DB").unwrap_or_else(|_| "../triage_audit.db".to_string());
 
     tracing::info!("Loading LightGBM model from: {}", model_path);
     tracing::info!("Audit trail DB: {}", audit_db_path);
@@ -50,7 +52,10 @@ async fn main() {
             Arc::new(s)
         }
         Err(e) => {
-            tracing::warn!("⚠️  Could not load LightGBM model: {}. Starting in degraded mode.", e);
+            tracing::warn!(
+                "⚠️  Could not load LightGBM model: {}. Starting in degraded mode.",
+                e
+            );
             match AppState::degraded(&python_service_url, &audit_db_path) {
                 Ok(s) => Arc::new(s),
                 Err(e2) => {

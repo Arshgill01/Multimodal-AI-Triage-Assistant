@@ -15,11 +15,10 @@ Run:  uvicorn preprocessing_service:app --host 0.0.0.0 --port 8000
 import os
 import warnings
 
-import time
 
 import numpy as np
 import torch
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -334,7 +333,7 @@ async def load_models():
             }
             print("📊 Vitals normalization stats precomputed for hybrid retrieval")
         else:
-            print(f"⚠️  RAG data not found. /rag endpoint will be unavailable.")
+            print("⚠️  RAG data not found. /rag endpoint will be unavailable.")
 
         # Gemini
         import google.generativeai as genai
@@ -819,8 +818,6 @@ async def shap_explain(req: ShapRequest):
     """Compute real-time SHAP values for a single patient's 22-feature vector."""
     if shap_explainer is None:
         raise HTTPException(status_code=503, detail="SHAP explainer not loaded.")
-
-    import shap as shap_lib
 
     feature_names = [
         "age",

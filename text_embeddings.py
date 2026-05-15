@@ -27,6 +27,7 @@ import pandas as pd
 
 warnings.filterwarnings("ignore")
 
+
 # ============================================================
 # 📁 DATA DIRECTORY — auto-detects Colab vs local environment.
 #    Override with: export TRIAGE_DATA_DIR="/your/path"
@@ -38,6 +39,7 @@ def _resolve_base_dir():
     if os.path.exists("/content/drive/MyDrive/triage_data"):
         return "/content/drive/MyDrive/triage_data"  # Colab
     return "."  # Local
+
 
 BASE_DIR = _resolve_base_dir()
 

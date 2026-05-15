@@ -1,0 +1,16 @@
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = [
+    "E402",
+    "E501",
+    "E722",
+    "E731",
+    "F401",
+    "F841",
+    "F541",
+    "I001",
+    "W291",
+]
+
+[tool.ruff.format]
+quote-style = "double"

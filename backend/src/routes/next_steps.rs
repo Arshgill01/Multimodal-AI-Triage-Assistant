@@ -2,9 +2,7 @@ use std::sync::Arc;
 
 use axum::{extract::State, http::StatusCode, Json};
 
-use crate::models::{
-    NextStepsResponse, PatientRequest, PatientVitals, RagRequest, RagResponse,
-};
+use crate::models::{NextStepsResponse, PatientRequest, PatientVitals, RagRequest, RagResponse};
 use crate::state::AppState;
 
 /// `POST /next-steps` — Clinical RAG decision support.

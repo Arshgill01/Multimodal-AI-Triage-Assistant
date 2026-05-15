@@ -122,7 +122,7 @@ export default function RagIntelligencePane() {
                                         </div>
                                         <span className="text-[var(--color-text-muted)] font-mono">{(c.similarity * 100).toFixed(0)}%</span>
                                     </div>
-                                    <p className="text-[var(--color-text-primary)] line-clamp-2 italic mb-2">"{c.complaint}"</p>
+                                    <p className="text-[var(--color-text-primary)] line-clamp-2 italic mb-2">&ldquo;{c.complaint}&rdquo;</p>
                                     <div className="flex items-center gap-3 text-[10px] text-[var(--color-text-muted)] font-mono">
                                         {c.source === "both" ? (
                                             <span className="flex items-center gap-1 text-[#00e5ff]">

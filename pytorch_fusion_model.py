@@ -19,7 +19,6 @@ import numpy as np
 import pandas as pd
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader, TensorDataset
@@ -30,6 +29,7 @@ warnings.filterwarnings("ignore")
 # from google.colab import drive
 # drive.mount('/content/drive')
 
+
 # Auto-detect Colab vs local. Override: export TRIAGE_DATA_DIR="/your/path"
 def _resolve_base_dir():
     env = os.environ.get("TRIAGE_DATA_DIR")
@@ -38,6 +38,7 @@ def _resolve_base_dir():
     if os.path.exists("/content/drive/MyDrive/triage_data"):
         return "/content/drive/MyDrive/triage_data"  # Colab
     return "."  # Local
+
 
 BASE_DIR = _resolve_base_dir()
 
@@ -50,7 +51,15 @@ print(f"Device: {device}")
 
 df = pd.read_csv(os.path.join(BASE_DIR, "triage_master_multimodal.csv"))
 
-tabular_cols = ["age", "heart_rate", "resp_rate", "spo2", "temp_f", "systolic_bp", "pain_scale"]
+tabular_cols = [
+    "age",
+    "heart_rate",
+    "resp_rate",
+    "spo2",
+    "temp_f",
+    "systolic_bp",
+    "pain_scale",
+]
 text_cols = [f"text_feat_{i}" for i in range(10)]
 img_cols = [f"img_feat_{i}" for i in range(5)]
 
@@ -66,8 +75,16 @@ scaler_tab = StandardScaler()
 X_tab = scaler_tab.fit_transform(X_tab)
 
 # Stratified split — same seed as LightGBM for fair comparison
-X_tab_train, X_tab_test, X_txt_train, X_txt_test, X_img_train, X_img_test, y_train, y_test = \
-    train_test_split(X_tab, X_txt, X_img, y, test_size=0.2, random_state=42, stratify=y)
+(
+    X_tab_train,
+    X_tab_test,
+    X_txt_train,
+    X_txt_test,
+    X_img_train,
+    X_img_test,
+    y_train,
+    y_test,
+) = train_test_split(X_tab, X_txt, X_img, y, test_size=0.2, random_state=42, stratify=y)
 
 # Compute class weights for imbalanced ESI distribution
 from sklearn.utils.class_weight import compute_class_weight
@@ -75,7 +92,9 @@ from sklearn.utils.class_weight import compute_class_weight
 classes = np.unique(y_train)
 class_weights = compute_class_weight("balanced", classes=classes, y=y_train)
 class_weights_tensor = torch.FloatTensor(class_weights).to(device)
-print(f"Class weights: {dict(zip([f'ESI {c+1}' for c in classes], np.round(class_weights, 3)))}")
+print(
+    f"Class weights: {dict(zip([f'ESI {c + 1}' for c in classes], np.round(class_weights, 3)))}"
+)
 
 # Build DataLoaders
 BATCH_SIZE = 32
@@ -96,7 +115,9 @@ test_ds = TensorDataset(
 train_loader = DataLoader(train_ds, batch_size=BATCH_SIZE, shuffle=True)
 test_loader = DataLoader(test_ds, batch_size=BATCH_SIZE, shuffle=False)
 
-print(f"Train: {len(train_ds)}  |  Test: {len(test_ds)}  |  Batches/epoch: {len(train_loader)}")
+print(
+    f"Train: {len(train_ds)}  |  Test: {len(test_ds)}  |  Batches/epoch: {len(train_loader)}"
+)
 
 
 # %% — Cell 3: Model Architecture
@@ -204,8 +225,8 @@ class MultimodalFusionNet(nn.Module):
         h_img = self.img_head(x_img)  # (B, 32)
 
         # Reshape for attention: (B, seq_len, embed_dim)
-        q = h_tab.unsqueeze(1)                        # (B, 1, 32) — query
-        kv = torch.stack([h_txt, h_img], dim=1)       # (B, 2, 32) — key/value
+        q = h_tab.unsqueeze(1)  # (B, 1, 32) — query
+        kv = torch.stack([h_txt, h_img], dim=1)  # (B, 2, 32) — key/value
 
         # Cross-attention: tabular attends to text + image
         attended, attn_weights = self.cross_attn(q, kv)
@@ -241,7 +262,9 @@ PATIENCE = 10
 LR = 1e-3
 
 optimizer = torch.optim.AdamW(model_nn.parameters(), lr=LR, weight_decay=1e-4)
-scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=5, factor=0.5, verbose=True)
+scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+    optimizer, patience=5, factor=0.5, verbose=True
+)
 criterion = nn.CrossEntropyLoss(weight=class_weights_tensor)
 
 best_val_acc = 0.0
@@ -292,7 +315,9 @@ for epoch in range(EPOCHS):
     scheduler.step(avg_loss)
 
     if (epoch + 1) % 5 == 0 or epoch == 0:
-        print(f"Epoch {epoch+1:3d}/{EPOCHS} | Loss: {avg_loss:.4f} | Val Acc: {val_acc:.4f} | LR: {optimizer.param_groups[0]['lr']:.6f}")
+        print(
+            f"Epoch {epoch + 1:3d}/{EPOCHS} | Loss: {avg_loss:.4f} | Val Acc: {val_acc:.4f} | LR: {optimizer.param_groups[0]['lr']:.6f}"
+        )
 
     # Early stopping
     if val_acc > best_val_acc:
@@ -303,7 +328,9 @@ for epoch in range(EPOCHS):
     else:
         patience_counter += 1
         if patience_counter >= PATIENCE:
-            print(f"\n⏹ Early stopping at epoch {epoch+1} (best val acc: {best_val_acc:.4f})")
+            print(
+                f"\n⏹ Early stopping at epoch {epoch + 1} (best val acc: {best_val_acc:.4f})"
+            )
             break
 
 # Restore best model
@@ -344,9 +371,9 @@ with torch.no_grad():
 
 nn_acc = accuracy_score(all_labels, all_preds)
 
-print(f"\n{'='*60}")
-print(f"  NEURAL FUSION MODEL — CLASSIFICATION REPORT")
-print(f"{'='*60}\n")
+print(f"\n{'=' * 60}")
+print("  NEURAL FUSION MODEL — CLASSIFICATION REPORT")
+print(f"{'=' * 60}\n")
 print(f"Accuracy: {nn_acc:.4f}\n")
 print(classification_report(all_labels, all_preds, target_names=ESI_NAMES))
 
@@ -360,7 +387,13 @@ ax1.set_title("Training Loss")
 ax1.grid(alpha=0.3)
 
 ax2.plot(val_accs, color="#4ecdc4", linewidth=2)
-ax2.axhline(y=best_val_acc, color="#ff6b6b", linestyle="--", alpha=0.7, label=f"Best: {best_val_acc:.4f}")
+ax2.axhline(
+    y=best_val_acc,
+    color="#ff6b6b",
+    linestyle="--",
+    alpha=0.7,
+    label=f"Best: {best_val_acc:.4f}",
+)
 ax2.set_xlabel("Epoch")
 ax2.set_ylabel("Accuracy")
 ax2.set_title("Validation Accuracy")
@@ -369,17 +402,23 @@ ax2.grid(alpha=0.3)
 
 plt.suptitle("Neural Fusion — Training Curves", fontsize=14, fontweight="bold")
 plt.tight_layout()
-plt.savefig(os.path.join(BASE_DIR, "neural_fusion_training_curves.png"), dpi=150, bbox_inches="tight")
+plt.savefig(
+    os.path.join(BASE_DIR, "neural_fusion_training_curves.png"),
+    dpi=150,
+    bbox_inches="tight",
+)
 plt.show()
 print("💾 Saved: neural_fusion_training_curves.png")
 
 # ---- Attention weight analysis ----
 all_attn = np.vstack([a.squeeze(2) for a in all_attn_weights])  # (N, num_heads, 2)
 mean_attn = all_attn.mean(axis=(0, 1))  # Average across samples and heads
-print(f"\nCross-Attention Weights (avg across test set):")
+print("\nCross-Attention Weights (avg across test set):")
 print(f"  Text modality:  {mean_attn[0]:.4f}")
 print(f"  Image modality: {mean_attn[1]:.4f}")
-print(f"  → Model {'prioritizes text' if mean_attn[0] > mean_attn[1] else 'prioritizes images'} when vitals are ambiguous")
+print(
+    f"  → Model {'prioritizes text' if mean_attn[0] > mean_attn[1] else 'prioritizes images'} when vitals are ambiguous"
+)
 
 
 # %% — Cell 6: Save Model & Comparison Table
@@ -387,39 +426,42 @@ print(f"  → Model {'prioritizes text' if mean_attn[0] > mean_attn[1] else 'pri
 
 # Save PyTorch checkpoint
 ckpt_path = os.path.join(BASE_DIR, "neural_fusion_model.pt")
-torch.save({
-    "model_state_dict": model_nn.state_dict(),
-    "scaler_state": {
-        "mean": scaler_tab.mean_.tolist(),
-        "scale": scaler_tab.scale_.tolist(),
+torch.save(
+    {
+        "model_state_dict": model_nn.state_dict(),
+        "scaler_state": {
+            "mean": scaler_tab.mean_.tolist(),
+            "scale": scaler_tab.scale_.tolist(),
+        },
+        "architecture": {
+            "tab_dim": len(tabular_cols),
+            "txt_dim": len(text_cols),
+            "img_dim": len(img_cols),
+            "num_classes": 5,
+        },
+        "best_val_acc": best_val_acc,
+        "feature_names": {
+            "tabular": tabular_cols,
+            "text": text_cols,
+            "image": img_cols,
+        },
     },
-    "architecture": {
-        "tab_dim": len(tabular_cols),
-        "txt_dim": len(text_cols),
-        "img_dim": len(img_cols),
-        "num_classes": 5,
-    },
-    "best_val_acc": best_val_acc,
-    "feature_names": {
-        "tabular": tabular_cols,
-        "text": text_cols,
-        "image": img_cols,
-    },
-}, ckpt_path)
+    ckpt_path,
+)
 print(f"💾 Saved PyTorch checkpoint: {ckpt_path}")
 
 # Print comparison table for the pitch
-print(f"\n{'='*60}")
-print(f"  MODEL COMPARISON — LightGBM vs Neural Fusion")
-print(f"{'='*60}")
+print(f"\n{'=' * 60}")
+print("  MODEL COMPARISON — LightGBM vs Neural Fusion")
+print(f"{'=' * 60}")
 print(f"{'Metric':<25} {'LightGBM':<15} {'Neural Fusion':<15}")
-print(f"{'-'*55}")
+print(f"{'-' * 55}")
 print(f"{'Architecture':<25} {'Tree Ensemble':<15} {'Cross-Attn NN':<15}")
 print(f"{'Parameters':<25} {'N/A (trees)':<15} {f'{total_params:,}':<15}")
 print(f"{'Fusion Strategy':<25} {'Concatenation':<15} {'Cross-Attention':<15}")
 print(f"{'Val Accuracy':<25} {'(run lgb cell)':<15} {f'{best_val_acc:.4f}':<15}")
 print(f"{'Training Time':<25} {'~2 sec':<15} {'~2-3 min':<15}")
 print(f"{'Scalability':<25} {'Medium':<15} {'High (GPU)':<15}")
-print(f"\n🎯 LightGBM = production model | Neural Fusion = research prototype")
-print(f"   The neural architecture is designed to scale when hospital-sized")
-print(f"   datasets (50K+ patients) become available.")
+print("\n🎯 LightGBM = production model | Neural Fusion = research prototype")
+print("   The neural architecture is designed to scale when hospital-sized")
+print("   datasets (50K+ patients) become available.")

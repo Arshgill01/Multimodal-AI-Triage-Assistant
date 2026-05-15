@@ -31,6 +31,7 @@ warnings.filterwarnings("ignore")
 # from google.colab import drive
 # drive.mount('/content/drive')
 
+
 # Auto-detect Colab vs local. Override: export TRIAGE_DATA_DIR="/your/path"
 def _resolve_base_dir():
     env = os.environ.get("TRIAGE_DATA_DIR")
@@ -39,6 +40,7 @@ def _resolve_base_dir():
     if os.path.exists("/content/drive/MyDrive/triage_data"):
         return "/content/drive/MyDrive/triage_data"  # Colab
     return "."  # Local
+
 
 BASE_DIR = _resolve_base_dir()
 
@@ -74,12 +76,14 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 resnet.to(device)
 
 # Standard ImageNet preprocessing pipeline
-preprocess = transforms.Compose([
-    transforms.Resize(256),
-    transforms.CenterCrop(224),
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-])
+preprocess = transforms.Compose(
+    [
+        transforms.Resize(256),
+        transforms.CenterCrop(224),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+    ]
+)
 
 print(f"3. Extracting Visual Embeddings on {device}...")
 image_embeddings = []
@@ -126,7 +130,9 @@ img_cols = [f"img_feat_{i}" for i in range(N_IMG_COMPONENTS)]
 for i, col in enumerate(img_cols):
     df[col] = img_pca[:, i]
 
-print(f"PCA explained variance (on real images): {np.round(pca_img.explained_variance_ratio_, 4)}")
+print(
+    f"PCA explained variance (on real images): {np.round(pca_img.explained_variance_ratio_, 4)}"
+)
 print(f"Total explained variance: {pca_img.explained_variance_ratio_.sum():.4f}")
 
 # %% — Cell 4: Save & Verify
@@ -135,9 +141,11 @@ print(f"Total explained variance: {pca_img.explained_variance_ratio_.sum():.4f}"
 OUT_PATH = os.path.join(BASE_DIR, "triage_master_multimodal.csv")
 df.to_csv(OUT_PATH, index=False)
 
-print(f"\n--- VISION PIPELINE COMPLETE ---")
+print("\n--- VISION PIPELINE COMPLETE ---")
 print(f"💾 Saved to: {OUT_PATH}")
 print(f"Final shape: {df.shape}")
-print(f"Zero-image rows (should be {len(df) - images_found}): {(~has_image_mask).sum()}")
-print(f"\nFeatures: Vitals(7) + ClinicalBERT(10) + ResNet50(5) = 22 input features")
+print(
+    f"Zero-image rows (should be {len(df) - images_found}): {(~has_image_mask).sum()}"
+)
+print("\nFeatures: Vitals(7) + ClinicalBERT(10) + ResNet50(5) = 22 input features")
 print("Next step → run late_fusion.py for the meta-model + SHAP.")

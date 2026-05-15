@@ -3,9 +3,9 @@ use std::sync::Arc;
 use axum::{extract::State, http::StatusCode, Json};
 
 use crate::models::{
-    BatchPatientResult, BatchPredictRequest, BatchPredictResponse, BatchSummary,
-    ConfidenceMetrics, EmbedRequest, EmbedResponse, PatientRequest, PredictResponse,
-    ShapExplanation, ShapRequest, ESI_LABELS,
+    BatchPatientResult, BatchPredictRequest, BatchPredictResponse, BatchSummary, ConfidenceMetrics,
+    EmbedRequest, EmbedResponse, PatientRequest, PredictResponse, ShapExplanation, ShapRequest,
+    ESI_LABELS,
 };
 use crate::state::AppState;
 

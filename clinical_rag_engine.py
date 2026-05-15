@@ -30,6 +30,7 @@ warnings.filterwarnings("ignore")
 # from google.colab import drive
 # drive.mount('/content/drive')
 
+
 # Auto-detect Colab vs local. Override: export TRIAGE_DATA_DIR="/your/path"
 def _resolve_base_dir():
     env = os.environ.get("TRIAGE_DATA_DIR")
@@ -38,6 +39,7 @@ def _resolve_base_dir():
     if os.path.exists("/content/drive/MyDrive/triage_data"):
         return "/content/drive/MyDrive/triage_data"  # Colab
     return "."  # Local
+
 
 BASE_DIR = _resolve_base_dir()
 
@@ -189,10 +191,10 @@ print("📊 Vitals normalization stats precomputed for hybrid retrieval")
 # ============================================================
 
 # Tuning knobs
-ALPHA = 0.5          # Text vs vitals weight in combined score (0.5 = equal)
-ESI_BOOST = 0.15     # +15% bonus when candidate ESI within ±1 of predicted
-TEXT_POOL_SIZE = 50   # Candidates fetched via text path
-VITALS_POOL_SIZE = 200 # Candidates fetched via vitals/ESI path
+ALPHA = 0.5  # Text vs vitals weight in combined score (0.5 = equal)
+ESI_BOOST = 0.15  # +15% bonus when candidate ESI within ±1 of predicted
+TEXT_POOL_SIZE = 50  # Candidates fetched via text path
+VITALS_POOL_SIZE = 200  # Candidates fetched via vitals/ESI path
 
 
 def _compute_vitals_similarity(query_vitals, candidate_meta):
@@ -211,7 +213,7 @@ def _compute_vitals_similarity(query_vitals, candidate_meta):
             c_z = (c_val - mean) / std
             dist_sq += (q_z - c_z) ** 2
     # Convert distance → similarity in [0, 1]
-    dist = dist_sq ** 0.5
+    dist = dist_sq**0.5
     return 1.0 / (1.0 + dist)
 
 
@@ -257,7 +259,9 @@ def _fetch_vitals_candidates(query_vitals, predicted_esi, pool_size):
     return candidates[:pool_size]
 
 
-def retrieve_similar_patients(complaint_text, query_vitals=None, predicted_esi=None, k=5):
+def retrieve_similar_patients(
+    complaint_text, query_vitals=None, predicted_esi=None, k=5
+):
     """
     Dual-path hybrid retrieval:
       Path A — Text: Broad ClinicalBERT cosine similarity fetch
@@ -314,7 +318,10 @@ def retrieve_similar_patients(complaint_text, query_vitals=None, predicted_esi=N
         for vc in vitals_candidates:
             pid = vc.get("patient_id", "")
             vc_id = f"patient_vitals_{pid}"
-            if vc_id not in candidates_by_id and f"patient_{pid}" not in candidates_by_id:
+            if (
+                vc_id not in candidates_by_id
+                and f"patient_{pid}" not in candidates_by_id
+            ):
                 # New candidate from vitals path
                 vc["_id"] = vc_id
                 candidates_by_id[vc_id] = vc
@@ -322,7 +329,9 @@ def retrieve_similar_patients(complaint_text, query_vitals=None, predicted_esi=N
                 # Already have this patient from text path — upgrade to "both"
                 existing_key = vc_id if vc_id in candidates_by_id else f"patient_{pid}"
                 if existing_key in candidates_by_id:
-                    candidates_by_id[existing_key]["vitals_similarity"] = vc["vitals_similarity"]
+                    candidates_by_id[existing_key]["vitals_similarity"] = vc[
+                        "vitals_similarity"
+                    ]
                     candidates_by_id[existing_key]["_source"] = "both"
 
     # ── Scoring: Path-aware combined score ─────────────────────
@@ -350,13 +359,15 @@ def retrieve_similar_patients(complaint_text, query_vitals=None, predicted_esi=N
             combined = c["vitals_similarity"]
         else:
             # "text" or "both": full blend
-            combined = ALPHA * c["text_similarity"] + (1 - ALPHA) * c["vitals_similarity"]
+            combined = (
+                ALPHA * c["text_similarity"] + (1 - ALPHA) * c["vitals_similarity"]
+            )
 
         # ESI acuity boost
         if predicted_esi is not None:
             candidate_esi = int(c.get("target_esi", 3))
             if abs(candidate_esi - predicted_esi) <= 1:
-                combined *= (1 + ESI_BOOST)
+                combined *= 1 + ESI_BOOST
 
         c["similarity"] = combined
 
@@ -388,8 +399,17 @@ def retrieve_similar_patients(complaint_text, query_vitals=None, predicted_esi=N
 
 # Quick test — hybrid retrieval with vitals
 print("Testing hybrid retrieval for 'Severe chest pain'…")
-test_vitals = {"heart_rate": 120, "resp_rate": 24, "spo2": 91, "temp_f": 98.6, "systolic_bp": 180, "pain_scale": 9}
-test_results = retrieve_similar_patients("Severe chest pain", query_vitals=test_vitals, predicted_esi=2, k=3)
+test_vitals = {
+    "heart_rate": 120,
+    "resp_rate": 24,
+    "spo2": 91,
+    "temp_f": 98.6,
+    "systolic_bp": 180,
+    "pain_scale": 9,
+}
+test_results = retrieve_similar_patients(
+    "Severe chest pain", query_vitals=test_vitals, predicted_esi=2, k=3
+)
 for i, p in enumerate(test_results):
     print(
         f"  {i + 1}. [{p['complaint']}] ESI={p['target_esi']} HR={p['heart_rate']} SpO2={p['spo2']} "
@@ -551,14 +571,14 @@ for i, patient in enumerate(demo_patients):
 
     print("📋 RETRIEVED SIMILAR CASES (Hybrid: Text + Vitals + ESI Boost):")
     for j, case in enumerate(similar_cases, 1):
-        txt = case.get('text_similarity', case['similarity'])
-        vit = case.get('vitals_similarity', 0)
+        txt = case.get("text_similarity", case["similarity"])
+        vit = case.get("vitals_similarity", 0)
         print(
             f"   {j}. [{case['complaint']}] ESI={case['target_esi']} "
             f"(combined={case['similarity']:.3f} | text={txt:.3f} vitals={vit:.3f})"
         )
 
-    print(f"\n🤖 AI RECOMMENDATION:\n")
+    print("\n🤖 AI RECOMMENDATION:\n")
     print(recommendation)
     print()
 
@@ -576,6 +596,6 @@ print(f"  • ChromaDB: in-memory ({collection.count()} vectors)")
 print(
     f"  • Raw embeddings: {os.path.join(BASE_DIR, 'clinicalbert_embeddings_768d.npy')}"
 )
-print(f"  • Model: Bio_ClinicalBERT (emilyalsentzer/Bio_ClinicalBERT)")
-print(f"  • LLM: Gemini 2.5 Flash")
-print(f"\n💡 For production: persist ChromaDB to disk with chromadb.PersistentClient()")
+print("  • Model: Bio_ClinicalBERT (emilyalsentzer/Bio_ClinicalBERT)")
+print("  • LLM: Gemini 2.5 Flash")
+print("\n💡 For production: persist ChromaDB to disk with chromadb.PersistentClient()")

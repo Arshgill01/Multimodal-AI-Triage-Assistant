@@ -66,8 +66,8 @@ impl AppState {
 
     /// Initialize the SQLite audit trail database.
     fn init_audit_db(db_path: &str) -> Result<Connection, String> {
-        let conn = Connection::open(db_path)
-            .map_err(|e| format!("Failed to open audit DB: {}", e))?;
+        let conn =
+            Connection::open(db_path).map_err(|e| format!("Failed to open audit DB: {}", e))?;
 
         conn.execute_batch(
             "CREATE TABLE IF NOT EXISTS audit_log (
@@ -106,7 +106,10 @@ impl AppState {
         let timestamp = chrono::Utc::now().to_rfc3339();
         let shap_str = top_shap_drivers.join("|");
 
-        let db = self.audit_db.lock().map_err(|e| format!("DB lock: {}", e))?;
+        let db = self
+            .audit_db
+            .lock()
+            .map_err(|e| format!("DB lock: {}", e))?;
         db.execute(
             "INSERT INTO audit_log (id, timestamp, patient_hash, chief_complaint, \
              predicted_esi, confidence, is_uncertain, top_shap_drivers) \

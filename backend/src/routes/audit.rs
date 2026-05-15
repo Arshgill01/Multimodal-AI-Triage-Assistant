@@ -7,8 +7,7 @@ use axum::{
 };
 
 use crate::models::{
-    AuditEntry, AuditLogResponse, AuditOverrideRequest, AuditQueryParams,
-    AuditSummary, EsiCount,
+    AuditEntry, AuditLogResponse, AuditOverrideRequest, AuditQueryParams, AuditSummary, EsiCount,
 };
 use crate::state::AppState;
 
@@ -49,7 +48,8 @@ pub async fn audit_log(
     query.push_str(" ORDER BY timestamp DESC LIMIT ?");
     sql_params.push(Box::new(params.limit as i64));
 
-    let param_refs: Vec<&dyn rusqlite::types::ToSql> = sql_params.iter().map(|p| p.as_ref()).collect();
+    let param_refs: Vec<&dyn rusqlite::types::ToSql> =
+        sql_params.iter().map(|p| p.as_ref()).collect();
 
     let mut stmt = db.prepare(&query).map_err(|e| {
         (
@@ -154,11 +154,19 @@ pub async fn audit_summary(
         .unwrap_or(0);
 
     let uncertain_count: usize = db
-        .query_row("SELECT COUNT(*) FROM audit_log WHERE is_uncertain = 1", [], |row| row.get(0))
+        .query_row(
+            "SELECT COUNT(*) FROM audit_log WHERE is_uncertain = 1",
+            [],
+            |row| row.get(0),
+        )
         .unwrap_or(0);
 
     let override_count: usize = db
-        .query_row("SELECT COUNT(*) FROM audit_log WHERE overridden = 1", [], |row| row.get(0))
+        .query_row(
+            "SELECT COUNT(*) FROM audit_log WHERE overridden = 1",
+            [],
+            |row| row.get(0),
+        )
         .unwrap_or(0);
 
     let mut stmt = db
