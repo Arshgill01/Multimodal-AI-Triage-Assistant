@@ -15,7 +15,7 @@ tqdm>=4.65.0
 
 # ─── RAG Pipeline ────────────────────────────────────
 chromadb>=0.4.0
-google-generativeai>=0.8.0
+google-generativeai>=0.8.6
 
 # ─── Preprocessing Microservice ──────────────────────
 fastapi>=0.104.0
