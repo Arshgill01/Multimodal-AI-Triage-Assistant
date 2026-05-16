@@ -195,7 +195,7 @@ pub async fn predict(
 }
 
 /// Simple hash function (FNV-like) for patient deduplication.
-fn md5_hash(input: &str) -> u64 {
+pub(crate) fn md5_hash(input: &str) -> u64 {
     let mut hash: u64 = 0xcbf29ce484222325;
     for byte in input.bytes() {
         hash ^= byte as u64;

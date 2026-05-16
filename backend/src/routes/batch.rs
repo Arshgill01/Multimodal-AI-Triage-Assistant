@@ -7,6 +7,7 @@ use crate::models::{
     ConfidenceMetrics, EmbedRequest, EmbedResponse, PatientRequest, PredictResponse,
     ShapExplanation, ShapRequest, ESI_LABELS,
 };
+use crate::routes::predict::md5_hash;
 use crate::state::AppState;
 
 /// `POST /batch-predict` — Mass casualty triage simulation.
@@ -31,7 +32,7 @@ pub async fn batch_predict(
     let mut results: Vec<BatchPatientResult> = Vec::with_capacity(batch.patients.len());
 
     for (idx, patient) in batch.patients.iter().enumerate() {
-        match predict_single(&state, patient).await {
+        match predict_single(&state, patient, idx).await {
             Ok(prediction) => {
                 results.push(BatchPatientResult {
                     index: idx,
@@ -95,6 +96,7 @@ pub async fn batch_predict(
 async fn predict_single(
     state: &AppState,
     patient: &PatientRequest,
+    idx: usize,
 ) -> Result<PredictResponse, (StatusCode, String)> {
     let tabular_features = vec![
         patient.age,
