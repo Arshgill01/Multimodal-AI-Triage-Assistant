@@ -16,9 +16,10 @@ export default function RagIntelligencePane() {
             useAppStore.setState({ ragStream: "", similarCases: [] });
             setIsStreaming(true);
 
+            const { chief_complaint, age, heart_rate, resp_rate, spo2, temp_f, systolic_bp, pain_scale } = patientData;
             const requestBody = {
-                complaint: patientData.chief_complaint,
-                vitals: patientData,
+                complaint: chief_complaint,
+                vitals: { age, heart_rate, resp_rate, spo2, temp_f, systolic_bp, pain_scale },
                 predicted_esi: prediction.predicted_esi,
             };
 
