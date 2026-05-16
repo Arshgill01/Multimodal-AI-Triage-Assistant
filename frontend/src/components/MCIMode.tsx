@@ -55,11 +55,11 @@ const ESI_LABELS: Record<number, string> = {
 };
 
 const severityClassMap: Record<number, string> = {
-    1: "bg-[rgba(255, 58, 58, 0.2)] text-[#ff2a2a]",
-    2: "bg-[rgba(249, 145, 8, 0.2)] text-[#ff9100]",
-    3: "bg-[rgba(199, 144, 16, 0.2)] text-[#ffb300]",
+    1: "bg-[rgba(255,58,58,0.2)] text-[#ff2a2a]",
+    2: "bg-[rgba(249,145,8,0.2)] text-[#ff9100]",
+    3: "bg-[rgba(199,144,16,0.2)] text-[#ffb300]",
     4: "bg-[rgba(0,229,255,0.2)] text-[#00e5ff]",
-    5: "bg-[rgba(58, 129, 253, 0.2)] text-[#2979ff]",
+    5: "bg-[rgba(58,129,253,0.2)] text-[#2979ff]",
 };
 
 type SortOption = "esi-asc" | "esi-desc" | "confidence-asc" | "confidence-desc";
