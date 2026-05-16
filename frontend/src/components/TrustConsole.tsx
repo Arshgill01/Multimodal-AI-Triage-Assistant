@@ -2,7 +2,8 @@
 
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAppStore, AuditEntry } from "@/lib/store";
+import { useAppStore } from "@/lib/store";
+import type { AuditEntry } from "@/lib/api-types";
 import { 
     ShieldCheck, AlertTriangle, Activity, RefreshCw, 
     Filter, CheckCircle, XCircle, Clock 

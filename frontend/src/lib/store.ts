@@ -1,41 +1,9 @@
 import { create } from "zustand";
 import { RUST_API } from "@/lib/config";
+import type { PredictResponse, BatchPatientResult, SimilarCaseEvidence, AuditEntry, AuditSummary } from "@/lib/api-types";
 
 export type AnalysisPhase = "idle" | "extracting" | "routing" | "inferring" | "explainability" | "rag" | "complete";
 export type EsiLevel = 1 | 2 | 3 | 4 | 5 | null;
-
-export interface SimilarCaseEvidence {
-    complaint: string;
-    target_esi: number;
-    similarity: number;
-    text_similarity?: number;
-    vitals_similarity?: number;
-    source?: "text" | "vitals" | "both";
-    flag_high_risk?: number;
-    heart_rate?: number;
-    spo2?: number;
-}
-
-export interface AuditEntry {
-    id: string;
-    timestamp: string;
-    patient_hash: string;
-    chief_complaint: string;
-    predicted_esi: number;
-    confidence: number;
-    is_uncertain: boolean;
-    top_shap_drivers: string[];
-    overridden: boolean;
-    override_esi: number | null;
-    override_reason?: string;
-}
-
-export interface AuditSummary {
-    total_cases: number;
-    uncertain_count: number;
-    override_count: number;
-    esi_distribution: Array<{ esi: number; count: number }>;
-}
 
 export type AuditFilter = {
     esi_filter?: number;
@@ -66,10 +34,10 @@ interface AppState {
     patientData: PatientState;
 
     // Results
-    prediction: any | null;
+    prediction: PredictResponse | null;
     ragStream: string;
     similarCases: SimilarCaseEvidence[];
-    batchResults: any[];
+    batchResults: BatchPatientResult[];
 
     // Audit / Trust Console State
     auditEntries: AuditEntry[];
@@ -81,12 +49,12 @@ interface AppState {
     setEsi: (esi: EsiLevel) => void;
     setPhase: (phase: AnalysisPhase) => void;
     updatePatient: (field: keyof PatientState, value: any) => void;
-    setPrediction: (pred: any) => void;
+    setPrediction: (pred: PredictResponse | null) => void;
     appendRagStream: (chunk: string) => void;
     setSimilarCases: (cases: SimilarCaseEvidence[]) => void;
     setMciMode: (on: boolean) => void;
     setTrustConsoleMode: (on: boolean) => void;
-    setBatchResults: (results: any[]) => void;
+    setBatchResults: (results: BatchPatientResult[]) => void;
     setAuditFilter: (filter: AuditFilter) => void;
     fetchAuditLog: () => Promise<void>;
     fetchAuditSummary: () => Promise<void>;
