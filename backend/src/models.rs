@@ -31,86 +31,18 @@ pub struct PredictResponse {
     pub shap: Option<ShapExplanation>,
     /// The SQLite audit log ID for this prediction (used for clinician overrides)
     pub audit_id: String,
-    /// SBAR clinical handoff format (optional, present when format=sbar is requested)
+    /// SBAR clinical handoff format (optional, populated by Python service)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sbar: Option<SbarFormat>,
 }
 
 /// SBAR (Situation-Background-Assessment-Recommendation) clinical handoff format.
-#[derive(Debug, Serialize, Clone)]
+#[derive(Debug, Serialize, Clone, Deserialize)]
 pub struct SbarFormat {
     pub situation: String,
     pub background: String,
     pub assessment: String,
     pub recommendation: String,
-}
-
-/// Format a prediction into SBAR clinical handoff structure.
-pub fn format_sbar(
-    age: f64,
-    chief_complaint: &str,
-    vitals: &[f64],
-    predicted_esi: u8,
-    esi_label: &str,
-    confidence_label: &str,
-    top_probability: f64,
-    is_uncertain: bool,
-) -> SbarFormat {
-    let situation = format!(
-        "{} y/o patient presenting with \"{}\".",
-        age as u32, chief_complaint
-    );
-
-    let hr = vitals.first().copied().unwrap_or(0.0);
-    let rr = vitals.get(1).copied().unwrap_or(0.0);
-    let spo2 = vitals.get(2).copied().unwrap_or(0.0);
-    let temp = vitals.get(3).copied().unwrap_or(0.0);
-    let sbp = vitals.get(4).copied().unwrap_or(0.0);
-    let pain = vitals.get(6).copied().unwrap_or(0.0);
-
-    let background = format!(
-        "HR {} | RR {} | SpO2 {}% | Temp {}°F | SBP {} | Pain {}/10",
-        hr as u32, rr as u32, spo2 as u32, temp, sbp as u32, pain as u32
-    );
-
-    let uncertainty_warning = if is_uncertain {
-        "⚠️ LOW CONFIDENCE — Manual review strongly recommended.".to_string()
-    } else {
-        String::new()
-    };
-
-    let assessment = format!(
-        "AI predicts {} ({}) — Confidence: {:.1}% ({}){}",
-        esi_label,
-        predicted_esi,
-        top_probability * 100.0,
-        confidence_label,
-        if uncertainty_warning.is_empty() {
-            String::new()
-        } else {
-            format!("\n{}", uncertainty_warning)
-        }
-    );
-
-    let recommendation = esi_triage_recommendation(predicted_esi);
-
-    SbarFormat {
-        situation,
-        background,
-        assessment,
-        recommendation,
-    }
-}
-
-fn esi_triage_recommendation(esi: u8) -> String {
-    match esi {
-        1 => "Immediate resuscitation team activation. Continuous monitoring. Prepare intubation/CPR. Transfer to critical care bed.".to_string(),
-        2 => "High-priority workup. Bed within 10 minutes. Establish IV access. Order relevant labs/imaging. Reevaluate frequently.".to_string(),
-        3 => "Urgent evaluation. Bed within 30 minutes. Initiate diagnostic workup per protocol. Reassess within 60 minutes.".to_string(),
-        4 => "Routine evaluation. Consider fast-track pathway. Reassess before discharge for clinical changes.".to_string(),
-        5 => "Non-urgent management. May be suitable for primary care referral. Provide return precautions.".to_string(),
-        _ => "Unable to determine triage level. Manual evaluation required.".to_string(),
-    }
 }
 
 /// Confidence / uncertainty quantification derived from class probabilities.

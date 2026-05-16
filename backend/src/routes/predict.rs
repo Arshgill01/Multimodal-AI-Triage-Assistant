@@ -3,9 +3,10 @@ use std::sync::Arc;
 use axum::{extract::State, http::StatusCode, Json};
 
 use crate::models::{
-    format_sbar, ConfidenceMetrics, EmbedRequest, EmbedResponse, PatientRequest, PredictResponse,
+    ConfidenceMetrics, EmbedRequest, EmbedResponse, PatientRequest, PredictResponse, SbarFormat,
     ShapExplanation, ShapRequest, ESI_LABELS,
 };
+use serde::Serialize;
 use crate::state::AppState;
 
 /// `POST /predict` — Full triage inference pipeline.
@@ -171,16 +172,14 @@ pub async fn predict(
         }
     };
 
-    let sbar = Some(format_sbar(
-        patient.age,
-        &patient.chief_complaint,
-        &tabular_features,
+    let sbar = fetch_sbar_format(
+        &state,
+        &patient,
         predicted_esi,
         &esi_label,
-        &confidence.confidence_label,
-        confidence.top_probability,
-        confidence.is_uncertain,
-    ));
+        &confidence,
+    )
+    .await;
 
     Ok(Json(PredictResponse {
         predicted_esi,
@@ -192,6 +191,55 @@ pub async fn predict(
         audit_id,
         sbar,
     }))
+}
+
+#[derive(Debug, Serialize)]
+pub(crate) struct SbarRequest {
+    age: f64,
+    chief_complaint: String,
+    heart_rate: f64,
+    resp_rate: f64,
+    spo2: f64,
+    temp_f: f64,
+    systolic_bp: f64,
+    pain_scale: f64,
+    predicted_esi: u8,
+    esi_label: String,
+    confidence_label: String,
+    top_probability: f64,
+    is_uncertain: bool,
+}
+
+pub(crate) async fn fetch_sbar_format(
+    state: &AppState,
+    patient: &PatientRequest,
+    predicted_esi: u8,
+    esi_label: &str,
+    confidence: &ConfidenceMetrics,
+) -> Option<SbarFormat> {
+    let url = format!("{}/sbar-format", state.python_service_url);
+    let req = SbarRequest {
+        age: patient.age,
+        chief_complaint: patient.chief_complaint.clone(),
+        heart_rate: patient.heart_rate,
+        resp_rate: patient.resp_rate,
+        spo2: patient.spo2,
+        temp_f: patient.temp_f,
+        systolic_bp: patient.systolic_bp,
+        pain_scale: patient.pain_scale,
+        predicted_esi,
+        esi_label: esi_label.to_string(),
+        confidence_label: confidence.confidence_label.clone(),
+        top_probability: confidence.top_probability,
+        is_uncertain: confidence.is_uncertain,
+    };
+
+    let resp = state.http_client.post(&url).json(&req).send().await.ok()?;
+    if !resp.status().is_success() {
+        tracing::warn!("SBAR service returned {}", resp.status());
+        return None;
+    }
+    resp.json::<SbarFormat>().await.ok()
 }
 
 /// Simple hash function (FNV-like) for patient deduplication.

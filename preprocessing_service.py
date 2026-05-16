@@ -145,6 +145,22 @@ class ShapResponse(BaseModel):
     prediction_label: str
 
 
+class SbarRequest(BaseModel):
+    age: float
+    chief_complaint: str
+    heart_rate: float
+    resp_rate: float
+    spo2: float
+    temp_f: float
+    systolic_bp: float
+    pain_scale: float
+    predicted_esi: int
+    esi_label: str
+    confidence_label: str
+    top_probability: float
+    is_uncertain: bool
+
+
 # ── Startup: Load all models ─────────────────────────────────
 
 
@@ -983,6 +999,36 @@ Keep your response concise, structured, and highly readable."""
         event_generator(),
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "Connection": "keep-alive"},
+    )
+
+
+# ── SBAR Format ──────────────────────────────────────────────
+
+
+@app.post("/sbar-format")
+async def sbar_format(req: SbarRequest):
+    """Format triage prediction into SBAR clinical handoff text."""
+    from formatters.sbar import format_sbar
+
+    vitals = [
+        req.heart_rate,
+        req.resp_rate,
+        req.spo2,
+        req.temp_f,
+        req.systolic_bp,
+        0.0,
+        req.pain_scale,
+    ]
+
+    return format_sbar(
+        age=req.age,
+        chief_complaint=req.chief_complaint,
+        vitals=vitals,
+        predicted_esi=req.predicted_esi,
+        esi_label=req.esi_label,
+        confidence_label=req.confidence_label,
+        top_probability=req.top_probability,
+        is_uncertain=req.is_uncertain,
     )
 
 

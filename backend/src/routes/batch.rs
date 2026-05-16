@@ -3,11 +3,11 @@ use std::sync::Arc;
 use axum::{extract::State, http::StatusCode, Json};
 
 use crate::models::{
-    format_sbar, BatchPatientResult, BatchPredictRequest, BatchPredictResponse, BatchSummary,
+    BatchPatientResult, BatchPredictRequest, BatchPredictResponse, BatchSummary,
     ConfidenceMetrics, EmbedRequest, EmbedResponse, PatientRequest, PredictResponse,
     ShapExplanation, ShapRequest, ESI_LABELS,
 };
-use crate::routes::predict::md5_hash;
+use crate::routes::predict::{fetch_sbar_format, md5_hash};
 use crate::state::AppState;
 
 /// `POST /batch-predict` — Mass casualty triage simulation.
@@ -217,16 +217,14 @@ async fn predict_single(
         }
     };
 
-    let sbar = Some(format_sbar(
-        patient.age,
-        &patient.chief_complaint,
-        &tabular_features,
+    let sbar = fetch_sbar_format(
+        state,
+        patient,
         predicted_esi,
         &esi_label,
-        &confidence.confidence_label,
-        confidence.top_probability,
-        confidence.is_uncertain,
-    ));
+        &confidence,
+    )
+    .await;
 
     Ok(PredictResponse {
         predicted_esi,
