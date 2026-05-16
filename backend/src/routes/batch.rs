@@ -31,7 +31,7 @@ pub async fn batch_predict(
     let mut results: Vec<BatchPatientResult> = Vec::with_capacity(batch.patients.len());
 
     for (idx, patient) in batch.patients.iter().enumerate() {
-        match predict_single(&state, patient).await {
+        match predict_single(&state, idx, patient).await {
             Ok(prediction) => {
                 results.push(BatchPatientResult {
                     index: idx,
@@ -94,6 +94,7 @@ pub async fn batch_predict(
 /// Run the predict pipeline for a single patient (reuses the same logic as /predict).
 async fn predict_single(
     state: &AppState,
+    idx: usize,
     patient: &PatientRequest,
 ) -> Result<PredictResponse, (StatusCode, String)> {
     let tabular_features = vec![
@@ -180,6 +181,41 @@ async fn predict_single(
 
     let confidence = ConfidenceMetrics::from_probabilities(&probabilities);
 
+    // Simple hash from complaint + vitals for patient deduplication
+    let patient_hash = format!(
+        "{:x}",
+        md5_hash(&format!(
+            "{}|{}|{}|{}",
+            patient.chief_complaint, patient.age, patient.heart_rate, patient.spo2
+        ))
+    );
+
+    let top_shap_drivers: Vec<String> = shap
+        .as_ref()
+        .map(|s| {
+            s.features
+                .iter()
+                .take(3)
+                .map(|f| format!("{}={:.4}", f.name, f.shap_value))
+                .collect()
+        })
+        .unwrap_or_default();
+
+    let audit_id = match state.log_decision(
+        &patient_hash,
+        &patient.chief_complaint,
+        predicted_esi,
+        confidence.top_probability,
+        confidence.is_uncertain,
+        &top_shap_drivers,
+    ) {
+        Ok(id) => id,
+        Err(e) => {
+            tracing::warn!("Batch audit log failed for patient {}: {}", idx, e);
+            patient_hash.clone()
+        }
+    };
+
     Ok(PredictResponse {
         predicted_esi,
         esi_label,
@@ -187,7 +223,7 @@ async fn predict_single(
         confidence,
         feature_vector,
         shap,
-        audit_id: String::new(),
+        audit_id,
     })
 }
 
@@ -206,4 +242,14 @@ async fn fetch_shap_batch(
         return None;
     }
     resp.json::<ShapExplanation>().await.ok()
+}
+
+/// Simple hash function (FNV-like) for patient deduplication.
+fn md5_hash(input: &str) -> u64 {
+    let mut hash: u64 = 0xcbf29ce484222325;
+    for byte in input.bytes() {
+        hash ^= byte as u64;
+        hash = hash.wrapping_mul(0x100000001b3);
+    }
+    hash
 }
