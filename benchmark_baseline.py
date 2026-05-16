@@ -71,8 +71,19 @@ if os.path.exists(csv_path):
     text_pca.fit(emb_matrix)
     print("✅ Text PCA fitted")
 
+"""
+Benchmark Limitations
+---------------------
+This script benchmarks the Python LightGBM model directly and is not
+a feature-for-feature comparison with the Rust inference service.
+The Rust service additionally provides SHAP explainability, audit
+logging, and RAG-based clinical recommendations, which are out of
+scope for this baseline benchmark.
+"""
+
 # Load LightGBM
-model_path_txt = os.path.join(BASE_DIR, "triage_multimodal_model(1).txt")
+_default_model_txt = os.path.join(BASE_DIR, "triage_multimodal_model.txt")
+model_path_txt = os.environ.get("TRIAGE_MODEL_PATH", _default_model_txt)
 model_path_pkl = os.path.join(BASE_DIR, "triage_multimodal_model.pkl")
 
 lgb_model = None
