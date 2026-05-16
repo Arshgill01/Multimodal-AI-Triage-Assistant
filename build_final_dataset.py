@@ -19,41 +19,73 @@ def safe_pain_convert(val):
         return np.random.randint(0, 11)  # Fallback for unscoreable
 
 
+# Registry: chief complaint keywords → subdirectory name in kaggle_images/
+# To add a new image category, insert an entry: "keyword": "dirname"
+IMAGE_REGISTRY = {
+    "burn":       "burns",
+    "laceration": "wounds",
+    "fracture":   "wounds",
+}
+
+
 def map_kaggle_images(synthetic_df, image_base_dir="kaggle_images"):
-    """Maps real Kaggle images to synthetic rows that have a placeholder."""
+    """Maps real Kaggle images to synthetic rows that have a placeholder.
+
+    Uses IMAGE_REGISTRY to determine which subdirectory to look in based on
+    the chief complaint text. Prints warnings when expected directories are
+    missing or empty.
+    """
     print("Mapping real images to synthetic data...")
 
-    # Check if directories exist
-    rash_dir = os.path.join(image_base_dir, "rashes")
-    wound_dir = os.path.join(image_base_dir, "wounds")
-
-    # Fallback lists if folders are empty/missing
-    rashes = os.listdir(rash_dir) if os.path.exists(rash_dir) else []
-    wounds = os.listdir(wound_dir) if os.path.exists(wound_dir) else []
-
-    mapped_count = 0
-    for idx, row in synthetic_df.iterrows():
-        if row["image_path"] != "None":
-            complaint = str(row["chief_complaint"]).lower()
-
-            # Smartly assign based on text
-            if "rash" in complaint and rashes:
-                img = random.choice(rashes)
-                synthetic_df.at[idx, "image_path"] = os.path.join(rash_dir, img)
-                mapped_count += 1
-            elif (
-                "burn" in complaint
-                or "laceration" in complaint
-                or "fracture" in complaint
-            ) and wounds:
-                img = random.choice(wounds)
-                synthetic_df.at[idx, "image_path"] = os.path.join(wound_dir, img)
-                mapped_count += 1
+    # Load available images per registry entry
+    available = {}
+    for keyword, dirname in IMAGE_REGISTRY.items():
+        dirpath = os.path.join(image_base_dir, dirname)
+        if os.path.exists(dirpath):
+            images = os.listdir(dirpath)
+            if images:
+                available[dirname] = (dirpath, images)
             else:
-                # If no image matches, clean it up
-                synthetic_df.at[idx, "image_path"] = "None"
+                print(f"WARNING: Directory '{dirpath}' exists but is empty.")
+        else:
+            print(f"WARNING: Expected directory not found: {dirpath}")
 
-    print(f"Mapped {mapped_count} real images to synthetic records.")
+    if not available:
+        print(
+            "WARNING: No image directories found. All image paths will be set to 'None'."
+        )
+
+    mapped = {dirname: 0 for dirname in set(IMAGE_REGISTRY.values())}
+    unmapped = 0
+
+    for idx, row in synthetic_df.iterrows():
+        if row["image_path"] == "None":
+            continue
+
+        complaint = str(row["chief_complaint"]).lower()
+        assigned = False
+
+        for keyword, dirname in IMAGE_REGISTRY.items():
+            if keyword in complaint and dirname in available:
+                dirpath, images = available[dirname]
+                img = random.choice(images)
+                synthetic_df.at[idx, "image_path"] = os.path.join(dirpath, img)
+                mapped[dirname] += 1
+                assigned = True
+                break
+
+        if not assigned:
+            synthetic_df.at[idx, "image_path"] = "None"
+            unmapped += 1
+
+    total_mapped = sum(mapped.values())
+    print(f"Mapped {total_mapped} real images to synthetic records.")
+    for dirname, count in mapped.items():
+        if count:
+            print(f"  - {dirname.capitalize()} images mapped: {count}")
+    if unmapped:
+        print(f"  - Unmapped (set to 'None'): {unmapped}")
+
     return synthetic_df
 
 
