@@ -3,7 +3,7 @@ use std::sync::Arc;
 use axum::{extract::State, http::StatusCode, Json};
 
 use crate::models::{
-    ConfidenceMetrics, EmbedRequest, EmbedResponse, PatientRequest, PredictResponse,
+    format_sbar, ConfidenceMetrics, EmbedRequest, EmbedResponse, PatientRequest, PredictResponse,
     ShapExplanation, ShapRequest, ESI_LABELS,
 };
 use crate::state::AppState;
@@ -171,6 +171,17 @@ pub async fn predict(
         }
     };
 
+    let sbar = Some(format_sbar(
+        patient.age,
+        &patient.chief_complaint,
+        &tabular_features,
+        predicted_esi,
+        &esi_label,
+        &confidence.confidence_label,
+        confidence.top_probability,
+        confidence.is_uncertain,
+    ));
+
     Ok(Json(PredictResponse {
         predicted_esi,
         esi_label,
@@ -179,6 +190,7 @@ pub async fn predict(
         feature_vector,
         shap,
         audit_id,
+        sbar,
     }))
 }
 
