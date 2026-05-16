@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAppStore, SimilarCaseEvidence } from "@/lib/store";
+import { useAppStore } from "@/lib/store";
+import type { SimilarCaseEvidence } from "@/lib/api-types";
 import { PYTHON_API } from "@/lib/config";
 import ReactMarkdown from "react-markdown";
 import { BrainCircuit, FileClock, Activity, HeartPulse, AlertTriangle } from "lucide-react";
