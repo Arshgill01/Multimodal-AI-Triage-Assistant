@@ -308,6 +308,36 @@ The system uses a hybrid dataset combining real and synthetic patients:
 | Synthetic Generator | 1,000 patients (200 per ESI) | Class-balanced training |
 | Kaggle Medical Images | ~260 burn/wound photos | Vision modality |
 
+### Kaggle Image Directory Structure
+
+The `kaggle_images/` folder must contain the following subdirectories for `build_final_dataset.py` to map images correctly:
+
+```
+kaggle_images/
+├── burns/       # Burn images (mapped for "burn" chief complaints)
+└── wounds/      # Wound/laceration images (mapped for "laceration" and "fracture" complaints)
+```
+
+The mapping between chief complaint keywords and image directories is defined by the `IMAGE_REGISTRY` dictionary at the top of `build_final_dataset.py`:
+
+```python
+IMAGE_REGISTRY = {
+    "burn":       "burns",
+    "laceration": "wounds",
+    "fracture":   "wounds",
+}
+```
+
+To add a new image category, insert a new entry — no other code changes are needed. If any expected directory is missing or empty, the script prints a clear warning and those rows fall back to `image_path = "None"`.
+
+### Tests
+
+Unit tests for `map_kaggle_images()` are in `tests/test_build_final_dataset.py` (12 tests). Run with:
+
+```bash
+uv run pytest tests/
+```
+
 ### Feature Vector Layout
 
 The master dataset contains 22 features used for model inference:
