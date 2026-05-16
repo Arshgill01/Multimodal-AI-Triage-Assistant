@@ -62,6 +62,37 @@ else
     check_fail "Frontend not responding"
 fi
 
+# Check single prediction
+check_info "Single prediction (POST /predict)..."
+PREDICT_PAYLOAD='{"age":45,"heart_rate":88,"resp_rate":18,"spo2":97,"temp_f":98.6,"systolic_bp":130,"pain_scale":4,"chief_complaint":"Chest pain"}'
+PREDICT_RESULT=$(curl -s -X POST http://localhost:3001/predict -H "Content-Type: application/json" -d "$PREDICT_PAYLOAD" 2>/dev/null)
+if echo "$PREDICT_RESULT" | jq -e '.predicted_esi' >/dev/null 2>&1; then
+    ESI=$(echo "$PREDICT_RESULT" | jq -r '.predicted_esi')
+    LABEL=$(echo "$PREDICT_RESULT" | jq -r '.esi_label')
+    check_pass "Prediction successful — ESI $ESI ($LABEL)"
+elif echo "$PREDICT_RESULT" | jq -e '.error' >/dev/null 2>&1; then
+    check_info "Model not loaded (degraded mode): $(echo "$PREDICT_RESULT" | jq -r '.error')"
+    check_pass "Prediction endpoint responding (model unavailable)"
+else
+    check_fail "Prediction endpoint error: $(echo "$PREDICT_RESULT" | head -c 200)"
+fi
+
+# Check batch prediction
+check_info "Batch prediction (POST /batch-predict)..."
+BATCH_PAYLOAD='{"patients":[{"age":45,"heart_rate":88,"resp_rate":18,"spo2":97,"temp_f":98.6,"systolic_bp":130,"pain_scale":4,"chief_complaint":"Chest pain"},{"age":30,"heart_rate":72,"resp_rate":14,"spo2":99,"temp_f":98.2,"systolic_bp":115,"pain_scale":1,"chief_complaint":"Sore throat"}]}'
+BATCH_RESULT=$(curl -s -X POST http://localhost:3001/batch-predict -H "Content-Type: application/json" -d "$BATCH_PAYLOAD" 2>/dev/null)
+if echo "$BATCH_RESULT" | jq -e '.total_patients' >/dev/null 2>&1; then
+    TOTAL=$(echo "$BATCH_RESULT" | jq -r '.total_patients')
+    PATIENTS=$(echo "$BATCH_RESULT" | jq -r '.patients | length')
+    SUMMARY=$(echo "$BATCH_RESULT" | jq -e '.summary' >/dev/null 2>&1 && echo "yes" || echo "no")
+    check_pass "Batch prediction — $TOTAL patients, $PATIENTS results, summary=$SUMMARY"
+elif echo "$BATCH_RESULT" | jq -e '.error' >/dev/null 2>&1; then
+    check_info "Model not loaded (degraded mode): $(echo "$BATCH_RESULT" | jq -r '.error')"
+    check_pass "Batch endpoint responding (model unavailable)"
+else
+    check_fail "Batch prediction error: $(echo "$BATCH_RESULT" | head -c 200)"
+fi
+
 # Check service connectivity
 check_info "Cross-service connectivity..."
 if curl -s http://localhost:3001/health | jq -r '.python_service_url' 2>/dev/null | grep -q "8000"; then
