@@ -22,9 +22,9 @@ def safe_pain_convert(val):
 # Registry: chief complaint keywords → subdirectory name in kaggle_images/
 # To add a new image category, insert an entry: "keyword": "dirname"
 IMAGE_REGISTRY = {
-    "burn":       "burns",
+    "burn": "burns",
     "laceration": "wounds",
-    "fracture":   "wounds",
+    "fracture": "wounds",
 }
 
 

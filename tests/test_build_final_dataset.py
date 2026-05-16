@@ -38,7 +38,11 @@ def df_with_images():
         ["p5", "Chest pain", "images/synthetic_p5.jpg", 2, 1],
     ]
     columns = [
-        "patient_id", "chief_complaint", "image_path", "target_esi", "flag_high_risk",
+        "patient_id",
+        "chief_complaint",
+        "image_path",
+        "target_esi",
+        "flag_high_risk",
     ]
     return pd.DataFrame(rows, columns=columns)
 
@@ -50,7 +54,11 @@ def df_no_images():
         ["p2", "Laceration", "None", 4, 0],
     ]
     columns = [
-        "patient_id", "chief_complaint", "image_path", "target_esi", "flag_high_risk",
+        "patient_id",
+        "chief_complaint",
+        "image_path",
+        "target_esi",
+        "flag_high_risk",
     ]
     return pd.DataFrame(rows, columns=columns)
 
