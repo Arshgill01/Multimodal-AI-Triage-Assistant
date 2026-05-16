@@ -126,10 +126,13 @@ export default function TrustConsole() {
         fetchAuditLog();
         fetchAuditSummary();
     }, []);
+    useEffect(() => {
+   fetchAuditLog();
+}, [auditFilter]);
 
     const handleFilterChange = (key: keyof typeof auditFilter, value: any) => {
         setAuditFilter({ ...auditFilter, [key]: value });
-        fetchAuditLog();
+       
     };
 
     return (
