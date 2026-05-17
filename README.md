@@ -103,7 +103,7 @@ RAG engine that retrieves similar historical patients and generates grounded cli
 
 Candidates from both paths are merged, deduplicated, and scored with an ESI acuity boost (+15%) for candidates within ±1 level of predicted ESI.
 
-**Live endpoint:** `/rag-stream` (SSE streaming)
+**Live endpoint:** `POST http://localhost:8000/rag-stream` (Python sidecar, SSE streaming)
 
 ### 3. SHAP Explainability
 
@@ -218,7 +218,7 @@ The production system is a two-process microservice architecture. The Rust backe
 ```mermaid
 flowchart TB
     subgraph Client
-        FE["React Frontend<br/>(port 3000)"]
+        FE["Next.js Frostbyte HUD<br/>(port 3000)"]
     end
 
     subgraph Rust["Rust / Axum Backend (port 3001)"]
@@ -226,7 +226,7 @@ flowchart TB
         Predict["/predict endpoint"]
         Batch["/batch-predict endpoint"]
         Audit["/audit-log, /audit/override"]
-        Next["/next-steps /rag-stream"]
+        Next["/next-steps"]
         LGB["LightGBM Booster<br/>(FFI, Mutex-guarded)"]
 
         Router --> Predict
@@ -242,6 +242,7 @@ flowchart TB
         Chroma["ChromaDB<br/>1,197 patients"]
         Gemini["Gemini 2.5 Flash"]
         SHAP["SHAP TreeExplainer"]
+        RAG["/rag-stream"]
 
         Predict --> BERT
         Predict --> ResNet
@@ -250,9 +251,10 @@ flowchart TB
     end
 
     FE -- "POST /predict<br/>/batch-predict" --> Router
+    FE -- "POST /rag-stream" --> RAG
     Predict -- "POST /embed" --> BERT
     Predict -- "POST /embed" --> ResNet
-    Next -- "POST /rag-stream" --> Chroma
+    RAG --> Chroma --> Gemini
 ```
 
 ### Request Flow: `/predict`
@@ -335,7 +337,7 @@ To add a new image category, insert a new entry — no other code changes are ne
 Unit tests for `map_kaggle_images()` are in `tests/test_build_final_dataset.py` (12 tests). Run with:
 
 ```bash
-uv run pytest tests/
+python -m pytest tests/
 ```
 
 ### Feature Vector Layout
@@ -491,30 +493,53 @@ This will:
 4. Wait for all services to be ready
 5. Print status and URLs
 
+`startup.sh` exports the environment variables listed below (with sensible defaults) before launching each service.
+
 ```bash
 ./smoke.sh   # Verify all services
 ./shutdown.sh # Stop all services
 ```
 
+### Environment variables
+
+| Variable | Service | Default | Purpose |
+|:---------|:--------|:--------|:--------|
+| `TRIAGE_DATA_DIR` | Python | `.` (or Colab path) | Dataset, `triage_multimodal_model.txt`, RAG assets |
+| `GEMINI_API_KEY` | Python | *(unset)* | Optional — Gemini RAG generation |
+| `TRIAGE_MODEL_PATH` | Rust | `../triage_multimodal_model.txt` | Canonical LightGBM model file (from `backend/`) |
+| `TRIAGE_PYTHON_URL` | Rust | `http://localhost:8000` | Python sidecar base URL |
+| `TRIAGE_AUDIT_DB` | Rust | `../triage_audit.db` | SQLite audit trail path |
+| `NEXT_PUBLIC_RUST_API` | Frontend | `http://localhost:3001` | Rust backend URL (build-time for production) |
+| `NEXT_PUBLIC_PYTHON_API` | Frontend | `http://localhost:8000` | Python sidecar URL (build-time for production) |
+
+The production model artifact is **`triage_multimodal_model.txt`** (LightGBM native text, loaded by Rust FFI). Python loads the same filename from `TRIAGE_DATA_DIR` when present.
+
 ### Manual Start (Step-by-Step)
 
+Use three terminals from the repository root after `pip install -r requirements.txt`.
+
 ```bash
-# 1. Install Python dependencies
-pip install -r requirements.txt
-
-# 2. Set environment variables
-export GEMINI_API_KEY="your-gemini-api-key"
-export TRIAGE_MODEL_PATH="./triage_multimodal_model.txt"
-
-# 3. Start Python sidecar
+# Terminal 1 — Python preprocessing (port 8000)
+export TRIAGE_DATA_DIR="${TRIAGE_DATA_DIR:-.}"
+export GEMINI_API_KEY="${GEMINI_API_KEY:-}"   # optional
 uvicorn preprocessing_service:app --host 0.0.0.0 --port 8000
+```
 
-# 4. Build and run Rust backend
+```bash
+# Terminal 2 — Rust backend (port 3001)
 cd backend
-TRIAGE_MODEL_PATH="../triage_multimodal_model.txt" cargo run --release
+export TRIAGE_MODEL_PATH="${TRIAGE_MODEL_PATH:-../triage_multimodal_model.txt}"
+export TRIAGE_PYTHON_URL="${TRIAGE_PYTHON_URL:-http://localhost:8000}"
+export TRIAGE_AUDIT_DB="${TRIAGE_AUDIT_DB:-../triage_audit.db}"
+cargo run --release
+```
 
-# 5. Start frontend (optional)
-cd frontend && npm run dev
+```bash
+# Terminal 3 — Next.js Frostbyte HUD (port 3000)
+cd frontend
+export NEXT_PUBLIC_RUST_API="${NEXT_PUBLIC_RUST_API:-http://localhost:3001}"
+export NEXT_PUBLIC_PYTHON_API="${NEXT_PUBLIC_PYTHON_API:-http://localhost:8000}"
+npm run dev
 ```
 
 ### Verify
@@ -535,42 +560,62 @@ curl -X POST http://localhost:3001/batch-predict \
 
 ## API Reference
 
+### Rust backend (`http://localhost:3001`)
+
 | Endpoint | Method | Description |
 |:---------|:-------|:----------|
 | `/health` | GET | Liveness probe |
-| `/predict` | POST | Single-patient triage inference |
+| `/predict` | POST | Single-patient triage inference (includes SHAP when available) |
 | `/batch-predict` | POST | Batch MCI triage |
-| `/next-steps` | POST | RAG clinical recommendations |
-| `/rag-stream` | POST | SSE streaming RAG |
-| `/shap` | POST | SHAP explainability |
+| `/next-steps` | POST | RAG recommendations (proxies to Python `/rag`) |
 | `/audit-log` | GET | Query audit trail |
+| `/audit-summary` | GET | Audit aggregates for Trust Console |
 | `/audit/override` | POST | Record clinician override |
+
+### Python sidecar (`http://localhost:8000`)
+
+| Endpoint | Method | Description |
+|:---------|:-------|:----------|
+| `/health` | GET | Liveness probe |
+| `/ready` | GET | Readiness (models loaded) |
+| `/embed` | POST | ClinicalBERT + ResNet-50 feature extraction |
+| `/shap` | POST | Per-patient SHAP values (also called by Rust `/predict`) |
+| `/rag` | POST | ChromaDB retrieval + Gemini generation |
+| `/rag-stream` | POST | SSE streaming RAG (used by Frostbyte HUD) |
 
 ---
 
 ## Project Structure
 
 ```
-triage-submission-story/
-├── backend/                           # Rust inference backend
-│   ├── Cargo.toml
-│   ├── Cargo.lock
+Multimodal-AI-Triage-Assistant/
+├── backend/                           # Rust / Axum inference (port 3001)
 │   └── src/
-│       ├── main.rs                    # Entry point
-│       ├── models.rs                  # DTOs
-│       ├── state.rs                   # AppState
-│       └── routes/                    # /predict, /batch-predict, /audit/*
-├── frontend/                          # Next.js Obsidian HUD
-│   └── src/components/                # TelemetryPane, AICorePane, MCIMode, RAGIntelligencePane
-├── preprocessing_service.py            # Python FastAPI: /embed, /shap, /rag, /rag-stream
-├── docs/ai/                           # Working notes
-├── startup.sh                         # One-command startup
-├── smoke.sh                           # Health verification
-├── shutdown.sh                        # Stop all services
-├── triage_multimodal_model.txt        # LightGBM model (FFI)
-├── triage_master_multimodal.csv       # 1,197 patients × 25 columns
-├── clinicalbert_embeddings_768d.npy   # Pre-computed embeddings
-└── kaggle_images/                    # Burn/wound images
+│       ├── main.rs
+│       ├── models.rs
+│       ├── state.rs
+│       └── routes/                    # predict, batch, health, next_steps, audit
+├── frontend/                          # Next.js 16 Frostbyte Obsidian HUD (port 3000)
+│   └── src/
+│       ├── app/
+│       ├── components/                # TelemetryPane, AICorePane, RagIntelligencePane, MCIMode, …
+│       └── lib/                       # config.ts, store.ts, api-types.ts
+├── preprocessing_service.py           # FastAPI sidecar: /embed, /shap, /rag, /rag-stream
+├── clinical_rag_engine.py             # Standalone RAG pipeline (notebook / research)
+├── build_final_dataset.py             # Dataset construction → triage_dataset_final.csv
+├── late_fusion.py                     # LightGBM late-fusion training
+├── text_embeddings.py                 # ClinicalBERT embedding pipeline
+├── vision_embeddings.py               # ResNet-50 vision pipeline
+├── benchmark_baseline.py
+├── pytorch_fusion_model.py            # Research V2 (not deployed)
+├── tests/test_build_final_dataset.py
+├── startup.sh / smoke.sh / shutdown.sh
+├── triage_multimodal_model.txt        # Canonical LightGBM model (Rust FFI + Python SHAP)
+├── triage_master_multimodal.csv       # 1,197 patients × 27 columns (fused features)
+├── triage_dataset_final.csv           # 12-column dataset from build_final_dataset.py
+├── clinicalbert_embeddings_768d.npy # Pre-computed embeddings (optional)
+├── kaggle_images/                     # burns/ and wounds/ image pools
+└── requirements.txt
 ```
 
 ---
