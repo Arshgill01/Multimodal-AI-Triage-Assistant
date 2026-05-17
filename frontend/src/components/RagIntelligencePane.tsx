@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAppStore, SimilarCaseEvidence } from "@/lib/store";
+import { useAppStore } from "@/lib/store";
+import type { SimilarCaseEvidence } from "@/lib/api-types";
 import { PYTHON_API } from "@/lib/config";
 import ReactMarkdown from "react-markdown";
 import { BrainCircuit, FileClock, Activity, HeartPulse, AlertTriangle } from "lucide-react";
@@ -16,9 +17,10 @@ export default function RagIntelligencePane() {
             useAppStore.setState({ ragStream: "", similarCases: [] });
             setIsStreaming(true);
 
+            const { chief_complaint, age, heart_rate, resp_rate, spo2, temp_f, systolic_bp, pain_scale } = patientData;
             const requestBody = {
-                complaint: patientData.chief_complaint,
-                vitals: patientData,
+                complaint: chief_complaint,
+                vitals: { age, heart_rate, resp_rate, spo2, temp_f, systolic_bp, pain_scale },
                 predicted_esi: prediction.predicted_esi,
             };
 

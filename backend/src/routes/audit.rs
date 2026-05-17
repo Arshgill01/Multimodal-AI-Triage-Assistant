@@ -25,27 +25,47 @@ pub async fn audit_log(
         )
     })?;
 
-    let mut query = String::from(
-        "SELECT id, timestamp, patient_hash, chief_complaint, predicted_esi, \
-         confidence, is_uncertain, top_shap_drivers, overridden, override_esi \
-         FROM audit_log WHERE 1=1",
-    );
+    let mut base_query = String::from("WHERE 1=1");
     let mut sql_params: Vec<Box<dyn rusqlite::types::ToSql>> = Vec::new();
 
     if let Some(esi) = params.esi_filter {
-        query.push_str(" AND predicted_esi = ?");
+        base_query.push_str(" AND predicted_esi = ?");
         sql_params.push(Box::new(esi));
     }
 
     if params.uncertain_only.unwrap_or(false) {
-        query.push_str(" AND is_uncertain = 1");
+        base_query.push_str(" AND is_uncertain = 1");
     }
 
     if params.overridden_only.unwrap_or(false) {
-        query.push_str(" AND overridden = 1");
+        base_query.push_str(" AND overridden = 1");
     }
 
-    query.push_str(" ORDER BY timestamp DESC LIMIT ?");
+    let count_param_refs: Vec<&dyn rusqlite::types::ToSql> =
+        sql_params.iter().map(|p| p.as_ref()).collect();
+
+    let total: usize = db
+        .prepare(&format!("SELECT COUNT(*) FROM audit_log {}", base_query))
+        .map_err(|e| {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                format!("SQL count prepare error: {}", e),
+            )
+        })?
+        .query_row(count_param_refs.as_slice(), |row| row.get(0))
+        .map_err(|e| {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                format!("SQL count error: {}", e),
+            )
+        })?;
+
+    let mut query = format!(
+        "SELECT id, timestamp, patient_hash, chief_complaint, predicted_esi, \
+         confidence, is_uncertain, top_shap_drivers, overridden, override_esi \
+         FROM audit_log {} ORDER BY timestamp DESC LIMIT ?",
+        base_query
+    );
     sql_params.push(Box::new(params.limit as i64));
 
     let param_refs: Vec<&dyn rusqlite::types::ToSql> =
@@ -89,7 +109,6 @@ pub async fn audit_log(
         .filter_map(|r| r.ok())
         .collect();
 
-    let total = entries.len();
     Ok(Json(AuditLogResponse { total, entries }))
 }
 
@@ -98,6 +117,16 @@ pub async fn audit_override(
     State(state): State<Arc<AppState>>,
     Json(req): Json<AuditOverrideRequest>,
 ) -> Result<Json<serde_json::Value>, (StatusCode, String)> {
+    // ESI is clinically defined as 1–5. Reject out-of-range values before touching the DB so corrupt data never reaches the audit trail.
+    if !(1..=5).contains(&req.override_esi) {
+        return Err((
+            StatusCode::UNPROCESSABLE_ENTITY,
+            format!(
+                "override_esi must be between 1 and 5 (got {})",
+                req.override_esi
+            ),
+        ));
+    }
     let db = state.audit_db.lock().map_err(|e| {
         (
             StatusCode::INTERNAL_SERVER_ERROR,

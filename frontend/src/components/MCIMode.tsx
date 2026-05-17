@@ -54,6 +54,14 @@ const ESI_LABELS: Record<number, string> = {
     5: "Non-Urgent",
 };
 
+const severityClassMap: Record<number, string> = {
+    1: "bg-[rgba(255,58,58,0.2)] text-[#ff2a2a]",
+    2: "bg-[rgba(249,145,8,0.2)] text-[#ff9100]",
+    3: "bg-[rgba(199,144,16,0.2)] text-[#ffb300]",
+    4: "bg-[rgba(0,229,255,0.2)] text-[#00e5ff]",
+    5: "bg-[rgba(58,129,253,0.2)] text-[#2979ff]",
+};
+
 type SortOption = "esi-asc" | "esi-desc" | "confidence-asc" | "confidence-desc";
 
 export default function MCIMode() {
@@ -99,13 +107,13 @@ export default function MCIMode() {
         let filtered = [...batchResults];
         
         if (esiFilter !== null) {
-            filtered = filtered.filter((r: any) => r.predicted_esi === esiFilter);
+            filtered = filtered.filter((r) => r.predicted_esi === esiFilter);
         }
         if (showUncertainOnly) {
-            filtered = filtered.filter((r: any) => r.confidence?.is_uncertain);
+            filtered = filtered.filter((r) => r.confidence?.is_uncertain);
         }
         
-        filtered.sort((a: any, b: any) => {
+        filtered.sort((a, b) => {
             if (sortBy === "esi-asc") {
                 return a.predicted_esi - b.predicted_esi;
             } else if (sortBy === "esi-desc") {
@@ -121,12 +129,12 @@ export default function MCIMode() {
     }, [batchResults, esiFilter, showUncertainOnly, sortBy]);
 
     const summary = useMemo(() => {
-        const esi1 = batchResults.filter((r: any) => r.predicted_esi === 1).length;
-        const esi2 = batchResults.filter((r: any) => r.predicted_esi === 2).length;
-        const esi3 = batchResults.filter((r: any) => r.predicted_esi === 3).length;
-        const uncertain = batchResults.filter((r: any) => r.confidence?.is_uncertain).length;
+        const esi1 = batchResults.filter((r) => r.predicted_esi === 1).length;
+        const esi2 = batchResults.filter((r) => r.predicted_esi === 2).length;
+        const esi3 = batchResults.filter((r) => r.predicted_esi === 3).length;
+        const uncertain = batchResults.filter((r) => r.confidence?.is_uncertain).length;
         const avgConfidence = batchResults.length > 0
-            ? batchResults.reduce((sum: number, r: any) => sum + (r.confidence?.top_probability ?? 0), 0) / batchResults.length
+            ? batchResults.reduce((sum, r) => sum + (r.confidence?.top_probability ?? 0), 0) / batchResults.length
             : 0;
         
         return {
@@ -263,7 +271,7 @@ export default function MCIMode() {
                                 <button
                                     key={esi}
                                     onClick={() => setEsiFilter(esi)}
-                                    className={`px-2 py-1 text-[9px] font-mono uppercase transition-all ${esiFilter === esi ? `bg-[rgba(${ESI_COLORS[esi]},0.2)] text-[${ESI_COLORS[esi]}]` : "text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"}`}
+                                    className={`px-2 py-1 text-[9px] font-mono uppercase transition-all ${esiFilter === esi ? severityClassMap[esi] : "text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"}`}
                                 >
                                     ESI {esi}
                                 </button>
@@ -307,7 +315,7 @@ export default function MCIMode() {
                     className="flex h-2 rounded-full overflow-hidden mb-3 origin-left"
                 >
                     {[1, 2, 3, 4, 5].map((esi) => {
-                        const count = batchResults.filter((r: any) => r.predicted_esi === esi).length;
+                        const count = batchResults.filter((r) => r.predicted_esi === esi).length;
                         const pct = (count / batchResults.length) * 100;
                         if (pct === 0) return null;
                         return (
@@ -339,7 +347,7 @@ export default function MCIMode() {
                     </thead>
                     <tbody>
                         <AnimatePresence>
-                            {filteredResults.map((result: any, i: number) => {
+                            {filteredResults.map((result, i: number) => {
                                 const esiColor = ESI_COLORS[result.predicted_esi] || "#888";
                                 const conf = result.confidence?.top_probability ?? 0;
                                 return (

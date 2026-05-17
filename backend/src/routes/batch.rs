@@ -32,7 +32,7 @@ pub async fn batch_predict(
     let mut results: Vec<BatchPatientResult> = Vec::with_capacity(batch.patients.len());
 
     for (idx, patient) in batch.patients.iter().enumerate() {
-        match predict_single(&state, patient, idx).await {
+        match predict_single(&state, idx, patient).await {
             Ok(prediction) => {
                 results.push(BatchPatientResult {
                     index: idx,
@@ -95,8 +95,8 @@ pub async fn batch_predict(
 /// Run the predict pipeline for a single patient (reuses the same logic as /predict).
 async fn predict_single(
     state: &AppState,
-    patient: &PatientRequest,
     idx: usize,
+    patient: &PatientRequest,
 ) -> Result<PredictResponse, (StatusCode, String)> {
     let tabular_features = vec![
         patient.age,
@@ -253,4 +253,14 @@ async fn fetch_shap_batch(
         return None;
     }
     resp.json::<ShapExplanation>().await.ok()
+}
+
+/// Simple hash function (FNV-like) for patient deduplication.
+fn md5_hash(input: &str) -> u64 {
+    let mut hash: u64 = 0xcbf29ce484222325;
+    for byte in input.bytes() {
+        hash ^= byte as u64;
+        hash = hash.wrapping_mul(0x100000001b3);
+    }
+    hash
 }
