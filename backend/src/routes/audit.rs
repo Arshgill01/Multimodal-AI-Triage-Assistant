@@ -121,7 +121,10 @@ pub async fn audit_override(
     if !(1..=5).contains(&req.override_esi) {
         return Err((
             StatusCode::UNPROCESSABLE_ENTITY,
-            format!("override_esi must be between 1 and 5 (got {})", req.override_esi),
+            format!(
+                "override_esi must be between 1 and 5 (got {})",
+                req.override_esi
+            ),
         ));
     }
     let db = state.audit_db.lock().map_err(|e| {
