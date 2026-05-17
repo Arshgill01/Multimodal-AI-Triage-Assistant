@@ -7,6 +7,7 @@ use crate::models::{
     ShapExplanation, ShapRequest, ESI_LABELS,
 };
 use crate::state::AppState;
+use crate::utils::md5_hash;
 
 /// `POST /predict` — Full triage inference pipeline.
 ///
@@ -180,16 +181,6 @@ pub async fn predict(
         shap,
         audit_id,
     }))
-}
-
-/// Simple hash function (FNV-like) for patient deduplication.
-fn md5_hash(input: &str) -> u64 {
-    let mut hash: u64 = 0xcbf29ce484222325;
-    for byte in input.bytes() {
-        hash ^= byte as u64;
-        hash = hash.wrapping_mul(0x100000001b3);
-    }
-    hash
 }
 
 /// Fetch SHAP values from the Python service. Returns None on any failure

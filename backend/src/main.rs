@@ -12,6 +12,7 @@
 mod models;
 mod routes;
 mod state;
+mod utils;
 
 use std::sync::Arc;
 
