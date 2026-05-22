@@ -9,6 +9,7 @@ use crate::models::{
 };
 use crate::routes::predict::{fetch_sbar_format, md5_hash};
 use crate::state::AppState;
+use crate::utils::md5_hash;
 
 /// `POST /batch-predict` — Mass casualty triage simulation.
 ///
@@ -182,15 +183,7 @@ async fn predict_single(
 
     let confidence = ConfidenceMetrics::from_probabilities(&probabilities);
 
-    // Simple hash from complaint + vitals for patient deduplication
-    let patient_hash = format!(
-        "{:x}",
-        md5_hash(&format!(
-            "{}|{}|{}|{}",
-            patient.chief_complaint, patient.age, patient.heart_rate, patient.spo2
-        ))
-    );
-
+    // ── Audit trail logging (mirrors /predict) ────────────────
     let top_shap_drivers: Vec<String> = shap
         .as_ref()
         .map(|s| {
@@ -202,6 +195,14 @@ async fn predict_single(
         })
         .unwrap_or_default();
 
+    let patient_hash = format!(
+        "{:x}",
+        md5_hash(&format!(
+            "{}|{}|{}|{}",
+            patient.chief_complaint, patient.age, patient.heart_rate, patient.spo2
+        ))
+    );
+
     let audit_id = match state.log_decision(
         &patient_hash,
         &patient.chief_complaint,
@@ -212,7 +213,7 @@ async fn predict_single(
     ) {
         Ok(id) => id,
         Err(e) => {
-            tracing::warn!("Batch audit log failed for patient {}: {}", idx, e);
+            tracing::warn!("Batch audit log failed: {}", e);
             patient_hash.clone()
         }
     };
@@ -253,14 +254,4 @@ async fn fetch_shap_batch(
         return None;
     }
     resp.json::<ShapExplanation>().await.ok()
-}
-
-/// Simple hash function (FNV-like) for patient deduplication.
-fn md5_hash(input: &str) -> u64 {
-    let mut hash: u64 = 0xcbf29ce484222325;
-    for byte in input.bytes() {
-        hash ^= byte as u64;
-        hash = hash.wrapping_mul(0x100000001b3);
-    }
-    hash
 }

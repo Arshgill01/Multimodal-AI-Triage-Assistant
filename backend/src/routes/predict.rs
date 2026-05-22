@@ -8,6 +8,7 @@ use crate::models::{
 };
 use serde::Serialize;
 use crate::state::AppState;
+use crate::utils::md5_hash;
 
 /// `POST /predict` — Full triage inference pipeline.
 ///

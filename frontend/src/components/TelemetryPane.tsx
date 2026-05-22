@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAppStore } from "@/lib/store";
 import { RUST_API } from "@/lib/config";
 import VitalSlider from "./VitalSlider";
@@ -61,6 +61,22 @@ const PAIN_ZONES = [
 export default function TelemetryPane() {
     const { patientData, updatePatient, setPhase, analysisPhase, setPrediction, setEsi } = useAppStore();
     const [inferenceError, setInferenceError] = useState<string | null>(null);
+const [backendReady, setBackendReady] = useState(true);
+
+useEffect(() => {
+    const checkHealth = async () => {
+        try {
+            const response = await fetch(`${RUST_API}/health`);
+            const data = await response.json();
+
+            setBackendReady(data.model_loaded);
+        } catch {
+            setBackendReady(false);
+        }
+    };
+
+    checkHealth();
+}, []);
 
     const handleEvaluate = async () => {
         try {
@@ -211,9 +227,20 @@ export default function TelemetryPane() {
             )}
 
             {/* Primary Action Button — ONLY this stays pinned at bottom */}
+
+            {!backendReady && (
+<div className="mt-2 text-yellow-500 text-xs font-mono">
+⚠ Backend running in degraded mode — prediction unavailable.
+</div>
+)}
+
             <button
                 onClick={handleEvaluate}
-                disabled={analysisPhase !== "idle" && analysisPhase !== "complete"}
+                disabled={
+ !backendReady ||
+ (analysisPhase !== "idle" &&
+ analysisPhase !== "complete")
+}
                 className="mt-3 shrink-0 w-full py-3 glass-panel hover:bg-[rgba(255,255,255,0.08)] transition-all font-bold tracking-widest text-[#00e5ff] uppercase disabled:opacity-50 disabled:cursor-not-allowed group relative overflow-hidden"
             >
                 <span className="relative z-10">Evaluate Patient</span>
