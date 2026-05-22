@@ -14,13 +14,13 @@ Run:  uvicorn preprocessing_service:app --host 0.0.0.0 --port 8000
 
 import os
 import warnings
-
+from contextlib import asynccontextmanager
 
 import numpy as np
 import torch
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from typing import Optional, List
 
@@ -38,22 +38,6 @@ def _resolve_base_dir():
 
 
 BASE_DIR = _resolve_base_dir()
-
-# ── FastAPI App ──────────────────────────────────────────────
-
-app = FastAPI(
-    title="Triage Preprocessing Service",
-    description="ClinicalBERT + ResNet-50 embedding extraction and RAG pipeline",
-    version="0.1.0",
-)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 # ── Global model state (loaded once at startup) ──────────────
 
@@ -145,11 +129,12 @@ class ShapResponse(BaseModel):
     prediction_label: str
 
 
-# ── Startup: Load all models ─────────────────────────────────
+# ── Lifespan: Load all models on startup ─────────────────────
 
 
-@app.on_event("startup")
-async def load_models():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Load all ML models on startup using the modern FastAPI lifespan API."""
     global bert_model, bert_tokenizer, text_pca, device
     global resnet_model, image_pca, image_preprocess
     global chroma_collection, gemini_model
@@ -177,7 +162,6 @@ async def load_models():
             df = pd.read_csv(csv_path)
             complaints = df["chief_complaint"].fillna("Unknown").tolist()
 
-            # Re-extract embeddings for PCA fitting
             print("Fitting text PCA from dataset...")
             all_embs = []
             BATCH_SIZE = 32
@@ -278,15 +262,6 @@ async def load_models():
                 metadata={"hnsw:space": "cosine"},
             )
 
-            tabular_cols = [
-                "age",
-                "heart_rate",
-                "resp_rate",
-                "spo2",
-                "temp_f",
-                "systolic_bp",
-                "pain_scale",
-            ]
             BATCH = 100
             for i in range(0, len(df), BATCH):
                 end = min(i + BATCH, len(df))
@@ -381,6 +356,26 @@ async def load_models():
         print(f"⚠️  SHAP setup failed: {e}")
 
     print("\n🧊 Preprocessing service ready!")
+    yield
+    # Shutdown: nothing to clean up for these models
+
+
+# ── FastAPI App ──────────────────────────────────────────────
+
+app = FastAPI(
+    title="Triage Preprocessing Service",
+    description="ClinicalBERT + ResNet-50 embedding extraction and RAG pipeline",
+    version="0.1.0",
+    lifespan=lifespan,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # ── Hybrid Retrieval Helpers ───────────────────────────────────────
@@ -951,9 +946,9 @@ NEW PATIENT PRESENTING NOW:
   AI Triage Prediction: ESI {req.predicted_esi}
 
 Based ONLY on the similar historical cases above, provide:
-1. IMMEDIATE TRIAGE ACTIONS 
+1. IMMEDIATE TRIAGE ACTIONS
 2. RECOMMENDED ASSESSMENTS
-3. CLINICAL REASONING 
+3. CLINICAL REASONING
 
 STRICT FORMATTING RULES:
 - NEVER write long paragraphs.
