@@ -60,7 +60,7 @@ pub async fn audit_log(
             )
         })?;
 
-    let mut query = format!(
+    let query = format!(
         "SELECT id, timestamp, patient_hash, chief_complaint, predicted_esi, \
          confidence, is_uncertain, top_shap_drivers, overridden, override_esi \
          FROM audit_log {} ORDER BY timestamp DESC LIMIT ?",
