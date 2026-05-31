@@ -13,7 +13,12 @@ Run:  uvicorn preprocessing_service:app --host 0.0.0.0 --port 8000
 """
 
 import os
+import sys
 import warnings
+
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
 
 
 import numpy as np
