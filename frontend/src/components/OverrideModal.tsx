@@ -10,11 +10,19 @@ export default function OverrideModal() {
     const [selectedEsi, setSelectedEsi] = useState<number | null>(null);
     const [reason, setReason] = useState("");
     const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+    const [validationError, setValidationError] = useState<string | null>(null);
 
     if (!prediction || !prediction.audit_id) return null;
 
     const handleSubmit = async () => {
-        if (!selectedEsi || !reason.trim()) return;
+        setValidationError(null);
+
+        if (!reason.trim()) {
+            setValidationError("Override justification is required.");
+            return;
+        }
+
+        if (!selectedEsi) return;
 
         setStatus("submitting");
         try {
@@ -38,6 +46,7 @@ export default function OverrideModal() {
                 setStatus("idle");
                 setReason("");
                 setSelectedEsi(null);
+                setValidationError(null);
                 // Force update the UI to the clinician's chosen ESI
                 setEsi(selectedEsi as any); 
             }, 1000);
@@ -112,10 +121,18 @@ export default function OverrideModal() {
                                     </label>
                                     <textarea 
                                         value={reason}
-                                        onChange={(e) => setReason(e.target.value)}
+                                        onChange={(e) => {
+                                            setReason(e.target.value);
+                                            if (validationError) setValidationError(null);
+                                        }}
                                         placeholder="e.g. Patient exhibits delayed capillary refill not caught by static vitals..."
                                         className="w-full h-24 bg-[rgba(0,0,0,0.3)] border border-[var(--color-obsidian-border)] rounded-lg p-3 text-sm text-[var(--color-text-primary)] focus:outline-none focus:border-[#ff2a2a] transition-colors resize-none"
                                     />
+                                    {validationError && (
+                                        <p className="mt-1 text-xs font-mono text-[#ff2a2a]">
+                                            {validationError}
+                                        </p>
+                                    )}
                                 </div>
 
                                 {/* Status & Submit Area */}
