@@ -613,7 +613,7 @@ Multimodal-AI-Triage-Assistant/
 ├── triage_multimodal_model.txt        # Canonical LightGBM model (Rust FFI + Python SHAP)
 ├── triage_master_multimodal.csv       # 1,197 patients × 27 columns (fused features)
 ├── triage_dataset_final.csv           # 12-column dataset from build_final_dataset.py
-├── clinicalbert_embeddings_768d.npy # Pre-computed embeddings (optional)
+├── clinicalbert_embeddings_768d.npy   # Pre-computed embeddings (optional)
 ├── kaggle_images/                     # burns/ and wounds/ image pools
 └── requirements.txt
 ```
