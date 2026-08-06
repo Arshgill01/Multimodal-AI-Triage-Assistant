@@ -166,7 +166,7 @@ export default function MCIMode() {
                         <label className="text-xs text-[var(--color-text-muted)] uppercase tracking-widest">Simulated:</label>
                         <select
                             value={patientCount}
-                            onChange={(e) => setPatientCount(parseInt(e.target.value))}
+                            onChange={(e) => setPatientCount(parseInt(e.target.value, 10))}
                             className="bg-[rgba(0,0,0,0.4)] border border-[var(--color-obsidian-border)] rounded px-2 py-1 text-xs font-mono text-[var(--color-text-primary)]"
                         >
                             <option value={10}>10</option>
